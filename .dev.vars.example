@@ -1,3 +1,4 @@
 AUTH_SECRET=<generate-a-random-secret-with-32-or-more-characters>
 RESEND_API_KEY=replace-with-resend-key
+RESEND_FROM=PIMX_ELTEX <codes@your-verified-domain.example>
 TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA

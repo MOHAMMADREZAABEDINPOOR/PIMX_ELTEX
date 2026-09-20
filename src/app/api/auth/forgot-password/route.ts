@@ -18,6 +18,9 @@ export async function POST(request: Request) {
   if (!parsed.success) return Response.json({ message: "Enter a valid email address." }, { status: 400 });
   const environment = await getEnvironment();
   if (guard.count > 1 && !(await verifyTurnstile(parsed.data.turnstileToken, environment.turnstileSecret))) return captchaRequiredResponse();
+  if (process.env.NODE_ENV === "production" && (!environment.resendApiKey || !environment.resendFrom)) {
+    return Response.json({ message: "Password recovery email is temporarily unavailable. Please try again later." }, { status: 503 });
+  }
   const db = await getDatabase();
   const code = randomOtp();
   if (!db) return Response.json({ message: "Account storage is unavailable." }, { status: 503 });

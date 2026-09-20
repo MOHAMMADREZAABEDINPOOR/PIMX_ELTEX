@@ -140,7 +140,7 @@ The application also redirects non-local HTTP requests to HTTPS in `src/proxy.ts
 
 ### Launch values that must be real
 
-The contact page currently uses `hello@pimx-eltex.com`, the email already present in `.env.example`. A public DNS check on 2026-09-20 returned NXDOMAIN for `pimx-eltex.com`; replace these fallback addresses with a working contact and privacy mailbox. The canonical URL and sitemap use the active `workers.dev` hostname until a custom domain is connected. Update `NEXT_PUBLIC_SITE_URL` in the deployment workflow when changing domains.
+The contact and privacy pages use `pimxeltex369@gmail.com`. This address receives mail sent by visitors but does not authorize sending verification codes from Gmail. To send production OTPs, verify a domain you own in Resend and configure the Worker secrets `RESEND_API_KEY` and `RESEND_FROM`. The canonical URL and sitemap use the active `workers.dev` hostname until a custom domain is connected. Update `NEXT_PUBLIC_SITE_URL` in the deployment workflow when changing domains.
 
 Local development currently has a Turnstile test site key and no Cloudflare Web Analytics token or Resend API key. The first-party D1 visit tracker works after cookie consent, but the Cloudflare beacon and production email delivery need their real service values. Set these through Cloudflare secrets and public build variables; never commit them. `npm run security:secrets` scans the current tracked and unignored worktree files for common credential formats.
 

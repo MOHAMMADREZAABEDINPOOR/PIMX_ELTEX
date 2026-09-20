@@ -20,6 +20,9 @@ export async function POST(request: Request) {
   if (!parsed.success) return Response.json({ message: "Please check the information you entered." }, { status: 400 });
   const environment = await getEnvironment();
   if (guard.count > 1 && !(await verifyTurnstile(parsed.data.turnstileToken, environment.turnstileSecret))) return captchaRequiredResponse();
+  if (process.env.NODE_ENV === "production" && (!environment.resendApiKey || !environment.resendFrom)) {
+    return Response.json({ message: "Email verification is temporarily unavailable. Please try again later." }, { status: 503 });
+  }
   const db = await getDatabase();
   const code = randomOtp();
   if (!db) return Response.json({ message: "Account storage is unavailable." }, { status: 503 });
@@ -29,6 +32,13 @@ export async function POST(request: Request) {
   const userId = crypto.randomUUID();
   await db.insert(users).values({ id: userId, name: parsed.data.name, age: parsed.data.age, username: parsed.data.username, email: parsed.data.email, passwordHash: await hashPassword(parsed.data.password), countryCode: metadata.countryCode });
   await db.insert(otps).values({ id: crypto.randomUUID(), userId, email: parsed.data.email, purpose: "verify_email", codeHash: await hashOtp(parsed.data.email, code, environment.authSecret), expiresAt: new Date(Date.now() + 10 * 60_000) });
-  const delivery = await sendOtpEmail({ to: parsed.data.email, code, purpose: "verify your email", apiKey: environment.resendApiKey, from: environment.resendFrom });
+  let delivery: Awaited<ReturnType<typeof sendOtpEmail>>;
+  try {
+    delivery = await sendOtpEmail({ to: parsed.data.email, code, purpose: "verify your email", apiKey: environment.resendApiKey, from: environment.resendFrom });
+  } catch {
+    await db.delete(otps).where(eq(otps.userId, userId));
+    await db.delete(users).where(eq(users.id, userId));
+    return Response.json({ message: "The verification email could not be sent. Please try again later." }, { status: 502 });
+  }
   return Response.json({ message: "Check your inbox for the verification code.", ...(!delivery.sent && process.env.NODE_ENV !== "production" ? { devCode: code } : {}) }, { status: 201 });
 }
