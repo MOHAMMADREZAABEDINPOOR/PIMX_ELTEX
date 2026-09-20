@@ -27,8 +27,9 @@ jobs:
       - run: npm run typecheck
       - run: npx opennextjs-cloudflare build
       - name: Deploy Worker
-        if: ${{ env.CLOUDFLARE_API_TOKEN != '' }}
-        run: npx wrangler deploy
-      - name: Explain missing deployment credential
-        if: ${{ env.CLOUDFLARE_API_TOKEN == '' }}
-        run: echo '::warning::Add CLOUDFLARE_API_TOKEN to GitHub Actions secrets to enable automatic deployment.'
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo '::error::Add CLOUDFLARE_API_TOKEN to GitHub Actions secrets to enable automatic deployment.'
+            exit 1
+          fi
+          npx wrangler deploy
