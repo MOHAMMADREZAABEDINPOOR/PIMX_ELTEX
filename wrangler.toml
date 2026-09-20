@@ -15,7 +15,3 @@ binding = "DB"
 database_name = "pimx-eltex-db"
 database_id = "1dbe35e8-2c2e-4ff4-9550-f4b8eda11567"
 migrations_dir = "drizzle"
-
-[[r2_buckets]]
-binding = "MEDIA"
-bucket_name = "pimx-eltex-media"

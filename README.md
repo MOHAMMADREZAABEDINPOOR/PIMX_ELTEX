@@ -57,6 +57,10 @@ NEXT_PUBLIC_CONTACT_EMAIL=your-real-contact-address@example.com
 
 ## Cloudflare setup
 
+The live Worker is `https://pimx-eltex.mohammadrezaabedinpoor6.workers.dev`. Pushes to `main` run the build workflow in `.github/workflows/deploy-cloudflare.yml`. To enable automatic deployment, create a Cloudflare API token scoped to this account with permission to edit the existing `pimx-eltex` Worker, then save it as the GitHub Actions repository secret `CLOUDFLARE_API_TOKEN`. The token is never stored in this repository. The workflow uses the existing account ID and production URL.
+
+Cloudflare R2 is not enabled on the account, so the R2 binding is currently omitted from `wrangler.toml`. Public pages work; uploading or serving episode bundles requires enabling R2, creating `pimx-eltex-media`, and restoring the binding. Production email verification also requires a verified Resend sender and `RESEND_API_KEY` secret. Do not advertise account creation as ready until these are configured.
+
 ```bash
 npx wrangler login
 npx wrangler d1 create pimx-eltex-db
@@ -136,7 +140,7 @@ The application also redirects non-local HTTP requests to HTTPS in `src/proxy.ts
 
 ### Launch values that must be real
 
-The contact page currently uses `hello@pimx-eltex.com`, the email already present in `.env.example`. A public DNS check on 2026-09-20 returned NXDOMAIN for `pimx-eltex.com`; replace these fallback addresses with a working contact and privacy mailbox before public launch.
+The contact page currently uses `hello@pimx-eltex.com`, the email already present in `.env.example`. A public DNS check on 2026-09-20 returned NXDOMAIN for `pimx-eltex.com`; replace these fallback addresses with a working contact and privacy mailbox. The canonical URL and sitemap use the active `workers.dev` hostname until a custom domain is connected. Update `NEXT_PUBLIC_SITE_URL` in the deployment workflow when changing domains.
 
 Local development currently has a Turnstile test site key and no Cloudflare Web Analytics token or Resend API key. The first-party D1 visit tracker works after cookie consent, but the Cloudflare beacon and production email delivery need their real service values. Set these through Cloudflare secrets and public build variables; never commit them. `npm run security:secrets` scans the current tracked and unignored worktree files for common credential formats.
 

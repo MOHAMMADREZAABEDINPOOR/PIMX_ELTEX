@@ -1,6 +1,6 @@
 interface CloudflareEnv {
   DB: D1Database;
-  MEDIA: R2Bucket;
+  MEDIA?: R2Bucket;
   ASSETS: Fetcher;
   APP_URL: string;
   RESEND_FROM: string;
