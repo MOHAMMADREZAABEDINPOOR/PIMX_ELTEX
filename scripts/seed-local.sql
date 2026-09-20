@@ -1,0 +1,2 @@
+-- Intentionally empty: local setup never inserts demonstration content.
+-- Create a real account through the application, then promote it as documented.

@@ -1,0 +1,241 @@
+PROMPT 1 — ORIGINAL 3D PLATFORMER GAME
+
+Create a complete 3D platformer browser game inspired by classic side-scrolling platform games.
+
+Do not copy Super Mario characters, assets, or levels. Create an original fantasy world.
+
+Requirements:
+
+- Create a colorful 3D cartoon environment.
+- Create a player character that can run, jump, and interact with the world.
+- Add platforms with different heights.
+- Add moving platforms.
+- Add collectible coins.
+- Add power-up items that temporarily improve the player.
+- Add enemies with simple AI.
+- Add obstacles and traps.
+- Add checkpoints.
+- Add a health/life system.
+- Add a final goal flag at the end of the level.
+- Add smooth animations.
+- Add camera following the player.
+- Add background music placeholders and sound effects.
+
+The game should feel polished, fun, and immediately playable.
+
+IMPORTANT:
+- Do not ask me any questions.
+- Make all creative decisions yourself.
+- Start coding immediately.
+- Use only HTML, CSS, and vanilla JavaScript.
+- Do not use React, Next.js, Vue, Angular, TypeScript, or any framework.
+- The project must run by opening index.html directly.
+- Use CDN libraries only if needed.
+- Create complete working code, not just explanations.
+
+
+
+PROMPT 2 — MINI GTA STYLE OPEN WORLD
+
+Create a small 3D open-world city game inspired by open-world driving games.
+
+Do not copy GTA characters, branding, or assets.
+
+Requirements:
+
+- Create a detailed 3D city environment.
+- Add roads, buildings, sidewalks, traffic lights, parks, and signs.
+- Add a player character who can walk around.
+- Add vehicles that the player can enter and drive.
+- Add basic car physics.
+- Add pedestrians walking around the city.
+- Add simple traffic AI.
+- Add a minimap.
+- Add day and night cycle.
+- Add weather changes.
+- Add police AI that follows the player after crimes.
+- Add wanted level system.
+- Add missions such as reaching locations or delivering objects.
+
+Focus on creating a living city that looks impressive in a video demonstration.
+
+IMPORTANT:
+- Do not ask me any questions.
+- Make all creative decisions yourself.
+- Start coding immediately.
+- Use only HTML, CSS, and vanilla JavaScript.
+- Do not use React, Next.js, Vue, Angular, TypeScript, or any framework.
+- The project must run by opening index.html directly.
+- Use CDN libraries only if needed.
+- Create complete working code, not just explanations.
+
+PROMPT 3 — ULTRA DETAILED 3D CITY
+
+Create a highly detailed realistic 3D city environment in the browser.
+
+This is a visual showcase, not a game.
+
+Requirements:
+
+- Create a large city scene.
+- Add skyscrapers with different designs.
+- Add streets, sidewalks, intersections, traffic lights, signs, and advertisements.
+- Add trees, parks, benches, street lamps, and small details.
+- Add moving cars.
+- Add walking pedestrians.
+- Add reflections on windows.
+- Add realistic lighting.
+- Add sunrise, sunset, and night modes.
+- Add realistic camera movement.
+- Add cinematic camera shots.
+- Add weather effects such as rain or fog.
+
+The final result should look like a modern 3D city demo.
+
+IMPORTANT:
+- Do not ask me any questions.
+- Make all creative decisions yourself.
+- Start coding immediately.
+- Use only HTML, CSS, and vanilla JavaScript.
+- Do not use React, Next.js, Vue, Angular, TypeScript, or any framework.
+- The project must run by opening index.html directly.
+- Use CDN libraries only if needed.
+- Create complete working code, not just explanations.
+
+PROMPT 4 — 3D CAR MODEL AND SIMULATOR
+
+Create a detailed 3D car experience in the browser.
+
+Requirements:
+
+- Create a realistic 3D sports car model using procedural geometry.
+- Add detailed body shape, wheels, windows, lights, mirrors, and interior elements.
+- Add realistic materials.
+- Add paint color customization.
+- Add a rotating showroom camera.
+- Add lighting effects.
+- Add a driving mode where the player can control the car.
+- Add acceleration, braking, steering, and simple physics.
+- Add speedometer UI.
+- Add different camera angles.
+
+Make the car visually impressive like a professional automotive showcase.
+
+IMPORTANT:
+- Do not ask me any questions.
+- Make all creative decisions yourself.
+- Start coding immediately.
+- Use only HTML, CSS, and vanilla JavaScript.
+- Do not use React, Next.js, Vue, Angular, TypeScript, or any framework.
+- The project must run by opening index.html directly.
+- Use CDN libraries only if needed.
+- Create complete working code, not just explanations.
+
+PROMPT 5 — DETAILED SVG PROGRAMMER ROOM
+
+Create a detailed SVG illustration of a programmer working inside a modern computer room.
+
+The scene must show:
+
+* A person sitting naturally on an office chair.
+* The person is sitting directly in front of a computer desk.
+* A desktop computer monitor is placed on the desk.
+* The person is actively programming, with their hands positioned on a keyboard.
+* Show a visible coding interface on the monitor using colorful code-like text and UI elements.
+* Add a computer mouse, keyboard, desk accessories, and cables.
+* Add a desk lamp.
+* Add shelves or wall decorations in the background.
+* Add a window with a night-time city view.
+* Add subtle ambient lighting from the computer monitor.
+* Add a small plant and a few realistic room details.
+* Use a coherent perspective and professional composition.
+* Include detailed character proportions, clothing, hair, facial features, hands, chair, desk, monitor, and room objects.
+* Use gradients, shadows, highlights, layered shapes, and carefully constructed paths to make the SVG visually rich.
+* Use a modern professional illustration style rather than a very simple icon style.
+* Make the final SVG large, detailed, clean, and visually impressive.
+
+Technical requirements:
+
+* The main artwork must be created as SVG.
+* Keep the SVG editable and vector-based.
+* Do not simply embed a raster image as the final artwork.
+* Organize the SVG into logical groups/layers such as background, room, desk, computer, person, lighting, and decorative objects.
+* Add subtle SVG animations where they improve the scene, such as monitor glow, blinking cursor, or small ambient lighting effects.
+* Display the final SVG prominently in the browser.
+* Add a button that allows the user to download/export the generated SVG.
+
+The final result should look like a polished professional vector illustration of a programmer working late at night.
+
+
+IMPORTANT:
+- Do not ask me any questions.
+- Make all creative decisions yourself.
+- Start coding immediately.
+- Use only HTML, CSS, and vanilla JavaScript.
+- Do not use React, Next.js, Vue, Angular, TypeScript, or any framework.
+- The project must run by opening index.html directly.
+- Use CDN libraries only if needed.
+- Create complete working code, not just explanations.
+
+PROMPT 6 — PREMIUM RESTAURANT WEBSITE
+
+Create a complete premium restaurant website.
+
+The website should look like a real modern restaurant website.
+
+Requirements:
+
+- Create a beautiful landing page.
+- Add a hero section with attractive food imagery placeholders.
+- Add restaurant logo.
+- Add navigation menu.
+- Add food menu section with categories.
+- Add food cards with prices and descriptions.
+- Add reservation section.
+- Add customer reviews.
+- Add restaurant gallery.
+- Add location and opening hours.
+- Add contact section.
+- Add smooth animations.
+- Add responsive mobile design.
+- Add dark luxury restaurant theme.
+
+The final website should look production-ready and visually impressive.
+
+IMPORTANT:
+- Do not ask me any questions.
+- Make all creative decisions yourself.
+- Start coding immediately.
+- Use only HTML, CSS, and vanilla JavaScript.
+- Do not use React, Next.js, Vue, Angular, TypeScript, or any framework.
+- The project must run by opening index.html directly.
+- Use CDN libraries only if needed.
+- Create complete working code, not just explanations.
+
+PROMPT 7 — ORIGINAL FLAPPY BIRD-STYLE ARCADE GAME
+
+Create a polished one-button browser arcade game inspired by the simple flying-and-dodging gameplay of Flappy Bird.
+
+Do not copy Flappy Bird characters, artwork, sounds, branding, or level design. Create an original bird, environment, obstacles, and visual identity.
+
+Requirements:
+
+- Make the bird rise when the player clicks, taps, or presses Space.
+- Add smooth gravity, rotation, and responsive controls.
+- Generate moving obstacle pairs with fair randomized gaps.
+- Increase the score whenever the player passes an obstacle.
+- Add a best-score counter saved in localStorage.
+- Include start, pause, game-over, and restart states.
+- Add subtle particles, sound effects, and a day-to-night visual progression.
+- Make the layout responsive for desktop and mobile screens.
+
+IMPORTANT:
+- Do not ask me any questions.
+- Make all creative decisions yourself.
+- Start coding immediately.
+- Use only HTML, CSS, and vanilla JavaScript.
+- Do not use React, Next.js, Vue, Angular, TypeScript, or any framework.
+- The project must run by opening index.html directly.
+- Keep the complete game in a single index.html file.
+- Use CDN libraries only if needed.
+- Create complete working code, not just explanations.
