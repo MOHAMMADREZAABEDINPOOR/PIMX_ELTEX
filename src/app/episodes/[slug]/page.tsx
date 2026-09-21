@@ -8,7 +8,12 @@ import { PageTransition } from "@/components/page-transition";
 import { getPublicEpisode, getPublicPost } from "@/lib/public-content";
 
 type EpisodePageProps = { params: Promise<{ slug: string }> };
-export const dynamic = "force-dynamic";
+export const dynamic = "force-static";
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return [{ slug: "muse-spark-1-3-original-3d-platformer" }];
+}
 
 export async function generateMetadata({ params }: EpisodePageProps): Promise<Metadata> {
   const post = await getPublicPost((await params).slug);

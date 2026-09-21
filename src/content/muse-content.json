@@ -1,0 +1,259 @@
+{
+  "post": {
+    "slug": "muse-spark-1-3-original-3d-platformer",
+    "title": "Muse Spark 1.3 — Seven AI Builds",
+    "excerpt": "Seven complete AI prompts with playable browser demos and downloadable source bundles in one episode.",
+    "content": "This Muse Spark 1.3 episode contains every prompt and every generated project in one place. Read each complete prompt, launch its isolated live preview, or download the original source bundle.",
+    "category": "AI Development",
+    "date": "Sep 13, 2026",
+    "publishedAt": "2026-09-13T17:02:31.000Z",
+    "readTime": "1 min read",
+    "accent": "violet",
+    "youtubeVideoId": "yqGWdCgxh7Q"
+  },
+  "projects": [
+    {
+      "slug": "luma-meadows-3d-platformer",
+      "title": "Luma Meadows — 3D Platformer",
+      "description": "The complete playable result generated from Muse Spark 1.3 prompt 1.",
+      "tech": [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "Three.js"
+      ],
+      "previewUrl": "/demos/luma-meadows-3d-platformer/index.html",
+      "coverUrl": "/project-previews/luma-meadows-3d-platformer.webp",
+      "downloadUrl": "/downloads/luma-meadows-3d-platformer.zip",
+      "fileCount": 1,
+      "episode": "PIMX_ELTEX"
+    },
+    {
+      "slug": "neon-harbor-open-city",
+      "title": "Neon Harbor — Open City",
+      "description": "The complete playable result generated from Muse Spark 1.3 prompt 2.",
+      "tech": [
+        "HTML",
+        "JavaScript",
+        "Three.js"
+      ],
+      "previewUrl": "/demos/neon-harbor-open-city/index.html",
+      "coverUrl": "/project-previews/neon-harbor-open-city.webp",
+      "downloadUrl": "/downloads/neon-harbor-open-city.zip",
+      "fileCount": 1,
+      "episode": "PIMX_ELTEX"
+    },
+    {
+      "slug": "neon-metropolis-3d-city",
+      "title": "Neon Metropolis — 3D City",
+      "description": "The complete playable result generated from Muse Spark 1.3 prompt 3.",
+      "tech": [
+        "HTML",
+        "JavaScript",
+        "Three.js"
+      ],
+      "previewUrl": "/demos/neon-metropolis-3d-city/index.html",
+      "coverUrl": "/project-previews/neon-metropolis-3d-city.webp",
+      "downloadUrl": "/downloads/neon-metropolis-3d-city.zip",
+      "fileCount": 1,
+      "episode": "PIMX_ELTEX"
+    },
+    {
+      "slug": "aurora-gt-showcase",
+      "title": "Aurora GT — 3D Automotive Showcase",
+      "description": "The complete playable result generated from Muse Spark 1.3 prompt 4.",
+      "tech": [
+        "HTML",
+        "JavaScript",
+        "Three.js"
+      ],
+      "previewUrl": "/demos/aurora-gt-showcase/index.html",
+      "coverUrl": "/project-previews/aurora-gt-showcase.webp",
+      "downloadUrl": "/downloads/aurora-gt-showcase.zip",
+      "fileCount": 1,
+      "episode": "PIMX_ELTEX"
+    },
+    {
+      "slug": "nova-svg-studio",
+      "title": "Nova — SVG Illustration Studio",
+      "description": "The complete playable result generated from Muse Spark 1.3 prompt 5.",
+      "tech": [
+        "HTML",
+        "SVG",
+        "JavaScript"
+      ],
+      "previewUrl": "/demos/nova-svg-studio/index.html",
+      "coverUrl": "/project-previews/nova-svg-studio.webp",
+      "downloadUrl": "/downloads/nova-svg-studio.zip",
+      "fileCount": 1,
+      "episode": "PIMX_ELTEX"
+    },
+    {
+      "slug": "maison-noir-restaurant",
+      "title": "Maison Noir — Restaurant Website",
+      "description": "The complete playable result generated from Muse Spark 1.3 prompt 6.",
+      "tech": [
+        "HTML",
+        "CSS",
+        "JavaScript"
+      ],
+      "previewUrl": "/demos/maison-noir-restaurant/index.html",
+      "coverUrl": "/project-previews/maison-noir-restaurant.webp",
+      "downloadUrl": "/downloads/maison-noir-restaurant.zip",
+      "fileCount": 3,
+      "episode": "PIMX_ELTEX"
+    },
+    {
+      "slug": "flappy-legends",
+      "title": "Flappy Legends — Arcade Game",
+      "description": "The complete playable result generated from Muse Spark 1.3 prompt 7.",
+      "tech": [
+        "HTML",
+        "Canvas",
+        "JavaScript"
+      ],
+      "previewUrl": "/demos/flappy-legends/index.html",
+      "coverUrl": "/project-previews/flappy-legends.webp",
+      "downloadUrl": "/downloads/flappy-legends.zip",
+      "fileCount": 1,
+      "episode": "PIMX_ELTEX"
+    }
+  ],
+  "episode": {
+    "videoId": "yqGWdCgxh7Q",
+    "number": "Episode 01",
+    "overview": "Seven complete AI prompts with playable browser demos and downloadable source bundles in one episode.",
+    "prompts": [
+      {
+        "title": "ORIGINAL 3D PLATFORMER GAME",
+        "description": "Complete source and playable result for Muse Spark prompt 1.",
+        "content": "Create a complete 3D platformer browser game inspired by classic side-scrolling platform games.\r\n\r\nDo not copy Super Mario characters, assets, or levels. Create an original fantasy world.\r\n\r\nRequirements:\r\n\r\n- Create a colorful 3D cartoon environment.\r\n- Create a player character that can run, jump, and interact with the world.\r\n- Add platforms with different heights.\r\n- Add moving platforms.\r\n- Add collectible coins.\r\n- Add power-up items that temporarily improve the player.\r\n- Add enemies with simple AI.\r\n- Add obstacles and traps.\r\n- Add checkpoints.\r\n- Add a health/life system.\r\n- Add a final goal flag at the end of the level.\r\n- Add smooth animations.\r\n- Add camera following the player.\r\n- Add background music placeholders and sound effects.\r\n\r\nThe game should feel polished, fun, and immediately playable.\r\n\r\nIMPORTANT:\r\n- Do not ask me any questions.\r\n- Make all creative decisions yourself.\r\n- Start coding immediately.\r\n- Use only HTML, CSS, and vanilla JavaScript.\r\n- Do not use React, Next.js, Vue, Angular, TypeScript, or any framework.\r\n- The project must run by opening index.html directly.\r\n- Use CDN libraries only if needed.\r\n- Create complete working code, not just explanations.",
+        "coverUrl": "/project-previews/luma-meadows-3d-platformer.webp",
+        "previewUrl": "/demos/luma-meadows-3d-platformer/index.html",
+        "downloadUrl": "/downloads/luma-meadows-3d-platformer.zip",
+        "fileCount": 1,
+        "totalBytes": 79049,
+        "files": [
+          {
+            "path": "index.html",
+            "size": 79049,
+            "type": "text/html"
+          }
+        ]
+      },
+      {
+        "title": "MINI GTA STYLE OPEN WORLD",
+        "description": "Complete source and playable result for Muse Spark prompt 2.",
+        "content": "Create a small 3D open-world city game inspired by open-world driving games.\r\n\r\nDo not copy GTA characters, branding, or assets.\r\n\r\nRequirements:\r\n\r\n- Create a detailed 3D city environment.\r\n- Add roads, buildings, sidewalks, traffic lights, parks, and signs.\r\n- Add a player character who can walk around.\r\n- Add vehicles that the player can enter and drive.\r\n- Add basic car physics.\r\n- Add pedestrians walking around the city.\r\n- Add simple traffic AI.\r\n- Add a minimap.\r\n- Add day and night cycle.\r\n- Add weather changes.\r\n- Add police AI that follows the player after crimes.\r\n- Add wanted level system.\r\n- Add missions such as reaching locations or delivering objects.\r\n\r\nFocus on creating a living city that looks impressive in a video demonstration.\r\n\r\nIMPORTANT:\r\n- Do not ask me any questions.\r\n- Make all creative decisions yourself.\r\n- Start coding immediately.\r\n- Use only HTML, CSS, and vanilla JavaScript.\r\n- Do not use React, Next.js, Vue, Angular, TypeScript, or any framework.\r\n- The project must run by opening index.html directly.\r\n- Use CDN libraries only if needed.\r\n- Create complete working code, not just explanations.",
+        "coverUrl": "/project-previews/neon-harbor-open-city.webp",
+        "previewUrl": "/demos/neon-harbor-open-city/index.html",
+        "downloadUrl": "/downloads/neon-harbor-open-city.zip",
+        "fileCount": 1,
+        "totalBytes": 54255,
+        "files": [
+          {
+            "path": "index.html",
+            "size": 54255,
+            "type": "text/html"
+          }
+        ]
+      },
+      {
+        "title": "ULTRA DETAILED 3D CITY",
+        "description": "Complete source and playable result for Muse Spark prompt 3.",
+        "content": "Create a highly detailed realistic 3D city environment in the browser.\r\n\r\nThis is a visual showcase, not a game.\r\n\r\nRequirements:\r\n\r\n- Create a large city scene.\r\n- Add skyscrapers with different designs.\r\n- Add streets, sidewalks, intersections, traffic lights, signs, and advertisements.\r\n- Add trees, parks, benches, street lamps, and small details.\r\n- Add moving cars.\r\n- Add walking pedestrians.\r\n- Add reflections on windows.\r\n- Add realistic lighting.\r\n- Add sunrise, sunset, and night modes.\r\n- Add realistic camera movement.\r\n- Add cinematic camera shots.\r\n- Add weather effects such as rain or fog.\r\n\r\nThe final result should look like a modern 3D city demo.\r\n\r\nIMPORTANT:\r\n- Do not ask me any questions.\r\n- Make all creative decisions yourself.\r\n- Start coding immediately.\r\n- Use only HTML, CSS, and vanilla JavaScript.\r\n- Do not use React, Next.js, Vue, Angular, TypeScript, or any framework.\r\n- The project must run by opening index.html directly.\r\n- Use CDN libraries only if needed.\r\n- Create complete working code, not just explanations.",
+        "coverUrl": "/project-previews/neon-metropolis-3d-city.webp",
+        "previewUrl": "/demos/neon-metropolis-3d-city/index.html",
+        "downloadUrl": "/downloads/neon-metropolis-3d-city.zip",
+        "fileCount": 1,
+        "totalBytes": 59749,
+        "files": [
+          {
+            "path": "index.html",
+            "size": 59749,
+            "type": "text/html"
+          }
+        ]
+      },
+      {
+        "title": "3D CAR MODEL AND SIMULATOR",
+        "description": "Complete source and playable result for Muse Spark prompt 4.",
+        "content": "Create a detailed 3D car experience in the browser.\r\n\r\nRequirements:\r\n\r\n- Create a realistic 3D sports car model using procedural geometry.\r\n- Add detailed body shape, wheels, windows, lights, mirrors, and interior elements.\r\n- Add realistic materials.\r\n- Add paint color customization.\r\n- Add a rotating showroom camera.\r\n- Add lighting effects.\r\n- Add a driving mode where the player can control the car.\r\n- Add acceleration, braking, steering, and simple physics.\r\n- Add speedometer UI.\r\n- Add different camera angles.\r\n\r\nMake the car visually impressive like a professional automotive showcase.\r\n\r\nIMPORTANT:\r\n- Do not ask me any questions.\r\n- Make all creative decisions yourself.\r\n- Start coding immediately.\r\n- Use only HTML, CSS, and vanilla JavaScript.\r\n- Do not use React, Next.js, Vue, Angular, TypeScript, or any framework.\r\n- The project must run by opening index.html directly.\r\n- Use CDN libraries only if needed.\r\n- Create complete working code, not just explanations.",
+        "coverUrl": "/project-previews/aurora-gt-showcase.webp",
+        "previewUrl": "/demos/aurora-gt-showcase/index.html",
+        "downloadUrl": "/downloads/aurora-gt-showcase.zip",
+        "fileCount": 1,
+        "totalBytes": 51166,
+        "files": [
+          {
+            "path": "index.html",
+            "size": 51166,
+            "type": "text/html"
+          }
+        ]
+      },
+      {
+        "title": "DETAILED SVG PROGRAMMER ROOM",
+        "description": "Complete source and playable result for Muse Spark prompt 5.",
+        "content": "Create a detailed SVG illustration of a programmer working inside a modern computer room.\r\n\r\nThe scene must show:\r\n\r\n* A person sitting naturally on an office chair.\r\n* The person is sitting directly in front of a computer desk.\r\n* A desktop computer monitor is placed on the desk.\r\n* The person is actively programming, with their hands positioned on a keyboard.\r\n* Show a visible coding interface on the monitor using colorful code-like text and UI elements.\r\n* Add a computer mouse, keyboard, desk accessories, and cables.\r\n* Add a desk lamp.\r\n* Add shelves or wall decorations in the background.\r\n* Add a window with a night-time city view.\r\n* Add subtle ambient lighting from the computer monitor.\r\n* Add a small plant and a few realistic room details.\r\n* Use a coherent perspective and professional composition.\r\n* Include detailed character proportions, clothing, hair, facial features, hands, chair, desk, monitor, and room objects.\r\n* Use gradients, shadows, highlights, layered shapes, and carefully constructed paths to make the SVG visually rich.\r\n* Use a modern professional illustration style rather than a very simple icon style.\r\n* Make the final SVG large, detailed, clean, and visually impressive.\r\n\r\nTechnical requirements:\r\n\r\n* The main artwork must be created as SVG.\r\n* Keep the SVG editable and vector-based.\r\n* Do not simply embed a raster image as the final artwork.\r\n* Organize the SVG into logical groups/layers such as background, room, desk, computer, person, lighting, and decorative objects.\r\n* Add subtle SVG animations where they improve the scene, such as monitor glow, blinking cursor, or small ambient lighting effects.\r\n* Display the final SVG prominently in the browser.\r\n* Add a button that allows the user to download/export the generated SVG.\r\n\r\nThe final result should look like a polished professional vector illustration of a programmer working late at night.\r\n\r\n\r\nIMPORTANT:\r\n- Do not ask me any questions.\r\n- Make all creative decisions yourself.\r\n- Start coding immediately.\r\n- Use only HTML, CSS, and vanilla JavaScript.\r\n- Do not use React, Next.js, Vue, Angular, TypeScript, or any framework.\r\n- The project must run by opening index.html directly.\r\n- Use CDN libraries only if needed.\r\n- Create complete working code, not just explanations.",
+        "coverUrl": "/project-previews/nova-svg-studio.webp",
+        "previewUrl": "/demos/nova-svg-studio/index.html",
+        "downloadUrl": "/downloads/nova-svg-studio.zip",
+        "fileCount": 1,
+        "totalBytes": 44621,
+        "files": [
+          {
+            "path": "index.html",
+            "size": 44621,
+            "type": "text/html"
+          }
+        ]
+      },
+      {
+        "title": "PREMIUM RESTAURANT WEBSITE",
+        "description": "Complete source and playable result for Muse Spark prompt 6.",
+        "content": "Create a complete premium restaurant website.\r\n\r\nThe website should look like a real modern restaurant website.\r\n\r\nRequirements:\r\n\r\n- Create a beautiful landing page.\r\n- Add a hero section with attractive food imagery placeholders.\r\n- Add restaurant logo.\r\n- Add navigation menu.\r\n- Add food menu section with categories.\r\n- Add food cards with prices and descriptions.\r\n- Add reservation section.\r\n- Add customer reviews.\r\n- Add restaurant gallery.\r\n- Add location and opening hours.\r\n- Add contact section.\r\n- Add smooth animations.\r\n- Add responsive mobile design.\r\n- Add dark luxury restaurant theme.\r\n\r\nThe final website should look production-ready and visually impressive.\n\r\nIMPORTANT:\r\n- Do not ask me any questions.\r\n- Make all creative decisions yourself.\r\n- Start coding immediately.\r\n- Use only HTML, CSS, and vanilla JavaScript.\r\n- Do not use React, Next.js, Vue, Angular, TypeScript, or any framework.\r\n- The project must run by opening index.html directly.\r\n- Use CDN libraries only if needed.\n- Create complete working code, not just explanations.",
+        "coverUrl": "/project-previews/maison-noir-restaurant.webp",
+        "previewUrl": "/demos/maison-noir-restaurant/index.html",
+        "downloadUrl": "/downloads/maison-noir-restaurant.zip",
+        "fileCount": 3,
+        "totalBytes": 69762,
+        "files": [
+          {
+            "path": "index.html",
+            "size": 23216,
+            "type": "text/html"
+          },
+          {
+            "path": "script.js",
+            "size": 19505,
+            "type": "text/javascript"
+          },
+          {
+            "path": "styles.css",
+            "size": 27041,
+            "type": "text/css"
+          }
+        ]
+      },
+      {
+        "title": "ORIGINAL FLAPPY BIRD-STYLE ARCADE GAME",
+        "description": "Complete source and playable result for Muse Spark prompt 7.",
+        "content": "Create a polished one-button browser arcade game inspired by the simple flying-and-dodging gameplay of Flappy Bird.\n\nDo not copy Flappy Bird characters, artwork, sounds, branding, or level design. Create an original bird, environment, obstacles, and visual identity.\n\nRequirements:\n\n- Make the bird rise when the player clicks, taps, or presses Space.\n- Add smooth gravity, rotation, and responsive controls.\n- Generate moving obstacle pairs with fair randomized gaps.\n- Increase the score whenever the player passes an obstacle.\n- Add a best-score counter saved in localStorage.\n- Include start, pause, game-over, and restart states.\n- Add subtle particles, sound effects, and a day-to-night visual progression.\n- Make the layout responsive for desktop and mobile screens.\n\nIMPORTANT:\n- Do not ask me any questions.\n- Make all creative decisions yourself.\n- Start coding immediately.\n- Use only HTML, CSS, and vanilla JavaScript.\n- Do not use React, Next.js, Vue, Angular, TypeScript, or any framework.\n- The project must run by opening index.html directly.\n- Keep the complete game in a single index.html file.\n- Use CDN libraries only if needed.\n- Create complete working code, not just explanations.",
+        "coverUrl": "/project-previews/flappy-legends.webp",
+        "previewUrl": "/demos/flappy-legends/index.html",
+        "downloadUrl": "/downloads/flappy-legends.zip",
+        "fileCount": 1,
+        "totalBytes": 38095,
+        "files": [
+          {
+            "path": "index.html",
+            "size": 38095,
+            "type": "text/html"
+          }
+        ]
+      }
+    ],
+    "links": []
+  }
+}

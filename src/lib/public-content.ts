@@ -3,6 +3,7 @@ import "server-only";
 import { asc, desc, eq } from "drizzle-orm";
 import { getDatabase } from "@/db";
 import { episodePrompts, episodeResources, posts as postsTable, projects as projectsTable } from "@/db/schema";
+import museContent from "@/content/muse-content.json";
 
 export type PublicPost = {
   slug: string;
@@ -60,7 +61,7 @@ function formatDate(value: Date | null) {
 
 export async function getPublishedPosts(): Promise<PublicPost[]> {
   const db = await getDatabase();
-  if (!db) return [];
+  if (!db) return [museContent.post];
   const rows = await db.select().from(postsTable).where(eq(postsTable.status, "published")).orderBy(desc(postsTable.publishedAt));
   return rows.map((row) => {
     return {
@@ -85,7 +86,7 @@ export async function getPublicPost(slug: string): Promise<PublicPost | null> {
 
 export async function getPublishedProjects(): Promise<PublicProject[]> {
   const db = await getDatabase();
-  if (!db) return [];
+  if (!db) return museContent.projects;
   const [rows, promptBundles] = await Promise.all([
     db.select().from(projectsTable).where(eq(projectsTable.status, "published")).orderBy(desc(projectsTable.createdAt)),
     db.select({ previewUrl: episodePrompts.previewUrl, fileCount: episodePrompts.fileCount }).from(episodePrompts),
@@ -102,6 +103,7 @@ export async function getPublishedProjects(): Promise<PublicProject[]> {
 
 export async function getPublicEpisode(post: PublicPost): Promise<PublicEpisode> {
   const db = await getDatabase();
+  if (!db && post.slug === museContent.post.slug) return museContent.episode;
   if (!db) return { videoId: post.youtubeVideoId, number: "Episode", overview: post.excerpt, prompts: [], links: [] };
   const [record] = await db.select({ id: postsTable.id }).from(postsTable).where(eq(postsTable.slug, post.slug)).limit(1);
   if (!record) return { videoId: post.youtubeVideoId, number: "Episode", overview: post.excerpt, prompts: [], links: [] };

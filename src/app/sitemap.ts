@@ -1,8 +1,8 @@
 import type { MetadataRoute } from "next";
-import { getPublishedPosts, getPublishedProjects } from "@/lib/public-content";
+import { getPublishedPosts } from "@/lib/public-content";
 import { siteConfig } from "@/lib/site-config";
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-static";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const posts = await getPublishedPosts();

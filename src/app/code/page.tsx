@@ -3,7 +3,7 @@ import { CodeLibrary } from "@/components/code-library";
 import { getPublishedProjects } from "@/lib/public-content";
 
 export const metadata: Metadata = { title: "Projects", description: "Preview and download finished website projects from PIMX_ELTEX.", alternates: { canonical: "/code" } };
-export const dynamic = "force-dynamic";
+export const dynamic = "force-static";
 
 export default async function CodePage() {
   const projects = await getPublishedProjects();

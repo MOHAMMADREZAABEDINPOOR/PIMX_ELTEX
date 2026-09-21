@@ -882,7 +882,7 @@ function updateFreeCam(dt){
   var right=new THREE.Vector3(fwd.z,0,-fwd.x).negate();
   /* note: right = fwd × up */
   right.set(-fwd.z,0,fwd.x);
-  if(keysDown['w']){target.addScaledVector(fwd,sp);} 
+  if(keysDown['w']){target.addScaledVector(fwd,sp);}
   if(keysDown['s']){target.addScaledVector(fwd,-sp);}
   if(keysDown['a']){target.addScaledVector(right,-sp);}
   if(keysDown['d']){target.addScaledVector(right,sp);}

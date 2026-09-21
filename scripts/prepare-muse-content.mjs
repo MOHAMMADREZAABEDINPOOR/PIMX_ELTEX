@@ -7,6 +7,7 @@ const root = process.cwd();
 const sourceRoot = join(root, "muse spark 1.3");
 const publicRoot = join(root, "public");
 const sqlPath = join(root, ".wrangler", "muse-production-seed.sql");
+const contentPath = join(root, "src", "content", "muse-content.json");
 const slugs = [
   "luma-meadows-3d-platformer",
   "neon-harbor-open-city",
@@ -62,6 +63,8 @@ const statements = [
   "'yqGWdCgxh7Q', 'AI Development', 'published', 1789309351) " +
   "ON CONFLICT(slug) DO UPDATE SET title=excluded.title, excerpt=excluded.excerpt, content=excluded.content, youtube_video_id=excluded.youtube_video_id, status='published', updated_at=unixepoch();",
 ];
+const staticPrompts = [];
+const staticProjects = [];
 
 for (let index = 0; index < slugs.length; index++) {
   const slug = slugs[index];
@@ -79,6 +82,28 @@ for (let index = 0; index < slugs.length; index++) {
   const previewUrl = `/demos/${slug}/index.html`;
   const downloadUrl = `/downloads/${slug}.zip`;
   const prompt = prompts[index];
+  staticPrompts.push({
+    title: prompt[2].trim(),
+    description: `Complete source and playable result for Muse Spark prompt ${index + 1}.`,
+    content: prompt[3].trim(),
+    coverUrl: `/project-previews/${slug}.webp`,
+    previewUrl,
+    downloadUrl,
+    fileCount: manifest.length,
+    totalBytes,
+    files: manifest,
+  });
+  staticProjects.push({
+    slug,
+    title: titles[index],
+    description: `The complete playable result generated from Muse Spark 1.3 prompt ${index + 1}.`,
+    tech: tech[index],
+    previewUrl,
+    coverUrl: `/project-previews/${slug}.webp`,
+    downloadUrl,
+    fileCount: manifest.length,
+    episode: "PIMX_ELTEX",
+  });
   statements.push(
     "INSERT INTO episode_prompts (id, post_id, title, description, content, preview_url, download_url, file_count, total_bytes, files, sort_order) VALUES " +
     `(${sql(id(`prompt-${index + 1}`))}, ${sql(postId)}, ${sql(prompt[2].trim())}, ${sql(`Complete source and playable result for Muse Spark prompt ${index + 1}.`)}, ` +
@@ -95,4 +120,27 @@ for (let index = 0; index < slugs.length; index++) {
 
 await mkdir(join(root, ".wrangler"), { recursive: true });
 await writeFile(sqlPath, `${statements.join("\n")}\n`);
-console.log(`Prepared ${prompts.length} prompts, ${slugs.length} demos and downloads, and ${sqlPath}.`);
+await mkdir(join(root, "src", "content"), { recursive: true });
+await writeFile(contentPath, `${JSON.stringify({
+  post: {
+    slug: "muse-spark-1-3-original-3d-platformer",
+    title: "Muse Spark 1.3 — Seven AI Builds",
+    excerpt: "Seven complete AI prompts with playable browser demos and downloadable source bundles in one episode.",
+    content: "This Muse Spark 1.3 episode contains every prompt and every generated project in one place. Read each complete prompt, launch its isolated live preview, or download the original source bundle.",
+    category: "AI Development",
+    date: "Sep 13, 2026",
+    publishedAt: "2026-09-13T17:02:31.000Z",
+    readTime: "1 min read",
+    accent: "violet",
+    youtubeVideoId: "yqGWdCgxh7Q",
+  },
+  projects: staticProjects,
+  episode: {
+    videoId: "yqGWdCgxh7Q",
+    number: "Episode 01",
+    overview: "Seven complete AI prompts with playable browser demos and downloadable source bundles in one episode.",
+    prompts: staticPrompts,
+    links: [],
+  },
+}, null, 2)}\n`);
+console.log(`Prepared ${prompts.length} prompts, ${slugs.length} demos and downloads, ${contentPath}, and ${sqlPath}.`);
