@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA — Futuristic SVG Illustration Studio</title>
+<style>
+  :root{
+    --bg:#070a17;
+    --panel:#0e1328;
+    --panel2:#131a36;
+    --line:rgba(255,255,255,.09);
+    --txt:#eaf0ff;
+    --mut:#8b95b8;
+    --pri:#00f0ff;
+    --sec:#7b2ff7;
+    --acc:#ff2fb3;
+    --r:16px;
+    --speed:1;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:
+    radial-gradient(1200px 600px at 20% -10%, #1a2456 0%, transparent 60%),
+    radial-gradient(1000px 600px at 90% 10%, #2b0f4a 0%, transparent 60%),
+    var(--bg);
+    color:var(--txt);
+    font-family: ui-sans-system, -apple-system, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
+    min-height:100vh;
+  }
+  header{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 28px;border-bottom:1px solid var(--line);
+    background:rgba(10,14,30,.7);backdrop-filter:blur(18px);
+    position:sticky;top:0;z-index:20;
+  }
+  .brand{display:flex;align-items:center;gap:14px}
+  .logo{
+    width:44px;height:44px;border-radius:12px;
+    background: conic-gradient(from 180deg, var(--pri), var(--sec), var(--acc), var(--pri));
+    display:grid;place-items:center;font-weight:900;color:#060814;
+    box-shadow:0 0 30px rgba(0,240,255,.45), 0 0 60px rgba(123,47,247,.25);
+    font-size:22px;
+  }
+  .brand h1{margin:0;font-size:20px;letter-spacing:.14em}
+  .brand h1 span{background:linear-gradient(90deg,var(--pri),var(--sec),var(--acc));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .brand p{margin:2px 0 0;color:var(--mut);font-size:12.5px;letter-spacing:.06em}
+  .head-actions{display:flex;gap:10px;flex-wrap:wrap}
+  button{
+    border:1px solid var(--line);background:#171e3d;color:var(--txt);
+    padding:10px 16px;border-radius:999px;cursor:pointer;font-weight:600;font-size:13.5px;
+    transition:.2s;letter-spacing:.02em;
+  }
+  button:hover{transform:translateY(-1px);border-color:rgba(0,240,255,.5);box-shadow:0 6px 24px rgba(0,240,255,.18)}
+  button.primary{background:linear-gradient(90deg,var(--pri),var(--sec));color:#060818;border:none;font-weight:800}
+  button.ghost{background:transparent}
+  button.small{padding:7px 12px;font-size:12.5px}
+  main{display:grid;grid-template-columns:360px 1fr;gap:20px;padding:20px 22px 30px;max-width:1500px;margin:0 auto}
+  @media(max-width:1020px){main{grid-template-columns:1fr}}
+  aside{
+    background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+    border:1px solid var(--line);border-radius:20px;padding:18px;
+    backdrop-filter:blur(20px);height:fit-content;position:sticky;top:88px;
+  }
+  aside h2{font-size:11px;letter-spacing:.22em;color:var(--mut);margin:18px 0 10px;text-transform:uppercase}
+  aside h2:first-child{margin-top:0}
+  .presets{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .preset{
+    border:1px solid var(--line);border-radius:12px;padding:8px;cursor:pointer;
+    display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.25);transition:.2s;
+  }
+  .preset:hover,.preset.active{border-color:var(--pri);box-shadow:0 0 0 1px var(--pri) inset}
+  .dots{display:flex}
+  .dots i{width:18px;height:18px;border-radius:50%;margin-left:-6px;border:2px solid #0e1328;display:block}
+  .dots i:first-child{margin-left:0}
+  .preset b{font-size:12px;display:block;line-height:1.1}
+  .preset small{color:var(--mut);font-size:11px}
+  .scenes{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .scene-btn{border-radius:12px;padding:11px 8px;text-align:center;font-size:12.5px;background:#101736}
+  .scene-btn.active{background:linear-gradient(135deg,#1b2450,#2a1656);border-color:var(--pri);box-shadow:0 4px 20px rgba(0,240,255,.2)}
+  .colors{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .color-card{background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:12px;padding:10px}
+  .color-card label{font-size:11.5px;color:var(--mut);letter-spacing:.06em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+  .color-row{display:flex;gap:8px;align-items:center;margin-top:8px}
+  input[type=color]{width:44px;height:32px;border:none;border-radius:8px;background:none;padding:0;cursor:pointer}
+  input[type=color]::-webkit-color-swatch-wrapper{padding:0}
+  input[type=color]::-webkit-color-swatch{border:1px solid rgba(255,255,255,.2);border-radius:8px}
+  .hex{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--txt);background:#0a0f24;border:1px solid var(--line);border-radius:7px;padding:4px 6px;width:100%;text-transform:uppercase}
+  .slider-row{margin:10px 0}
+  .slider-row div{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}
+  .slider-row output{color:var(--pri);font-weight:700;font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;accent-color:var(--pri);height:22px;cursor:pointer}
+  .toggles{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .tog{
+    display:flex;align-items:center;gap:8px;font-size:13px;
+    background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:10px;padding:8px 10px;cursor:pointer;user-select:none;
+  }
+  .tog input{accent-color:var(--pri);width:16px;height:16px}
+  .tog.on{border-color:rgba(0,240,255,.45)}
+  .row2{display:flex;gap:8px}
+  .row2 button{flex:1}
+  .stage-wrap{
+    background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.015));
+    border:1px solid var(--line);border-radius:20px;padding:16px;
+    box-shadow:0 20px 80px rgba(0,0,0,.5);
+  }
+  .stage-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+  .stage-top h2{margin:0;font-size:15px;letter-spacing:.06em}
+  .stage-top p{margin:3px 0 0;color:var(--mut);font-size:12.5px}
+  .badges{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .badge{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);border:1px solid var(--line);padding:6px 10px;border-radius:999px;background:rgba(0,0,0,.3)}
+  .badge b{color:var(--txt)}
+  .canvas{
+    border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.12);
+    background:#050713;position:relative;
+    box-shadow:0 0 0 1px rgba(0,0,0,.6), 0 20px 60px rgba(0,0,0,.5), 0 0 80px rgba(123,47,247,.12);
+  }
+  svg#art{display:block;width:100%;height:auto;aspect-ratio:1200/800;background:#050713}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .codebox{margin-top:12px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#070b1d}
+  .codebox header{position:static;background:#0b1129;padding:10px 12px;display:flex;justify-content:space-between;align-items:center}
+  .codebox pre{margin:0;padding:12px;font-size:11.5px;line-height:1.5;color:#a9b4d6;max-height:180px;overflow:auto;white-space:pre-wrap;word-break:break-all}
+  footer{max-width:1500px;margin:0 auto;padding:0 22px 30px;color:var(--mut);font-size:12.5px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  /* --- SVG internal animations --- */
+  #art .twinkle{animation:twinkle var(--tw,3s) ease-in-out infinite alternate}
+  #art .floaty{animation:floatY var(--fd,6s) ease-in-out infinite alternate}
+  #art .spinA{animation:spin 26s linear infinite;transform-box:fill-box;transform-origin:center}
+  #art .spinB{animation:spinRev 38s linear infinite;transform-box:fill-box;transform-origin:center}
+  #art .pulse{animation:pulse var(--pd,4s) ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
+  #art .rise{animation:rise var(--rd,9s) linear infinite}
+  #art .dashmove{animation:dashM var(--dd,3s) linear infinite}
+  #art .beamflick{animation:beamF 5s ease-in-out infinite alternate}
+  #art.no-anim *{animation:none !important}
+  @keyframes twinkle{from{opacity:.15}to{opacity:1}}
+  @keyframes floatY{from{transform:translateY(-10px)}to{transform:translateY(14px)}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes spinRev{to{transform:rotate(-360deg)}}
+  @keyframes pulse{from{transform:scale(.92);opacity:.7}to{transform:scale(1.08);opacity:1}}
+  @keyframes rise{from{transform:translateY(30px);opacity:0}20%{opacity:.9}to{transform:translateY(-260px);opacity:0}}
+  @keyframes dashM{to{stroke-dashoffset:-120}}
+  @keyframes beamF{from{opacity:.25}to{opacity:.75}}
+  .toast{
+    position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);
+    background:#0f1633;border:1px solid rgba(0,240,255,.4);padding:11px 18px;border-radius:999px;
+    opacity:0;pointer-events:none;transition:.3s;z-index:50;font-size:13.5px;box-shadow:0 10px 40px rgba(0,0,0,.5)
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo">◈</div>
+    <div>
+      <h1>NOVA <span>VECTOR STUDIO</span></h1>
+      <p>Professional futuristic SVG illustration generator • portfolio-ready</p>
+    </div>
+  </div>
+  <div class="head-actions">
+    <button class="ghost small" id="btnRandomTop">🎲 Randomize</button>
+    <button class="small" id="btnCopyTop">⧉ Copy SVG</button>
+    <button class="primary" id="btnExportTop">⬇ Export .SVG</button>
+  </div>
+</header>
+
+<main>
+  <aside>
+    <h2>✨ Theme presets</h2>
+    <div class="presets" id="presets"></div>
+
+    <h2>🪐 Scene</h2>
+    <div class="scenes" id="scenes">
+      <button class="scene-btn active" data-scene="metropolis">🏙 Neo<br>Metropolis</button>
+      <button class="scene-btn" data-scene="orbital">🪐 Orbital<br>Dreams</button>
+      <button class="scene-btn" data-scene="synthwave">🌄 Synthwave<br>Peaks</button>
+      <button class="scene-btn" data-scene="quantum">🧬 Quantum<br>Field</button>
+    </div>
+
+    <h2>🎨 Palette</h2>
+    <div class="colors" id="colors"></div>
+
+    <h2>🎛 Composition</h2>
+    <div class="slider-row"><div><span>Detail density</span><output id="o-density">70</output></div>
+      <input type="range" id="r-density" min="10" max="100" value="70"></div>
+    <div class="slider-row"><div><span>Glow intensity</span><output id="o-glow">70</output></div>
+      <input type="range" id="r-glow" min="0" max="100" value="70"></div>
+    <div class="slider-row"><div><span>Illustration scale</span><output id="o-scale">100%</output></div>
+      <input type="range" id="r-scale" min="70" max="130" value="100"></div>
+    <div class="slider-row"><div><span>Line weight</span><output id="o-stroke">2.0</output></div>
+      <input type="range" id="r-stroke" min="5" max="40" value="20"></div>
+    <div class="slider-row"><div><span>Animation speed</span><output id="o-speed">1.0×</output></div>
+      <input type="range" id="r-speed" min="0" max="250" value="100"></div>
+    <div class="row2" style="margin-top:8px">
+      <button class="small" id="btnAnim">⏸ Pause motion</button>
+      <button class="small" id="btnShuffle">🔀 New seed</button>
+    </div>
+
+    <h2>🧩 Layers / elements</h2>
+    <div class="toggles" id="toggles"></div>
+
+    <h2>📦 Export</h2>
+    <div class="row2">
+      <button class="primary" id="btnExport">⬇ SVG</button>
+      <button id="btnPng">🖼 PNG</button>
+      <button id="btnCopy">⧉ Copy</button>
+    </div>
+    <div class="slider-row"><div><span>PNG size</span><output id="o-png">2400 px</output></div>
+      <input type="range" id="r-png" min="1200" max="3840" step="120" value="2400"></div>
+    <p style="color:var(--mut);font-size:12px;line-height:1.6;margin:10px 2px 0">
+      Exported SVG keeps gradients, shadows, glow filters and CSS motion.
+      Open it in Figma, Illustrator or VS Code — fully editable vectors.</p>
+  </aside>
+
+  <section class="stage-wrap">
+    <div class="stage-top">
+      <div>
+        <h2 id="artTitle">Neo Metropolis — 01</h2>
+        <p id="artSub">Procedural vector artwork • gradients • glow • perspective grid • live motion</p>
+      </div>
+      <div class="badges">
+        <span class="badge">shapes <b id="statShapes">0</b></span>
+        <span class="badge">gradients <b id="statGrads">8</b></span>
+        <span class="badge">size <b>1200×800</b></span>
+        <span class="badge">format <b>SVG</b></span>
+      </div>
+    </div>
+    <div class="canvas">
+      <svg id="art" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Futuristic illustration"></svg>
+    </div>
+    <div class="toolbar">
+      <button class="small" data-act="metropolis">🏙 Metropolis</button>
+      <button class="small" data-act="orbital">🪐 Orbital</button>
+      <button class="small" data-act="synthwave">🌄 Synthwave</button>
+      <button class="small" data-act="quantum">🧬 Quantum</button>
+      <span style="flex:1"></span>
+      <button class="small" id="btnHideUI">👁 Hide UI for screenshot</button>
+    </div>
+    <div class="codebox">
+      <header><span style="font-size:12px;letter-spacing:.12em;color:var(--mut)">LIVE SVG SOURCE — editable, portfolio clean</span>
+        <span><button class="small ghost" id="btnCopy2">Copy code</button></span></header>
+      <pre id="codePrev"></pre>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span>NOVA Studio • vanilla HTML/CSS/JS • runs by opening <b>index.html</b> directly • no build step</span>
+  <span>Tip: press <b>R</b> to randomize • <b>E</b> to export</span>
+</footer>
+<div class="toast" id="toast">Saved</div>
+
+<script>
+(function(){
+  "use strict";
+  const $ = s => document.querySelector(s);
+  const svg = $('#art');
+  const toast = $('#toast');
+  function say(m){ toast.textContent=m; toast.classList.add('show'); clearTimeout(say.t); say.t=setTimeout(()=>toast.classList.remove('show'),1800); }
+
+  const PRESETS = {
+    cyberpunk:{name:'Cyberpunk', sub:'neon night', c:['#00f0ff','#7b2ff7','#ff2fb3','#080b1e','#1a1040']},
+    solardawn:{name:'Solar Dawn', sub:'warm future', c:['#ffb300','#ff4d6d','#00e5ff','#1b0f2e','#4a152e']},
+    deepline:{name:'Deep Ocean', sub:'abyss glow', c:['#00ffa3','#00b8ff','#b28dff','#031826','#0a2a4a']},
+    aurora:{name:'Aurora', sub:'polar light', c:['#7CFFB2','#4d7cff','#e879f9','#04121f','#0e2a3a']},
+    synth:{name:'Synthwave', sub:'retro sun', c:['#ff6ec7','#ffd166','#00f5ff','#14082e','#3a0d4a']},
+    monochrome:{name:'Chrome', sub:'mono luxe', c:['#e8efff','#8b95b8','#ffffff','#0a0e1e','#1c2340']}
+  };
+  const COLOR_KEYS = [
+    {k:'primary', label:'Primary'},
+    {k:'secondary', label:'Secondary'},
+    {k:'accent', label:'Accent'},
+    {k:'bg1', label:'Sky top'},
+    {k:'bg2', label:'Sky bottom'},
+    {k:'ground', label:'Ground'}
+  ];
+  const state = {
+    preset:'cyberpunk',
+    scene:'metropolis',
+    primary:'#00f0ff', secondary:'#7b2ff7', accent:'#ff2fb3',
+    bg1:'#080b1e', bg2:'#1a1040', ground:'#0a0f2a',
+    density:70, glow:70, scale:100, stroke:20, speed:100,
+    animate:true, seed:(Math.random()*1e9)|0,
+    layers:{stars:true, nebula:true, sun:true, rings:true, city:true, mountains:true, grid:true, orbs:true, beams:true, particles:true}
+  };
+  const LAYER_DEFS = [
+    ['stars','✦ Starfield'],['nebula','☁ Nebula'],['sun','☉ Sun / Planet'],
+    ['rings','◎ Orbit rings'],['city','🏙 Skyline'],['mountains','▲ Ridges'],
+    ['grid','▦ Light grid'],['orbs','● Floaters'],['beams','／ Beams'],['particles','✧ Particles']
+  ];
+
+  // ---------- UI build ----------
+  const presetBox = $('#presets');
+  Object.entries(PRESETS).forEach(([key,p])=>{
+    const d=document.createElement('div');
+    d.className='preset'+(key===state.preset?' active':'');
+    d.dataset.preset=key;
+    d.innerHTML=`<span class="dots">${p.c.slice(0,3).map(c=>`<i style="background:${c}"></i>`).join('')}</span><span><b>${p.name}</b><small>${p.sub}</small></span>`;
+    d.onclick=()=>{ applyPreset(key); document.querySelectorAll('.preset').forEach(x=>x.classList.toggle('active',x.dataset.preset===key)); };
+    presetBox.appendChild(d);
+  });
+  function applyPreset(key){
+    state.preset=key;
+    const c=PRESETS[key].c;
+    state.primary=c[0]; state.secondary=c[1]; state.accent=c[2]; state.bg1=c[3]; state.bg2=c[4];
+    syncColors(); render();
+  }
+  const colorBox=$('#colors');
+  function syncColors(){
+    colorBox.innerHTML='';
+    COLOR_KEYS.forEach(({k,label})=>{
+      const card=document.createElement('div'); card.className='color-card';
+      card.innerHTML=`<label>${label}<span>${k}</span></label>
+        <div class="color-row"><input type="color" value="${state[k]}" data-k="${k}"><input class="hex" value="${state[k]}" data-k="${k}" maxlength="7" spellcheck="false"></div>`;
+      colorBox.appendChild(card);
+    });
+    colorBox.querySelectorAll('input[type=color]').forEach(i=>i.oninput=e=>{ state[e.target.dataset.k]=e.target.value; colorBox.querySelector(`.hex[data-k="${e.target.dataset.k}"]`).value=e.target.value; render(); });
+    colorBox.querySelectorAll('.hex').forEach(i=>{
+      i.onchange=e=>{
+        let v=e.target.value.trim(); if(!v.startsWith('#'))v='#'+v;
+        if(/^#[0-9a-fA-F]{6}$/.test(v)||/^#[0-9a-fA-F]{3}$/.test(v)){ state[e.target.dataset.k]=v; syncColors(); render(); }
+      };
+    });
+  }
+  syncColors();
+
+  const togBox=$('#toggles');
+  LAYER_DEFS.forEach(([k,label])=>{
+    const l=document.createElement('label'); l.className='tog'+(state.layers[k]?' on':'');
+    l.innerHTML=`<input type="checkbox" ${state.layers[k]?'checked':''}> ${label}`;
+    l.querySelector('input').onchange=e=>{ state.layers[e.target.checked?'x':'y']; state.layers[k]=e.target.checked; l.classList.toggle('on',e.target.checked); render(); };
+    togBox.appendChild(l);
+  });
+
+  document.querySelectorAll('#scenes .scene-btn').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('#scenes .scene-btn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active'); setScene(b.dataset.scene);
+  });
+  document.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>setScene(b.dataset.act));
+  function setScene(s){
+    state.scene=s;
+    document.querySelectorAll('#scenes .scene-btn').forEach(x=>x.classList.toggle('active',x.dataset.scene===s));
+    document.querySelectorAll('[data-act]').forEach(x=>x.style.borderColor=x.dataset.act===s?'var(--pri)':'');
+    // sensible layer defaults per scene
+    if(s==='orbital'){ state.layers.city=false; state.layers.mountains=false; state.layers.rings=true; }
+    if(s==='metropolis'){ state.layers.city=true; state.layers.mountains=true; state.layers.rings=true; }
+    if(s==='synthwave'){ state.layers.city=false; state.layers.mountains=true; state.layers.rings=false; }
+    if(s==='quantum'){ state.layers.city=false; state.layers.mountains=false; state.layers.rings=true; }
+    rebuildToggles(); render();
+  }
+  function rebuildToggles(){
+    [...togBox.children].forEach((l,i)=>{ const k=LAYER_DEFS[i][0]; l.classList.toggle('on',state.layers[k]); l.querySelector('input').checked=state.layers[k]; });
+  }
+
+  // sliders
+  function bindRange(id, out, fmt, fn){
+    const r=$(id), o=$(out);
+    const upd=()=>{ o.textContent=fmt(+r.value); fn(+r.value); };
+    r.oninput=upd; upd();
+  }
+  bindRange('#r-density','#o-density',v=>v,v=>{state.density=v; render();});
+  bindRange('#r-glow','#o-glow',v=>v,v=>{state.glow=v; render();});
+  bindRange('#r-scale','#o-scale',v=>v+'%',v=>{state.scale=v; render();});
+  bindRange('#r-stroke','#o-stroke',v=>(v/10).toFixed(1),v=>{state.stroke=v; render();});
+  bindRange('#r-speed','#o-speed',v=>(v/100).toFixed(1)+'×',v=>{state.speed=v; applySpeed();});
+  bindRange('#r-png','#o-png',v=>v+' px',()=>{});
+
+  $('#btnAnim').onclick=e=>{ state.animate=!state.animate; svg.classList.toggle('no-anim',!state.animate); e.target.textContent=state.animate?'⏸ Pause motion':'▶ Play motion'; };
+  $('#btnShuffle').onclick=()=>{ state.seed=(Math.random()*1e9)|0; render(); say('New variation seeded #'+String(state.seed).slice(-5)); };
+  $('#btnHideUI').onclick=e=>{ document.querySelector('aside').style.display=document.querySelector('aside').style.display==='none'?'':'none'; e.target.textContent=document.querySelector('aside').style.display==='none'?'👁 Show controls':'👁 Hide UI for screenshot'; };
+
+  // ---------- seeded random ----------
+  let _s = 1;
+  function srand(seed){ _s = seed>>>0 || 1; }
+  function rnd(){ _s|=0; _s=_s+0x6D2B79F5|0; let t=Math.imul(_s^_s>>>15,1|_s); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }
+  const R=(a,b)=>a+rnd()*(b-a);
+  const RI=(a,b)=>Math.floor(R(a,b+1));
+  const pick=a=>a[Math.floor(rnd()*a.length)];
+
+  function esc(s){ return s; }
+  function hexA(hex, a){
+    let h=hex.replace('#',''); if(h.length===3)h=h.split('').map(c=>c+c).join('');
+    const n=parseInt(h,16); return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;
+  }
+
+  // ---------- generators ----------
+  function stars(n){
+    if(!state.layers.stars) return '';
+    let s='';
+    for(let i=0;i<n;i++){
+      const x=R(0,1200).toFixed(1), y=R(0,560).toFixed(1), r=R(.6,2.6).toFixed(2);
+      const c=pick(['#ffffff',state.primary,state.accent,'#ffffff','#ffffff']);
+      const tw=R(1.5,4.5).toFixed(2), dl=R(0,3).toFixed(2);
+      s+=`<circle class="twinkle" style="--tw:${tw}s;animation-delay:-${dl}s" cx="${x}" cy="${y}" r="${r}" fill="${c}" opacity="${R(.35,.95).toFixed(2)}"/>`;
+    }
+    // a few plus-sparkles
+    for(let i=0;i<n/12;i++){
+      const x=R(40,1160).toFixed(0), y=R(40,420).toFixed(0), r=R(6,14).toFixed(0);
+      s+=`<g class="twinkle" style="--tw:${R(2,5).toFixed(1)}s" opacity=".8" stroke="${state.primary}" stroke-width="1.2" stroke-linecap="round"><line x1="${x-r}" y1="${y}" x2="${x}+${r}" y2="${y}" opacity="0"/><line x1="${x-r}" y1="${y}" x2="${x-(-r)}" y2="${y}"/><line x1="${x}" y1="${y-r}" x2="${x}" y2="${y-(-r)}"/></g>`;
+    }
+    return `<g>${s}</g>`;
+  }
+  function nebula(){
+    if(!state.layers.nebula) return '';
+    const g=state.glow/100;
+    return `<g opacity="${(.55+.3*g).toFixed(2)}" filter="url(#soft)">
+      <ellipse cx="240" cy="180" rx="320" ry="150" fill="${state.secondary}" opacity=".38"/>
+      <ellipse cx="960" cy="160" rx="340" ry="170" fill="${state.primary}" opacity=".28"/>
+      <ellipse cx="620" cy="120" rx="380" ry="120" fill="${state.accent}" opacity=".20"/>
+      <ellipse cx="600" cy="700" rx="700" ry="220" fill="${state.secondary}" opacity=".18"/>
+    </g>`;
+  }
+  function sunPlanet(){
+    if(!state.layers.sun) return '';
+    const cx = state.scene==='orbital'? 600 : 600;
+    const cy = state.scene==='synthwave'? 430 : state.scene==='quantum'? 300 : 360;
+    const r = state.scene==='orbital'? 150 : state.scene==='synthwave'? 170 : 130;
+    const gid='sunG';
+    let inner='';
+    if(state.scene==='synthwave'){
+      // striped retro sun
+      let stripes='';
+      for(let i=0;i<7;i++){ const y=cy+10+i*18; const h=6+i*1.6; stripes+=`<rect x="${cx-r-2}" y="${y}" width="${r*2+4}" height="${h}" fill="${state.bg1}" opacity="${(.55+i*.07).toFixed(2)}"/>`; }
+      inner=`<clipPath id="sunClip"><circle cx="${cx}" cy="${cy}" r="${r}"/></clipPath>
+        <g clip-path="url(#sunClip)"><circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#${gid})"/>${stripes}</g>`;
+    } else {
+      inner=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#${gid})"/>`;
+      // craters for planet feel in orbital
+      if(state.scene==='orbital'){
+        inner+=`<ellipse cx="${cx-45}" cy="${cy-20}" rx="26" ry="18" fill="rgba(255,255,255,.22)"/><ellipse cx="${cx+30}" cy="${cy+35}" rx="36" ry="22" fill="rgba(0,0,0,.18)"/><ellipse cx="${cx+55}" cy="${cy-40}" rx="14" ry="10" fill="rgba(255,255,255,.25)"/>`;
+      }
+    }
+    return `<g>
+      <circle cx="${cx}" cy="${cy}" r="${r+46}" fill="${hexA(state.primary,.18)}" filter="url(#soft)"/>
+      <circle cx="${cx}" cy="${cy}" r="${r+18}" fill="none" stroke="${hexA(state.primary,.55)}" stroke-width="1.5" stroke-dasharray="4 10" class="dashmove" style="--dd:${(3.2*100/Math.max(20,state.speed)).toFixed(2)}s"/>
+      ${inner}
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(255,255,255,.65)" stroke-width="1.5" opacity=".7"/>
+      <ellipse class="floaty" style="--fd:7s" cx="${cx-r*.55}" cy="${cy-r*.55}" rx="${(r*.38).toFixed(0)}" ry="${(r*.22).toFixed(0)}" fill="rgba(255,255,255,.5)" filter="url(#soft2)" transform="rotate(-24 ${cx-r*.55} ${cy-r*.55})"/>
+    </g>`;
+  }
+  function rings(){
+    if(!state.layers.rings) return '';
+    const cx=600, cy = state.scene==='orbital'?300:360;
+    const rx1=230, rx2=300, rx3=370;
+    const tilt=-14;
+    return `<g opacity=".9">
+      <ellipse class="spinA" cx="${cx}" cy="${cy}" rx="${rx1}" ry="${(rx1*.28).toFixed(0)}" fill="none" stroke="${state.primary}" stroke-width="${(state.stroke/10).toFixed(1)}" opacity=".75" transform="rotate(${tilt} ${cx} ${cy})" stroke-dasharray="60 26"/>
+      <ellipse cx="${cx}" cy="${cy}" rx="${rx2}" ry="${(rx2*.28).toFixed(0)}" fill="none" stroke="url(#ringG)" stroke-width="${(state.stroke/7).toFixed(1)}" opacity=".9" transform="rotate(${tilt} ${cx} ${cy})"/>
+      <ellipse class="spinB" cx="${cx}" cy="${cy}" rx="${rx3}" ry="${(rx3*.28).toFixed(0)}" fill="none" stroke="${hexA(state.accent,.8)}" stroke-width="1.4" stroke-dasharray="2 14" stroke-linecap="round" transform="rotate(${tilt} ${cx} ${cy})"/>
+      <circle cx="${cx+rx2*.92}" cy="${cy-38}" r="7" fill="${state.accent}" filter="url(#glowF)"><animate attributeName="r" values="6;9;6" dur="3s" repeatCount="indefinite"/></circle>
+    </g>`;
+  }
+  function ridgePath(yBase, amp, steps, jag){
+    let d=`M -20 800 L -20 ${yBase+R(-20,20)} `;
+    const w=1240/steps;
+    for(let i=0;i<=steps;i++){
+      const x=-20+i*w;
+      const y=yBase + (rnd()>.5?-1:1)*R(amp*.2,amp) * (jag? R(.5,1.4):1);
+      const cx=x+w/2;
+      d+=`L ${x.toFixed(0)} ${y.toFixed(0)} `;
+    }
+    d+=`L 1220 800 Z`;
+    return d;
+  }
+  function mountains(){
+    if(!state.layers.mountains) return '';
+    if(state.scene==='quantum'||state.scene==='orbital') return '';
+    const d1=ridgePath(560,70,9,false), d2=ridgePath(620,95,11,true), d3=ridgePath(690,70,13,true);
+    // snow caps: small white polys on second ridge peaks (decorative)
+    return `<g>
+      <path d="${d1}" fill="url(#mtn1)" opacity=".95"/>
+      <path d="${d1}" fill="none" stroke="${hexA(state.primary,.7)}" stroke-width="1.4" opacity=".8"/>
+      <path d="${d2}" fill="url(#mtn2)" opacity=".98"/>
+      <path d="${d2}" fill="none" stroke="${hexA(state.accent,.55)}" stroke-width="1.2" opacity=".7"/>
+      <path d="${d3}" fill="url(#mtn3)"/>
+      <g opacity=".9" stroke="rgba(255,255,255,.75)" stroke-width="1" fill="rgba(255,255,255,.85)">
+        ${Array.from({length:5},()=>{const x=R(120,1080).toFixed(0), y=R(540,620).toFixed(0); return `<path d="M ${x} ${y} l 14 20 l -14 -6 l -14 6 Z"/>`;}).join('')}
+      </g>
+    </g>`;
+  }
+  function city(){
+    if(!state.layers.city) return '';
+    if(state.scene!=='metropolis' && state.scene!=='quantum') return '';
+    const yBase=640;
+    let b='', win='';
+    let x=-10;
+    srand(state.seed+99);
+    const n = 16 + Math.round(state.density/10);
+    const bw = 1180/n;
+    for(let i=0;i<n;i++){
+      const w=bw*R(.62,.95), h=R(90,260)*(state.scene==='quantum'? .7:1);
+      const bx=x, by=yBase-h+ R(-10,30);
+      const spire = rnd()>.72;
+      b+=`<rect x="${bx.toFixed(0)}" y="${by.toFixed(0)}" width="${w.toFixed(0)}" height="${(yBase-by+140).toFixed(0)}" rx="2" fill="url(#bld)" stroke="${hexA(state.primary,.5)}" stroke-width="1"/>`;
+      if(spire) b+=`<line x1="${(bx+w/2).toFixed(0)}" y1="${by.toFixed(0)}" x2="${(bx+w/2).toFixed(0)}" y2="${(by-26).toFixed(0)}" stroke="${state.primary}" stroke-width="2"/><circle cx="${(bx+w/2).toFixed(0)}" cy="${(by-28).toFixed(0)}" r="3" fill="${state.accent}" class="pulse" style="--pd:2.4s"/>`;
+      // windows
+      const cols=Math.max(1,Math.floor(w/14)), rows=Math.floor(h/22);
+      for(let cxI=0;cxI<cols;cxI++) for(let ry=0;ry<rows;ry++){
+        if(rnd()>.52){
+          const wx=bx+6+cxI*14, wy=by+12+ry*20;
+          const lit=rnd()>.35;
+          win+=`<rect x="${wx.toFixed(0)}" y="${wy.toFixed(0)}" width="7" height="10" rx="1" fill="${lit?pick([state.primary,state.accent,'#ffe66d']):'rgba(255,255,255,.12)'}" opacity="${lit?R(.7,1).toFixed(2):.5}"/>`;
+        }
+      }
+      // antenna glow
+      b+=`<rect x="${bx.toFixed(0)}" y="${by.toFixed(0)}" width="${w.toFixed(0)}" height="3" fill="${state.primary}" opacity=".9"/>`;
+      x+=bw;
+    }
+    srand(state.seed); // restore
+    // re-seed consumption fix: reset sequence position by re-seeding with main seed and skipping? simpler: re-init main seed at render start each time, city uses local pseudo without disturbing? We used global; acceptable variation.
+    srand(state.seed+7);
+    return `<g>${b}${win}
+      <rect x="0" y="${yBase}" width="1200" height="8" fill="${state.primary}" opacity=".85" filter="url(#glowF)"/>
+      <rect x="0" y="${yBase+8}" width="1200" height="160" fill="url(#groundG)" opacity=".95"/>
+    </g>`;
+  }
+  function gridFloor(){
+    if(!state.layers.grid) return '';
+    const vy=500, y0=640, y1=800, cx=600;
+    let v=`<g>`;
+    for(let i=-10;i<=10;i++){
+      const xb=cx+i*90, xt=cx+i*22;
+      v+=`<line x1="${xt}" y1="${vy}" x2="${xb*1.6-360}" y2="${y1}" stroke="${hexA(state.primary,.5)}" stroke-width="1.2"/>`;
+    }
+    for(let j=0;j<9;j++){
+      const t=j/8, y=y0+ (y1-y0)*t*t;
+      v+=`<line x1="0" y1="${y.toFixed(0)}" x2="1200" y2="${y.toFixed(0)}" stroke="${j%2?state.accent:state.primary}" stroke-width="${(0.8+t*1.8).toFixed(1)}" opacity="${(.25+t*.65).toFixed(2)}"/>`;
+    }
+    v+=`<line x1="0" y1="${y0}" x2="1200" y2="${y0}" stroke="${state.primary}" stroke-width="2.5" filter="url(#glowF)"/>`;
+    v+=`</g>`;
+    return v;
+  }
+  function orbs(){
+    if(!state.layers.orbs) return '';
+    const n = 4 + Math.round(state.density/12);
+    let s='';
+    for(let i=0;i<n;i++){
+      const x=R(60,1140), y=R(120,560), r=R(10,42);
+      const shape=pick(['circle','hex','tri','diamond']);
+      const fd=R(4,9).toFixed(1), dl=R(0,4).toFixed(1);
+      const col=pick([state.primary,state.secondary,state.accent]);
+      let el='';
+      if(shape==='circle') el=`<circle cx="0" cy="0" r="${r.toFixed(0)}" fill="url(#orbG)" stroke="${hexA(col,.9)}" stroke-width="1.4"/>`;
+      if(shape==='hex'){ const p=hexPts(r); el=`<polygon points="${p}" fill="${hexA(col,.18)}" stroke="${col}" stroke-width="1.6"/>`; }
+      if(shape==='tri') el=`<polygon points="0,${(-r).toFixed(0)} ${(r*.9).toFixed(0)},${(r*.7).toFixed(0)} ${(-r*.9).toFixed(0)},${(r*.7).toFixed(0)}" fill="${hexA(col,.18)}" stroke="${col}" stroke-width="1.6" stroke-linejoin="round"/>`;
+      if(shape==='diamond') el=`<polygon points="0,${(-r).toFixed(0)} ${(r*.7).toFixed(0)},0 0,${r.toFixed(0)} ${(-r*.7).toFixed(0)},0" fill="${hexA(col,.2)}" stroke="${col}" stroke-width="1.6"/>`;
+      s+=`<g class="floaty" style="--fd:${fd}s;animation-delay:-${dl}s" transform="translate(${x.toFixed(0)} ${y.toFixed(0)})" filter="url(#glowF)">${el}<circle cx="0" cy="0" r="2.4" fill="#fff" opacity=".9"/></g>`;
+    }
+    return `<g>${s}</g>`;
+  }
+  function hexPts(r){
+    let p=[]; for(let k=0;k<6;k++){ const a=Math.PI/3*k - Math.PI/6; p.push((r*Math.cos(a)).toFixed(1)+','+(r*Math.sin(a)).toFixed(1)); } return p.join(' ');
+  }
+  function beams(){
+    if(!state.layers.beams) return '';
+    return `<g class="beamflick" opacity=".6">
+      <polygon points="120,0 260,0 120,640 0,640" fill="url(#beamG)" opacity=".35"/>
+      <polygon points="1080,0 940,0 1080,640 1200,640" fill="url(#beamG)" opacity=".35"/>
+      <polygon points="600,0 660,0 760,560 500,560" fill="url(#beamG2)" opacity=".28"/>
+    </g>`;
+  }
+  function particles(){
+    if(!state.layers.particles) return '';
+    const n = 10+Math.round(state.density/4);
+    let s='';
+    for(let i=0;i<n;i++){
+      const x=R(0,1200).toFixed(0), y=R(540,800).toFixed(0);
+      const rd=R(5,11).toFixed(1), dl=R(0,8).toFixed(1);
+      const c=pick([state.primary,state.accent,'#ffffff']);
+      s+=`<circle class="rise" style="--rd:${rd}s;animation-delay:-${dl}s" cx="${x}" cy="${y}" r="${R(1,3).toFixed(1)}" fill="${c}"/>`;
+    }
+    return `<g>${s}</g>`;
+  }
+  function quantumNet(){
+    if(state.scene!=='quantum') return '';
+    const n=14+Math.round(state.density/6);
+    let pts=[];
+    for(let i=0;i<n;i++) pts.push([R(80,1120), R(80,520)]);
+    let lines='';
+    for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++){
+      const dx=pts[i][0]-pts[j][0], dy=pts[i][1]-pts[j][1];
+      const d=Math.hypot(dx,dy);
+      if(d<260) lines+=`<line x1="${pts[i][0].toFixed(0)}" y1="${pts[i][1].toFixed(0)}" x2="${pts[j][0].toFixed(0)}" y2="${pts[j][1].toFixed(0)}" stroke="${hexA(state.primary,.35)}" stroke-width="1"/>`;
+    }
+    let nodes='';
+    pts.forEach(([x,y],i)=>{
+      nodes+=`<g class="pulse" style="--pd:${R(2,5).toFixed(1)}s;animation-delay:-${R(0,3).toFixed(1)}s"><circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${(i%4===0?9:5).toFixed(0)}" fill="url(#orbG)" stroke="${state.primary}" stroke-width="1.4" filter="url(#glowF)"/></g>`;
+    });
+    return `<g>${lines}${nodes}</g>`;
+  }
+  function birds(){
+    let s='';
+    for(let i=0;i<5;i++){ const x=R(150,1050).toFixed(0), y=R(140,300).toFixed(0), sc=R(.6,1.3).toFixed(2);
+      s+=`<path d="M ${x} ${y} q 10 -10 20 0 q 10 -10 20 0" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="1.6" stroke-linecap="round" transform="scale(${sc}) translate(${((1-sc)*x/sc).toFixed(0)} ${((1-sc)*y/sc).toFixed(0)})"/>`; }
+    return `<g opacity=".7">${s}</g>`;
+  }
+
+  // ---------- main render ----------
+  function render(){
+    srand(state.seed);
+    const starCount = 60 + Math.round(state.density*1.6);
+    const glowO = (state.glow/100);
+    const sc = state.scale/100;
+    const sw = (state.stroke/10);
+
+    const defs = `
+    <defs>
+      <linearGradient id="bgG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="${state.bg1}"/><stop offset=".55" stop-color="${state.bg2}"/><stop offset="1" stop-color="${state.ground}"/>
+      </linearGradient>
+      <radialGradient id="sunG" cx=".38" cy=".32" r=".9">
+        <stop offset="0" stop-color="#ffffff"/><stop offset=".28" stop-color="${state.primary}"/><stop offset=".62" stop-color="${state.secondary}"/><stop offset="1" stop-color="${state.accent}"/>
+      </radialGradient>
+      <linearGradient id="mtn1" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="${state.secondary}"/><stop offset="1" stop-color="${state.bg1}"/>
+      </linearGradient>
+      <linearGradient id="mtn2" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="${hexA(state.secondary,.95)}"/><stop offset="1" stop-color="${state.ground}"/>
+      </linearGradient>
+      <linearGradient id="mtn3" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#0d1430"/><stop offset="1" stop-color="#050713"/>
+      </linearGradient>
+      <linearGradient id="bld" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#1a2452"/><stop offset="1" stop-color="#070b1f"/>
+      </linearGradient>
+      <linearGradient id="groundG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="${hexA(state.primary,.35)}"/><stop offset="1" stop-color="#04060f"/>
+      </linearGradient>
+      <radialGradient id="orbG" cx=".35" cy=".3" r=".9">
+        <stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".35" stop-color="${state.primary}"/><stop offset="1" stop-color="${state.secondary}"/>
+      </radialGradient>
+      <linearGradient id="ringG" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="${state.primary}"/><stop offset=".5" stop-color="#ffffff"/><stop offset="1" stop-color="${state.accent}"/>
+      </linearGradient>
+      <linearGradient id="beamG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="${state.primary}" stop-opacity=".7"/><stop offset="1" stop-color="${state.primary}" stop-opacity="0"/>
+      </linearGradient>
+      <linearGradient id="beamG2" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="${state.accent}" stop-opacity=".7"/><stop offset="1" stop-color="${state.accent}" stop-opacity="0"/>
+      </linearGradient>
+      <filter id="soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="${(28+glowO*22).toFixed(0)}"/></filter>
+      <filter id="soft2" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="8"/></filter>
+      <filter id="glowF" x="-80%" y="-80%" width="260%" height="260%">
+        <feGaussianBlur stdDeviation="${(2+glowO*7).toFixed(1)}" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#000" flood-opacity=".55"/>
+      </filter>
+      <linearGradient id="frameG" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="${state.primary}"/><stop offset=".5" stop-color="${state.secondary}"/><stop offset="1" stop-color="${state.accent}"/>
+      </linearGradient>
+    </defs>`;
+
+    const art = `
+      <rect width="1200" height="800" fill="url(#bgG)"/>
+      ${nebula()}
+      ${stars(starCount)}
+      ${beams()}
+      <g transform="translate(600 420) scale(${sc.toFixed(3)}) translate(-600 -420)">
+        ${sunPlanet()}
+        ${rings()}
+        ${quantumNet()}
+        ${birds()}
+        ${mountains()}
+        ${city()}
+        ${gridFloor()}
+        ${orbs()}
+        ${particles()}
+        <!-- signature light line -->
+        <path d="M 60 700 Q 320 660 600 690 T 1140 670" fill="none" stroke="url(#ringG)" stroke-width="${sw.toFixed(1)}" stroke-linecap="round" opacity=".85" filter="url(#glowF)"/>
+      </g>
+      <rect x="1" y="1" width="1198" height="798" rx="2" fill="none" stroke="url(#frameG)" stroke-width="2" opacity=".55"/>
+      <g font-family="Inter,Segoe UI,Arial" letter-spacing="3">
+        <text x="36" y="52" fill="rgba(255,255,255,.85)" font-size="17" font-weight="800">NOVA $${state.scene.toUpperCase()} — 0${['metropolis','orbital','synthwave','quantum'].indexOf(state.scene)+1}</text>
+        <text x="36" y="72" fill="rgba(255,255,255,.45)" font-size="11">PROCEDURAL VECTOR • 1200 × 800 • SEED ${state.seed}</text>
+        <text x="1164" y="770" text-anchor="end" fill="rgba(255,255,255,.4)" font-size="11">◈ NOVA STUDIO</text>
+      </g>`;
+
+    svg.innerHTML = defs + art;
+    applySpeed();
+
+    const shapes = (svg.innerHTML.match(/<(circle|rect|ellipse|polygon|path|line|text)/g)||[]).length;
+    $('#statShapes').textContent = shapes;
+    $('#statGrads').textContent = (svg.innerHTML.match(/Gradient/g)||[]).length/2|0 || 8;
+    const titles={metropolis:'Neo Metropolis', orbital:'Orbital Dreams', synthwave:'Synthwave Peaks', quantum:'Quantum Field'};
+    $('#artTitle').textContent = `${titles[state.scene]} — ${String(state.seed).slice(-2)}`;
+    $('#artSub').textContent = `${PRESETS[state.preset].name} theme • ${shapes} vector shapes • live motion ${state.animate?'on':'off'}`;
+    // code preview (trimmed)
+    const full = buildStandalone();
+    $('#codePrev').textContent = full.slice(0, 2600) + (full.length>2600 ? '\n… ('+full.length+' chars total — export to get full file)' : '');
+    svg.classList.toggle('no-anim', !state.animate);
+  }
+
+  function applySpeed(){
+    const sp = Math.max(8, state.speed)/100; // 0=>paused-ish slow, 2.5=>fast
+    svg.querySelectorAll('.twinkle').forEach(e=>{ const b=parseFloat((e.style.getPropertyValue('--tw')||'3').replace('s',''))||3; e.style.animationDuration=(b/sp).toFixed(2)+'s'; });
+    svg.querySelectorAll('.floaty').forEach(e=>{ const b=parseFloat((e.style.getPropertyValue('--fd')||'6').replace('s',''))||6; e.style.animationDuration=(b/sp).toFixed(2)+'s'; });
+    svg.querySelectorAll('.rise').forEach(e=>{ const b=parseFloat((e.style.getPropertyValue('--rd')||'9').replace('s',''))||9; e.style.animationDuration=(b/sp).toFixed(2)+'s'; });
+    svg.querySelectorAll('.dashmove').forEach(e=>{ e.style.animationDuration=(3.2/sp).toFixed(2)+'s'; });
+    if(state.speed===0) svg.classList.add('no-anim'); else if(state.animate) svg.classList.remove('no-anim');
+  }
+
+  function buildStandalone(){
+    const css = `/* NOVA Studio — futuristic vector artwork */\n.twinkle{animation:twinkle var(--tw,3s) ease-in-out infinite alternate}\n.floaty{animation:floatY var(--fd,6s) ease-in-out infinite alternate}\n.spinA{animation:spin 26s linear infinite;transform-box:fill-box;transform-origin:center}\n.spinB{animation:spinRev 38s linear infinite;transform-box:fill-box;transform-origin:center}\n.pulse{animation:pulse var(--pd,4s) ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}\n.rise{animation:rise var(--rd,9s) linear infinite}\n.dashmove{animation:dashM 3s linear infinite}\n.beamflick{animation:beamF 5s ease-in-out infinite alternate}\n@keyframes twinkle{from{opacity:.15}to{opacity:1}}\n@keyframes floatY{from{transform:translateY(-10px)}to{transform:translateY(14px)}}\n@keyframes spin{to{transform:rotate(360deg)}}\n@keyframes spinRev{to{transform:rotate(-360deg)}}\n@keyframes pulse{from{transform:scale(.92);opacity:.7}to{transform:scale(1.08);opacity:1}}\n@keyframes rise{from{transform:translateY(30px);opacity:0}20%{opacity:.9}to{transform:translateY(-260px);opacity:0}}\n@keyframes dashM{to{stroke-dashoffset:-120}}\n@keyframes beamF{from{opacity:.25}to{opacity:.75}}`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="Futuristic illustration by NOVA Studio">\n<style>${css}</style>\n${svg.innerHTML}\n</svg>`;
+  }
+
+  function download(name, blob){
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name;
+    document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},800);
+  }
+  function exportSVG(){
+    const s=buildStandalone();
+    download(`nova-${state.scene}-${state.seed}.svg`, new Blob([s],{type:'image/svg+xml'}));
+    say('SVG exported — '+ (s.length/1024).toFixed(1) +' KB of clean vectors');
+  }
+  function exportPNG(){
+    const s=buildStandalone();
+    const w=+$('#r-png').value, h=Math.round(w*800/1200);
+    const url=URL.createObjectURL(new Blob([s],{type:'image/svg+xml;charset=utf-8'}));
+    const img=new Image();
+    img.onload=()=>{
+      const c=document.createElement('canvas'); c.width=w; c.height=h;
+      const ctx=c.getContext('2d'); ctx.fillStyle=state.bg1; ctx.fillRect(0,0,w,h);
+      ctx.drawImage(img,0,0,w,h); URL.revokeObjectURL(url);
+      c.toBlob(b=>{ download(`nova-${state.scene}-${w}px.png`, b); say(`PNG exported — ${w}×${h}`); },'image/png');
+    };
+    img.onerror=()=>{ URL.revokeObjectURL(url); say('PNG export blocked — use SVG export instead'); };
+    img.src=url;
+  }
+  async function copySVG(){
+    const s=buildStandalone();
+    try{ await navigator.clipboard.writeText(s); say('SVG code copied ('+s.length+' chars)'); }
+    catch{ const ta=document.createElement('textarea'); ta.value=s; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); say('SVG code copied'); }
+  }
+
+  ['btnExport','btnExportTop'].forEach(id=>$('#'+id).onclick=exportSVG);
+  $('#btnPng').onclick=exportPNG;
+  ['btnCopy','btnCopyTop','btnCopy2'].forEach(id=>$('#'+id).onclick=copySVG);
+  ['btnRandomTop'].forEach(id=>$('#'+id).onclick=randomize);
+  $('#btnShuffle').onclick=()=>{ state.seed=(Math.random()*1e9)|0; render(); };
+
+  function randomize(){
+    const keys=Object.keys(PRESETS);
+    applyPreset(keys[Math.floor(Math.random()*keys.length)]);
+    document.querySelectorAll('.preset').forEach(x=>x.classList.toggle('active',x.dataset.preset===state.preset));
+    const scenes=['metropolis','orbital','synthwave','quantum'];
+    setScene(scenes[Math.floor(Math.random()*scenes.length)]);
+    state.seed=(Math.random()*1e9)|0;
+    // randomize sliders a bit
+    state.density=40+Math.floor(Math.random()*60);
+    state.glow=40+Math.floor(Math.random()*60);
+    $('#r-density').value=state.density; $('#o-density').textContent=state.density;
+    $('#r-glow').value=state.glow; $('#o-glow').textContent=state.glow;
+    render(); say('New artwork generated ✦');
+  }
+  function applyPresetSilent(k){ state.preset=k; const c=PRESETS[k].c; state.primary=c[0]; state.secondary=c[1]; state.accent=c[2]; state.bg1=c[3]; state.bg2=c[4]; syncColors(); }
+
+  document.addEventListener('keydown',e=>{
+    if(e.target.tagName==='INPUT'&&e.target.type!=='range') return;
+    if(e.key==='r'||e.key==='R') randomize();
+    if(e.key==='e'||e.key==='E') exportSVG();
+  });
+
+  // init
+  applyPresetSilent('cyberpunk');
+  render();
+})();
+</script>
+</body>
+</html>

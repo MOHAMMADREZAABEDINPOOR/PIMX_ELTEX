@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { readFileSync, statSync } from "node:fs";
+import { existsSync, readFileSync, statSync } from "node:fs";
 
 const files = execFileSync("git", ["ls-files", "-z", "--cached", "--others", "--exclude-standard"])
   .toString("utf8").split("\0").filter(Boolean);
@@ -13,6 +13,7 @@ const forbiddenNames = /(?:^|\/)(?:\.env(?:\.[^/]+)?|\.dev\.vars|[^/]+\.pem)$/i;
 const failures = [];
 
 for (const path of files) {
+  if (!existsSync(path)) continue;
   const normalized = path.replaceAll("\\", "/");
   if (forbiddenNames.test(normalized) && normalized !== ".env.example" && normalized !== ".dev.vars.example") {
     failures.push(normalized);

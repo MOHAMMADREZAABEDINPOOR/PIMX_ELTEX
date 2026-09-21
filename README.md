@@ -17,7 +17,7 @@ There is no standalone prompt library or toolbox.
 ## Stack
 
 - Next.js 16 App Router, React 19, TypeScript, and Tailwind CSS 4
-- Cloudflare Workers through OpenNext
+- Cloudflare Pages through OpenNext advanced mode
 - Cloudflare D1 with Drizzle ORM
 - Cloudflare R2 for uploaded preview and source files
 - Resend email, Cloudflare Turnstile, Web Crypto password hashing
@@ -57,7 +57,7 @@ NEXT_PUBLIC_CONTACT_EMAIL=your-real-contact-address@example.com
 
 ## Cloudflare setup
 
-The live Worker is `https://pimx-eltex.mohammadrezaabedinpoor6.workers.dev`. Pushes to `main` run the build workflow in `.github/workflows/deploy-cloudflare.yml`. To enable automatic deployment, create a Cloudflare API token scoped to this account with permission to edit the existing `pimx-eltex` Worker, then save it as the GitHub Actions repository secret `CLOUDFLARE_API_TOKEN`. The token is never stored in this repository. The workflow uses the existing account ID and production URL.
+The production site is `https://pimx-eltex.pages.dev`. The Cloudflare Pages project is connected directly to this GitHub repository, so every push to `main` builds and deploys automatically. GitHub Actions and a `CLOUDFLARE_API_TOKEN` repository secret are not required.
 
 Cloudflare R2 is not enabled on the account, so the R2 binding is currently omitted from `wrangler.toml`. Public pages work; uploading or serving episode bundles requires enabling R2, creating `pimx-eltex-media`, and restoring the binding. Production email verification also requires a verified Resend sender and `RESEND_API_KEY` secret. Do not advertise account creation as ready until these are configured.
 
@@ -70,9 +70,9 @@ npx wrangler r2 bucket create pimx-eltex-media
 Copy the returned D1 `database_id` into `wrangler.toml`, then add secrets:
 
 ```bash
-npx wrangler secret put AUTH_SECRET
-npx wrangler secret put RESEND_API_KEY
-npx wrangler secret put TURNSTILE_SECRET_KEY
+npx wrangler pages secret put AUTH_SECRET --project-name pimx-eltex
+npx wrangler pages secret put RESEND_API_KEY --project-name pimx-eltex
+npx wrangler pages secret put TURNSTILE_SECRET_KEY --project-name pimx-eltex
 ```
 
 Set `RESEND_FROM` and the `NEXT_PUBLIC_*` build variables for production. Apply migrations and deploy:
@@ -140,11 +140,11 @@ The application also redirects non-local HTTP requests to HTTPS in `src/proxy.ts
 
 ### Launch values that must be real
 
-The contact and privacy pages use `pimxeltex369@gmail.com`. This address receives mail sent by visitors but does not authorize sending verification codes from Gmail. To send production OTPs, verify a domain you own in Resend and configure the Worker secrets `RESEND_API_KEY` and `RESEND_FROM`. The canonical URL and sitemap use the active `workers.dev` hostname until a custom domain is connected. Update `NEXT_PUBLIC_SITE_URL` in the deployment workflow when changing domains.
+The contact and privacy pages use `pimxeltex369@gmail.com`. This address receives mail sent by visitors but does not authorize sending verification codes from Gmail. To send production OTPs, verify a domain you own in Resend and configure the Pages secrets `RESEND_API_KEY` and `RESEND_FROM`. The canonical URL and sitemap use the active `pages.dev` hostname until a custom domain is connected. Update `NEXT_PUBLIC_SITE_URL` in the Pages environment variables when changing domains.
 
 Local development currently has a Turnstile test site key and no Cloudflare Web Analytics token or Resend API key. The first-party D1 visit tracker works after cookie consent, but the Cloudflare beacon and production email delivery need their real service values. Set these through Cloudflare secrets and public build variables; never commit them. `npm run security:secrets` scans the current tracked and unignored worktree files for common credential formats.
 
-D1 has no browser database key or database-enforced row-level policies. Keep the D1 binding on the Worker and scope private reads and writes in server handlers. The public D1 database ID in `wrangler.toml` is an identifier, not an access key.
+D1 has no browser database key or database-enforced row-level policies. Keep the D1 binding on the Pages server runtime and scope private reads and writes in server handlers. The public D1 database ID in `wrangler.toml` is an identifier, not an access key.
 
 ## Project map
 
@@ -162,5 +162,5 @@ src/db/schema.ts           D1 schema and relations
 src/emails/otp-email.ts    branded responsive OTP email
 drizzle/                   generated SQL migrations
 scripts/seed-local.sql     intentionally empty local seed
-wrangler.toml              Worker, D1, R2, and observability bindings
+wrangler.toml              Pages build output and D1 binding
 ```
