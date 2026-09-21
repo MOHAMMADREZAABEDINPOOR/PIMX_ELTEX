@@ -25,7 +25,7 @@ for (const source of files) {
   const appPath = relative(nextApp, source).split(sep).join("/");
   if (appPath.endsWith(".html")) {
     let route = `/${appPath.slice(0, -5)}`;
-    if (route === "/page") route = "/";
+    if (route === "/page" || route === "/index") route = "/";
     if (route === "/_not-found") {
       await cp(source, join(output, "404.html"));
       continue;
