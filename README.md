@@ -57,7 +57,7 @@ NEXT_PUBLIC_CONTACT_EMAIL=your-real-contact-address@example.com
 
 ## Cloudflare setup
 
-The production site is `https://pimx-eltex.pages.dev`. The Cloudflare Pages project is connected directly to this GitHub repository, so every push to `main` builds and deploys automatically. GitHub Actions and a `CLOUDFLARE_API_TOKEN` repository secret are not required.
+The production site is `https://pimxeltex.pages.dev`. The Cloudflare Pages project is connected directly to this GitHub repository, so every push to `main` builds and deploys automatically. GitHub Actions and a `CLOUDFLARE_API_TOKEN` repository secret are not required.
 
 Cloudflare R2 is not enabled on the account, so the R2 binding is currently omitted from `wrangler.toml`. Public pages work; uploading or serving episode bundles requires enabling R2, creating `pimx-eltex-media`, and restoring the binding. Production email verification also requires a verified Resend sender and `RESEND_API_KEY` secret. Do not advertise account creation as ready until these are configured.
 
@@ -70,9 +70,9 @@ npx wrangler r2 bucket create pimx-eltex-media
 Copy the returned D1 `database_id` into `wrangler.toml`, then add secrets:
 
 ```bash
-npx wrangler pages secret put AUTH_SECRET --project-name pimx-eltex
-npx wrangler pages secret put RESEND_API_KEY --project-name pimx-eltex
-npx wrangler pages secret put TURNSTILE_SECRET_KEY --project-name pimx-eltex
+npx wrangler pages secret put AUTH_SECRET --project-name pimxeltex
+npx wrangler pages secret put RESEND_API_KEY --project-name pimxeltex
+npx wrangler pages secret put TURNSTILE_SECRET_KEY --project-name pimxeltex
 ```
 
 Set `RESEND_FROM` and the `NEXT_PUBLIC_*` build variables for production. Apply migrations and deploy:
