@@ -60,6 +60,7 @@ function formatDate(value: Date | null) {
 }
 
 export async function getPublishedPosts(): Promise<PublicPost[]> {
+  if (process.env.PIMX_STATIC_BUILD === "1") return [museContent.post];
   const db = await getDatabase();
   if (!db) return [museContent.post];
   const rows = await db.select().from(postsTable).where(eq(postsTable.status, "published")).orderBy(desc(postsTable.publishedAt));
@@ -85,6 +86,7 @@ export async function getPublicPost(slug: string): Promise<PublicPost | null> {
 }
 
 export async function getPublishedProjects(): Promise<PublicProject[]> {
+  if (process.env.PIMX_STATIC_BUILD === "1") return museContent.projects;
   const db = await getDatabase();
   if (!db) return museContent.projects;
   const [rows, promptBundles] = await Promise.all([
@@ -102,6 +104,7 @@ export async function getPublishedProjects(): Promise<PublicProject[]> {
 }
 
 export async function getPublicEpisode(post: PublicPost): Promise<PublicEpisode> {
+  if (process.env.PIMX_STATIC_BUILD === "1" && post.slug === museContent.post.slug) return museContent.episode;
   const db = await getDatabase();
   if (!db && post.slug === museContent.post.slug) return museContent.episode;
   if (!db) return { videoId: post.youtubeVideoId, number: "Episode", overview: post.excerpt, prompts: [], links: [] };

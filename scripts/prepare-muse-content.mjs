@@ -73,7 +73,10 @@ for (let index = 0; index < slugs.length; index++) {
   await mkdir(destination, { recursive: true });
   await cp(source, destination, { recursive: true });
   const paths = await sourceFiles(source);
-  const files = Object.fromEntries(await Promise.all(paths.map(async (path) => [relative(source, path).replaceAll("\\", "/"), new Uint8Array(await readFile(path))])));
+  const files = Object.fromEntries(await Promise.all(paths.map(async (path) => [
+    relative(source, path).replaceAll("\\", "/"),
+    [new Uint8Array(await readFile(path)), { mtime: new Date("2000-01-01T00:00:00.000Z") }],
+  ])));
   const archive = zipSync(files, { level: 6 });
   await mkdir(join(publicRoot, "downloads"), { recursive: true });
   await writeFile(join(publicRoot, "downloads", `${slug}.zip`), archive);
