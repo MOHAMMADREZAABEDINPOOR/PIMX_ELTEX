@@ -136,7 +136,7 @@ The dependency scan currently reports no production dependency vulnerabilities. 
 Before a public launch, verify the Resend sender domain, configure Turnstile for the production hostname, rotate a random `AUTH_SECRET` of at least 32 bytes, and review legal/privacy copy for your jurisdiction.
 Enable **Always Use HTTPS** for the production zone in Cloudflare SSL/TLS settings; the application adds HSTS and upgrades insecure subresources after the first secure response.
 
-The application also redirects non-local HTTP requests to HTTPS in `src/proxy.ts`. A production Cloudflare zone still needs **Always Use HTTPS** enabled so redirects happen at the edge before the Worker runs.
+Cloudflare Pages serves the `pages.dev` hostname over HTTPS. For a future custom domain, enable **Always Use HTTPS** in that zone so redirects happen at the edge.
 
 ### Launch values that must be real
 
