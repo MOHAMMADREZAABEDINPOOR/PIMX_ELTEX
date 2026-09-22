@@ -75,7 +75,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
         <div className="field"><label htmlFor="email">Email address</label><input id="email" name="email" type="email" autoComplete="email" required maxLength={254} placeholder="you@example.com" aria-invalid={Boolean(message)} /></div>
         {mode !== "forgot" ? <div className="field"><label htmlFor="password">Password</label><PasswordField id="password" name="password" autoComplete={mode === "login" ? "current-password" : "new-password"} minLength={mode === "signup" ? 12 : 8} maxLength={128} required placeholder={mode === "signup" ? "12+ chars, upper/lower, number, symbol" : "Your password"} aria-describedby={mode === "signup" ? "password-requirements" : undefined} aria-invalid={Boolean(message)} />{mode === "signup" ? <small className="field-hint" id="password-requirements">Use 12+ characters with uppercase, lowercase, a number, and a symbol.</small> : null}</div> : null}
         {mode === "login" ? <div style={{ textAlign: "right" }}><Link className="text-link" href="/forgot-password">Forgot password?</Link></div> : null}
-        <TurnstileWidget key={captchaVersion} onToken={setTurnstileToken} />
+        <TurnstileWidget resetKey={captchaVersion} onToken={setTurnstileToken} />
         {message ? <div className="form-message form-error" role="alert" aria-live="polite">{message}</div> : null}
         <button className="button button-accent" type="submit" disabled={busy || !turnstileToken}>{busy ? <LoaderCircle className="spin" size={15} /> : <>{copy.submit}<ArrowRight size={14} /></>}</button>
       </form>

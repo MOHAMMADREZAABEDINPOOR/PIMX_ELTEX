@@ -37,13 +37,19 @@ export async function POST(request: Request) {
   const code = randomOtp();
   if (!db) return Response.json({ message: "Account storage is unavailable." }, { status: 503 });
   let userId: string | undefined;
+  let stage: "lookup" | "password" | "user" | "otp" | "email" = "lookup";
   try {
     const existing = await db.select({ id: users.id }).from(users).where(or(eq(users.email, parsed.data.email), eq(users.username, parsed.data.username))).limit(1);
     if (existing.length) return Response.json({ message: "An account with these details already exists." }, { status: 409 });
     const metadata = await getRequestMetadata(request);
     userId = crypto.randomUUID();
-    await db.insert(users).values({ id: userId, name: parsed.data.name, age: parsed.data.age, username: parsed.data.username, email: parsed.data.email, passwordHash: await hashPassword(parsed.data.password), countryCode: metadata.countryCode });
+    stage = "password";
+    const passwordHash = await hashPassword(parsed.data.password);
+    stage = "user";
+    await db.insert(users).values({ id: userId, name: parsed.data.name, age: parsed.data.age, username: parsed.data.username, email: parsed.data.email, passwordHash, countryCode: metadata.countryCode });
+    stage = "otp";
     await db.insert(otps).values({ id: crypto.randomUUID(), userId, email: parsed.data.email, purpose: "verify_email", codeHash: await hashOtp(parsed.data.email, code, environment.authSecret), expiresAt: new Date(Date.now() + 10 * 60_000) });
+    stage = "email";
     const delivery = await sendOtpEmail({ to: parsed.data.email, code, purpose: "verify your email", apiKey: environment.resendApiKey, from: environment.resendFrom });
     return Response.json({ message: "Check your inbox for the verification code.", ...(!delivery.sent && process.env.NODE_ENV !== "production" ? { devCode: code } : {}) }, { status: 201 });
   } catch (error) {
@@ -52,14 +58,20 @@ export async function POST(request: Request) {
       await db.delete(otps).where(eq(otps.userId, userId)).catch(() => undefined);
       await db.delete(users).where(eq(users.id, userId)).catch(() => undefined);
     }
-    if (error instanceof EmailDeliveryError) {
-      const message = error.status === 401 || error.status === 403
+    const emailStatus = error instanceof EmailDeliveryError ? error.status
+      : error && typeof error === "object" && "name" in error && error.name === "EmailDeliveryError" && "status" in error && typeof error.status === "number" ? error.status
+        : undefined;
+    if (stage === "email" || emailStatus !== undefined) {
+      const message = emailStatus === 401 || emailStatus === 403
         ? "Email service credentials are invalid. Update the Resend API key and try again."
-        : error.status === 422
+        : emailStatus === 422
           ? "The email sender domain is not verified in Resend. Verify the domain and try again."
-          : "The verification email could not be sent. Please try again.";
+          : "The verification email could not be sent. Please check the Resend sender settings and try again.";
       return Response.json({ message }, { status: 502 });
     }
-    return Response.json({ message: "Account creation could not be completed. Please try again." }, { status: 502 });
+    const message = stage === "password" ? "Password processing failed. Please try again."
+      : stage === "user" || stage === "otp" ? "Account storage failed. Please try again."
+        : "Account creation could not be completed. Please try again.";
+    return Response.json({ message }, { status: 502 });
   }
 }
