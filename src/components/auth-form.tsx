@@ -22,6 +22,15 @@ async function readAuthResult(response: Response): Promise<AuthResult> {
   }
 }
 
+function signupPasswordError(password: string) {
+  if (password.length < 12) return "Password must contain at least 12 characters.";
+  if (!/[a-z]/.test(password)) return "Password must include a lowercase letter.";
+  if (!/[A-Z]/.test(password)) return "Password must include an uppercase letter.";
+  if (!/[0-9]/.test(password)) return "Password must include a number.";
+  if (!/[^A-Za-z0-9]/.test(password)) return "Password must include a symbol such as !, @, #, or _.";
+  return "";
+}
+
 export function AuthForm({ mode }: { mode: Mode }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -37,8 +46,15 @@ export function AuthForm({ mode }: { mode: Mode }) {
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setBusy(true); setMessage("");
     const data: Record<string, FormDataEntryValue | string> = { ...Object.fromEntries(new FormData(event.currentTarget)), turnstileToken };
+    if (mode === "signup") {
+      const passwordError = signupPasswordError(String(data.password || ""));
+      if (passwordError) {
+        setMessage(passwordError);
+        return;
+      }
+    }
+    setBusy(true); setMessage("");
     try {
       const response = await fetch(copy.endpoint, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(data) });
       const result = await readAuthResult(response);
@@ -57,7 +73,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
       <form className="auth-form" onSubmit={submit}>
         {mode === "signup" ? <><div className="form-row"><div className="field"><label htmlFor="name">Display name</label><input id="name" name="name" autoComplete="name" required minLength={2} maxLength={80} placeholder="Your display name" aria-invalid={Boolean(message)} /></div><div className="field"><label htmlFor="age">Age</label><input id="age" name="age" type="number" inputMode="numeric" required min={13} max={120} placeholder="Your age" aria-invalid={Boolean(message)} /></div></div><div className="field"><label htmlFor="username">Username</label><input id="username" name="username" autoComplete="username" required minLength={3} maxLength={24} pattern="[A-Za-z0-9_]+" placeholder="your_username" aria-invalid={Boolean(message)} /></div></> : null}
         <div className="field"><label htmlFor="email">Email address</label><input id="email" name="email" type="email" autoComplete="email" required maxLength={254} placeholder="you@example.com" aria-invalid={Boolean(message)} /></div>
-        {mode !== "forgot" ? <div className="field"><label htmlFor="password">Password</label><PasswordField id="password" name="password" autoComplete={mode === "login" ? "current-password" : "new-password"} minLength={mode === "signup" ? 12 : 8} maxLength={128} required placeholder={mode === "signup" ? "12+ chars, upper/lower, number, symbol" : "Your password"} aria-invalid={Boolean(message)} /></div> : null}
+        {mode !== "forgot" ? <div className="field"><label htmlFor="password">Password</label><PasswordField id="password" name="password" autoComplete={mode === "login" ? "current-password" : "new-password"} minLength={mode === "signup" ? 12 : 8} maxLength={128} required placeholder={mode === "signup" ? "12+ chars, upper/lower, number, symbol" : "Your password"} aria-describedby={mode === "signup" ? "password-requirements" : undefined} aria-invalid={Boolean(message)} />{mode === "signup" ? <small className="field-hint" id="password-requirements">Use 12+ characters with uppercase, lowercase, a number, and a symbol.</small> : null}</div> : null}
         {mode === "login" ? <div style={{ textAlign: "right" }}><Link className="text-link" href="/forgot-password">Forgot password?</Link></div> : null}
         <TurnstileWidget key={captchaVersion} onToken={setTurnstileToken} />
         {message ? <div className="form-message form-error" role="alert" aria-live="polite">{message}</div> : null}

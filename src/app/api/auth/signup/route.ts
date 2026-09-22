@@ -17,7 +17,17 @@ export async function POST(request: Request) {
   const guard = await enforceRateLimit(request, "auth.signup", 5, 3600);
   if (!guard.allowed) return rateLimitResponse(guard.retryAfter);
   const parsed = inputSchema.safeParse(await request.json().catch(() => null));
-  if (!parsed.success) return Response.json({ message: "Please check the information you entered." }, { status: 400 });
+  if (!parsed.success) {
+    const issue = parsed.error.issues[0];
+    const field = issue?.path[0];
+    const message = field === "password" ? issue.message
+      : field === "username" ? "Username must contain 3 to 24 letters, numbers, or underscores."
+        : field === "email" ? "Enter a valid email address."
+          : field === "age" ? "Age must be between 13 and 120."
+            : field === "name" ? "Display name must contain 2 to 80 characters."
+              : "Please check the information you entered.";
+    return Response.json({ message }, { status: 400 });
+  }
   const environment = await getEnvironment();
   if (process.env.NODE_ENV === "production" && !(await verifyTurnstile(parsed.data.turnstileToken, environment.turnstileSecret))) return captchaRequiredResponse();
   if (process.env.NODE_ENV === "production" && (!environment.resendApiKey || !environment.resendFrom)) {
