@@ -9,6 +9,18 @@ import { TurnstileWidget } from "./turnstile-widget";
 
 type Mode = "login" | "signup" | "forgot";
 
+type AuthResult = { message?: string; devCode?: string; user?: { role: string }; captchaRequired?: boolean };
+
+async function readAuthResult(response: Response): Promise<AuthResult> {
+  const body = await response.text();
+  if (!body) throw new Error("The server could not complete this request. Please try again.");
+  try {
+    return JSON.parse(body) as AuthResult;
+  } catch {
+    throw new Error("The server returned an invalid response. Please try again.");
+  }
+}
+
 export function AuthForm({ mode }: { mode: Mode }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -28,15 +40,13 @@ export function AuthForm({ mode }: { mode: Mode }) {
     const data: Record<string, FormDataEntryValue | string> = { ...Object.fromEntries(new FormData(event.currentTarget)), turnstileToken };
     try {
       const response = await fetch(copy.endpoint, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(data) });
-      const result = await response.json() as { message?: string; devCode?: string; user?: { role: string }; captchaRequired?: boolean };
-      if (!response.ok) {
-        setTurnstileToken("");
-        setCaptchaVersion((version) => version + 1);
-        throw new Error(result.message || "Something went wrong.");
-      }
+      const result = await readAuthResult(response);
+      if (!response.ok) throw new Error(result.message || "Something went wrong.");
       if (mode === "login") router.push(result.user?.role === "admin" ? "/admin" : "/");
       else router.push(`/${mode === "forgot" ? "reset-password" : "verify"}?email=${encodeURIComponent(String(data.email))}${result.devCode ? `&devCode=${result.devCode}` : ""}`);
     } catch (error) {
+      setTurnstileToken("");
+      setCaptchaVersion((version) => version + 1);
       setMessage(error instanceof Error ? error.message : "Something went wrong.");
     } finally { setBusy(false); }
   }

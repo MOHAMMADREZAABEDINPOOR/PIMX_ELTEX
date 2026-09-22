@@ -26,19 +26,22 @@ export async function POST(request: Request) {
   const db = await getDatabase();
   const code = randomOtp();
   if (!db) return Response.json({ message: "Account storage is unavailable." }, { status: 503 });
-  const existing = await db.select({ id: users.id }).from(users).where(or(eq(users.email, parsed.data.email), eq(users.username, parsed.data.username))).limit(1);
-  if (existing.length) return Response.json({ message: "An account with these details already exists." }, { status: 409 });
-  const metadata = await getRequestMetadata(request);
-  const userId = crypto.randomUUID();
-  await db.insert(users).values({ id: userId, name: parsed.data.name, age: parsed.data.age, username: parsed.data.username, email: parsed.data.email, passwordHash: await hashPassword(parsed.data.password), countryCode: metadata.countryCode });
-  await db.insert(otps).values({ id: crypto.randomUUID(), userId, email: parsed.data.email, purpose: "verify_email", codeHash: await hashOtp(parsed.data.email, code, environment.authSecret), expiresAt: new Date(Date.now() + 10 * 60_000) });
-  let delivery: Awaited<ReturnType<typeof sendOtpEmail>>;
+  let userId: string | undefined;
   try {
-    delivery = await sendOtpEmail({ to: parsed.data.email, code, purpose: "verify your email", apiKey: environment.resendApiKey, from: environment.resendFrom });
-  } catch {
-    await db.delete(otps).where(eq(otps.userId, userId));
-    await db.delete(users).where(eq(users.id, userId));
-    return Response.json({ message: "The verification email could not be sent. Please try again later." }, { status: 502 });
+    const existing = await db.select({ id: users.id }).from(users).where(or(eq(users.email, parsed.data.email), eq(users.username, parsed.data.username))).limit(1);
+    if (existing.length) return Response.json({ message: "An account with these details already exists." }, { status: 409 });
+    const metadata = await getRequestMetadata(request);
+    userId = crypto.randomUUID();
+    await db.insert(users).values({ id: userId, name: parsed.data.name, age: parsed.data.age, username: parsed.data.username, email: parsed.data.email, passwordHash: await hashPassword(parsed.data.password), countryCode: metadata.countryCode });
+    await db.insert(otps).values({ id: crypto.randomUUID(), userId, email: parsed.data.email, purpose: "verify_email", codeHash: await hashOtp(parsed.data.email, code, environment.authSecret), expiresAt: new Date(Date.now() + 10 * 60_000) });
+    const delivery = await sendOtpEmail({ to: parsed.data.email, code, purpose: "verify your email", apiKey: environment.resendApiKey, from: environment.resendFrom });
+    return Response.json({ message: "Check your inbox for the verification code.", ...(!delivery.sent && process.env.NODE_ENV !== "production" ? { devCode: code } : {}) }, { status: 201 });
+  } catch (error) {
+    console.error("Signup failed", error instanceof Error ? error.message : "Unknown signup error");
+    if (userId) {
+      await db.delete(otps).where(eq(otps.userId, userId)).catch(() => undefined);
+      await db.delete(users).where(eq(users.id, userId)).catch(() => undefined);
+    }
+    return Response.json({ message: "Account creation could not be completed. Please try again." }, { status: 502 });
   }
-  return Response.json({ message: "Check your inbox for the verification code.", ...(!delivery.sent && process.env.NODE_ENV !== "production" ? { devCode: code } : {}) }, { status: 201 });
 }
