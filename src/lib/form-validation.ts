@@ -32,13 +32,22 @@ export function isEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
+export function displayNameError(value: string) {
+  const name = value.trim();
+  if (name.length < 2) return "Display name must contain at least 2 characters.";
+  if (name.length > 80) return "Display name must contain no more than 80 characters.";
+  if (/[\u0000-\u001f\u007f]/.test(name)) return "Display name contains an unsupported character.";
+  return "";
+}
+
 export function validateAuthFields(mode: "login" | "signup" | "forgot", values: Record<string, string>): FieldErrors {
   const errors: FieldErrors = {};
   if (mode === "signup") {
     const name = values.name?.trim() || "";
     const age = Number(values.age);
     const username = values.username?.trim() || "";
-    if (name.length < 2 || name.length > 80) errors.name = "Display name must contain 2 to 80 characters.";
+    const nameError = displayNameError(name);
+    if (nameError) errors.name = nameError;
     if (!Number.isInteger(age) || age < 13 || age > 120) errors.age = "Age must be between 13 and 120.";
     if (!/^[A-Za-z0-9_]{3,24}$/.test(username)) errors.username = "Use 3–24 letters, numbers, or underscores.";
   }

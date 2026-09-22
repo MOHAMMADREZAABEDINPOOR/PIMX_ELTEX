@@ -4,6 +4,7 @@ import { Clock3, Mail, MessageCircle, ShieldCheck, UserRound } from "lucide-reac
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AccountActions } from "@/components/account-actions";
+import { AccountProfileForm } from "@/components/account-profile-form";
 import { getDatabase } from "@/db";
 import { comments, posts, sessions, users } from "@/db/schema";
 import { getCurrentUser } from "@/lib/session";
@@ -35,7 +36,7 @@ export default async function AccountPage() {
     <div className="account-grid">
       <section className="account-panel"><header><div><span className="eyebrow">ACTIVITY</span><h2>Your comments</h2></div><span className="tag">{activity.length}</span></header>{activity.length ? <div className="account-comment-list">{activity.map((comment) => <Link key={comment.id} href={`/episodes/${comment.postSlug}#comment-${comment.id}`}><div><strong>{comment.postTitle}</strong><span>{formatDate(comment.createdAt)}{comment.editedAt ? " · Edited" : ""}</span></div><p>{comment.content}</p><small className={`comment-status ${comment.status}`}>{comment.status}</small></Link>)}</div> : <div className="account-empty"><MessageCircle size={24} /><p>You have not posted any comments yet.</p><Link className="text-link" href="/episodes">Browse episodes</Link></div>}</section>
       <aside className="account-side">
-        <section className="account-panel"><header><div><span className="eyebrow">PROFILE</span><h2>Account details</h2></div></header><dl className="account-details"><div><dt><UserRound size={14} /> Username</dt><dd>@{profile.username}</dd></div><div><dt><Mail size={14} /> Email</dt><dd>{profile.email}</dd></div><div><dt><Clock3 size={14} /> Member since</dt><dd>{formatDate(profile.createdAt)}</dd></div></dl></section>
+        <section className="account-panel"><header><div><span className="eyebrow">PROFILE</span><h2>Account details</h2></div></header><AccountProfileForm initialName={profile.name} /><dl className="account-details"><div><dt><UserRound size={14} /> Username</dt><dd>@{profile.username}</dd></div><div><dt><Mail size={14} /> Email</dt><dd>{profile.email}</dd></div><div><dt><Clock3 size={14} /> Member since</dt><dd>{formatDate(profile.createdAt)}</dd></div></dl></section>
         <section className="account-panel"><header><div><span className="eyebrow">SECURITY</span><h2>Active sessions</h2></div><span className="tag">{activeSessions.length}</span></header><div className="account-session-list">{activeSessions.map((session) => <article key={session.id}><strong>{session.deviceType || "Device"} · {session.browser || "Browser"}</strong><span>{session.operatingSystem || "Unknown OS"}</span><small>{session.city || session.region || session.countryCode || "Unknown location"} · {formatDate(session.lastSeenAt)}</small></article>)}</div></section>
       </aside>
     </div>
