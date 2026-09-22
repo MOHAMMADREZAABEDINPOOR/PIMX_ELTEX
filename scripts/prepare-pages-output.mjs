@@ -49,6 +49,20 @@ for (const source of files) {
 
 const worker = `const STATIC_ROUTES = ${JSON.stringify(staticRoutes)};
 const UPSTREAM = "https://pimx-eltex.mohammadrezaabedinpoor6.workers.dev";
+const APP_CSP = "default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://static.cloudflareinsights.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ytimg.com; frame-src 'self' https://www.youtube-nocookie.com https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com https://api.resend.com https://cloudflareinsights.com; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests";
+const DEMO_CSP = "sandbox allow-scripts allow-forms; default-src * data: blob: 'unsafe-inline' 'unsafe-eval'; object-src 'none'";
+
+function secureStaticResponse(response, pathname) {
+  const headers = new Headers(response.headers);
+  headers.set("Content-Security-Policy", pathname.startsWith("/demos/") ? DEMO_CSP : APP_CSP);
+  headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  headers.set("X-Content-Type-Options", "nosniff");
+  headers.set("X-Frame-Options", "SAMEORIGIN");
+  headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=()");
+  headers.set("Cross-Origin-Opener-Policy", pathname.startsWith("/demos/") ? "unsafe-none" : "same-origin");
+  headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
+  return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+}
 
 export default {
   async fetch(request, env) {
@@ -57,7 +71,8 @@ export default {
     if (staticAsset || url.pathname.startsWith("/_next/") || url.pathname.startsWith("/demos/") || url.pathname.startsWith("/downloads/") || url.pathname.startsWith("/project-previews/")) {
       const assetUrl = new URL(staticAsset || url.pathname, url);
       assetUrl.search = "";
-      return env.ASSETS.fetch(new Request(assetUrl, request));
+      const response = await env.ASSETS.fetch(new Request(assetUrl, request));
+      return secureStaticResponse(response, url.pathname);
     }
 
     const upstreamUrl = new URL(url.pathname + url.search, UPSTREAM);

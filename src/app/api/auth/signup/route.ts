@@ -3,7 +3,7 @@ import { z } from "zod";
 import { getDatabase } from "@/db";
 import { csrfError, hasValidMutationOrigin } from "@/lib/csrf";
 import { otps, users } from "@/db/schema";
-import { sendOtpEmail } from "@/lib/email";
+import { EmailDeliveryError, sendOtpEmail } from "@/lib/email";
 import { getEnvironment, verifyTurnstile } from "@/lib/environment";
 import { getRequestMetadata } from "@/lib/request-metadata";
 import { captchaRequiredResponse, enforceRateLimit, rateLimitResponse } from "@/lib/rate-limit";
@@ -41,6 +41,14 @@ export async function POST(request: Request) {
     if (userId) {
       await db.delete(otps).where(eq(otps.userId, userId)).catch(() => undefined);
       await db.delete(users).where(eq(users.id, userId)).catch(() => undefined);
+    }
+    if (error instanceof EmailDeliveryError) {
+      const message = error.status === 401 || error.status === 403
+        ? "Email service credentials are invalid. Update the Resend API key and try again."
+        : error.status === 422
+          ? "The email sender domain is not verified in Resend. Verify the domain and try again."
+          : "The verification email could not be sent. Please try again.";
+      return Response.json({ message }, { status: 502 });
     }
     return Response.json({ message: "Account creation could not be completed. Please try again." }, { status: 502 });
   }
