@@ -11,7 +11,7 @@ export async function getCurrentUser() {
   const db = await getDatabase();
   if (!db) return null;
   const tokenHash = await sha256(token);
-  const result = await db.select({ id: users.id, name: users.name, email: users.email, role: users.role, status: users.status }).from(sessions).innerJoin(users, eq(users.id, sessions.userId)).where(and(eq(sessions.tokenHash, tokenHash), gt(sessions.expiresAt, new Date()))).limit(1);
+  const result = await db.select({ id: users.id, name: users.name, username: users.username, email: users.email, avatarUrl: users.avatarUrl, role: users.role, status: users.status }).from(sessions).innerJoin(users, eq(users.id, sessions.userId)).where(and(eq(sessions.tokenHash, tokenHash), gt(sessions.expiresAt, new Date()))).limit(1);
   const user = result[0];
   return user?.status === "active" ? user : null;
 }

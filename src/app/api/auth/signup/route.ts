@@ -18,15 +18,18 @@ export async function POST(request: Request) {
   if (!guard.allowed) return rateLimitResponse(guard.retryAfter);
   const parsed = inputSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {
-    const issue = parsed.error.issues[0];
-    const field = issue?.path[0];
-    const message = field === "password" ? issue.message
-      : field === "username" ? "Username must contain 3 to 24 letters, numbers, or underscores."
-        : field === "email" ? "Enter a valid email address."
-          : field === "age" ? "Age must be between 13 and 120."
-            : field === "name" ? "Display name must contain 2 to 80 characters."
-              : "Please check the information you entered.";
-    return Response.json({ message }, { status: 400 });
+    const errors: Record<string, string> = {};
+    for (const issue of parsed.error.issues) {
+      const field = String(issue.path[0] || "");
+      if (!field || errors[field]) continue;
+      errors[field] = field === "password" ? issue.message
+        : field === "username" ? "Username must contain 3 to 24 letters, numbers, or underscores."
+          : field === "email" ? "Enter a valid email address."
+            : field === "age" ? "Age must be between 13 and 120."
+              : field === "name" ? "Display name must contain 2 to 80 characters."
+                : "Check this value.";
+    }
+    return Response.json({ message: "Please check the highlighted fields.", errors }, { status: 400 });
   }
   const environment = await getEnvironment();
   if (process.env.NODE_ENV === "production" && !(await verifyTurnstile(parsed.data.turnstileToken, environment.turnstileSecret))) return captchaRequiredResponse();
@@ -39,8 +42,13 @@ export async function POST(request: Request) {
   let userId: string | undefined;
   let stage: "lookup" | "password" | "user" | "otp" | "email" = "lookup";
   try {
-    const existing = await db.select({ id: users.id }).from(users).where(or(eq(users.email, parsed.data.email), eq(users.username, parsed.data.username))).limit(1);
-    if (existing.length) return Response.json({ message: "An account with these details already exists." }, { status: 409 });
+    const existing = await db.select({ id: users.id, email: users.email, username: users.username }).from(users).where(or(eq(users.email, parsed.data.email), eq(users.username, parsed.data.username))).limit(1);
+    if (existing.length) {
+      const errors: Record<string, string> = {};
+      if (existing[0].email === parsed.data.email) errors.email = "An account already uses this email address.";
+      if (existing[0].username === parsed.data.username) errors.username = "This username is already taken.";
+      return Response.json({ message: "Choose different account details.", errors }, { status: 409 });
+    }
     const metadata = await getRequestMetadata(request);
     userId = crypto.randomUUID();
     stage = "password";

@@ -1,6 +1,8 @@
 import { z } from "zod";
 
-export const strongPasswordSchema = z.string().min(12).max(128)
+export const strongPasswordSchema = z.string()
+  .min(12, "Password must contain at least 12 characters.")
+  .max(128, "Password must contain no more than 128 characters.")
   .regex(/[a-z]/, "Password must include a lowercase letter.")
   .regex(/[A-Z]/, "Password must include an uppercase letter.")
   .regex(/[0-9]/, "Password must include a number.")

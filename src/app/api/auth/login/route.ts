@@ -17,7 +17,15 @@ export async function POST(request: Request) {
   const guard = await enforceRateLimit(request, "auth.login", 10, 900);
   if (!guard.allowed) return rateLimitResponse(guard.retryAfter);
   const parsed = inputSchema.safeParse(await request.json().catch(() => null));
-  if (!parsed.success) return Response.json({ message: "Invalid email or password." }, { status: 401 });
+  if (!parsed.success) {
+    const errors: Record<string, string> = {};
+    for (const issue of parsed.error.issues) {
+      const field = String(issue.path[0] || "");
+      if (!field || errors[field]) continue;
+      errors[field] = field === "email" ? "Enter a valid email address." : "Enter your password (at least 8 characters).";
+    }
+    return Response.json({ message: "Please check the highlighted fields.", errors }, { status: 400 });
+  }
   const accountGuard = await enforceIdentityRateLimit("auth.login.account", parsed.data.email, 20, 3600);
   if (!accountGuard.allowed) return rateLimitResponse(accountGuard.retryAfter);
   const environment = await getEnvironment();
