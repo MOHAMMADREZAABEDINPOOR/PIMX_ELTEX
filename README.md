@@ -67,18 +67,20 @@ npx wrangler d1 create pimx-eltex-db
 npx wrangler r2 bucket create pimx-eltex-media
 ```
 
-Copy the returned D1 `database_id` into `wrangler.toml`, then add secrets:
+Copy the returned D1 `database_id` into `wrangler.worker.toml`, then add backend secrets:
 
 ```bash
-npx wrangler pages secret put AUTH_SECRET --project-name pimxeltex
-npx wrangler pages secret put RESEND_API_KEY --project-name pimxeltex
-npx wrangler pages secret put TURNSTILE_SECRET_KEY --project-name pimxeltex
+npx wrangler secret put AUTH_SECRET --config wrangler.worker.toml
+npx wrangler secret put RESEND_API_KEY --config wrangler.worker.toml
+npx wrangler secret put RESEND_FROM --config wrangler.worker.toml
+npx wrangler secret put TURNSTILE_SECRET_KEY --config wrangler.worker.toml
 ```
 
-Set `RESEND_FROM` and the `NEXT_PUBLIC_*` build variables for production. Apply migrations and deploy:
+Set the `NEXT_PUBLIC_*` build variables for production. Apply migrations, deploy the API backend, and deploy Pages:
 
 ```bash
 npm run db:migrate:remote
+npm run deploy:worker-backend
 npm run deploy
 ```
 
@@ -140,9 +142,9 @@ Cloudflare Pages serves the `pages.dev` hostname over HTTPS. For a future custom
 
 ### Launch values that must be real
 
-The contact and privacy pages use `pimxeltex369@gmail.com`. This address receives mail sent by visitors but does not authorize sending verification codes from Gmail. To send production OTPs, verify a domain you own in Resend and configure the Pages secrets `RESEND_API_KEY` and `RESEND_FROM`. The canonical URL and sitemap use the active `pages.dev` hostname until a custom domain is connected. Update `NEXT_PUBLIC_SITE_URL` in the Pages environment variables when changing domains.
+The contact and privacy pages use `pimxeltex369@gmail.com`. This address receives mail sent by visitors but does not authorize sending verification codes from Gmail. To send production OTPs, verify a domain you own in Resend and configure the `pimx-eltex` Worker secrets `RESEND_API_KEY` and `RESEND_FROM`. The canonical URL and sitemap use the active `pages.dev` hostname until a custom domain is connected. Update `NEXT_PUBLIC_SITE_URL` in the Pages environment variables when changing domains.
 
-Local development currently has a Turnstile test site key and no Cloudflare Web Analytics token or Resend API key. The first-party D1 visit tracker works after cookie consent, but the Cloudflare beacon and production email delivery need their real service values. Set these through Cloudflare secrets and public build variables; never commit them. `npm run security:secrets` scans the current tracked and unignored worktree files for common credential formats.
+Production Turnstile is configured for `pimxeltex.pages.dev`. Local development can use Cloudflare's documented test keys. The project has no Cloudflare Web Analytics token or Resend API key yet. The first-party D1 visit tracker works after cookie consent, but the Cloudflare beacon and production email delivery need their real service values. Set these through Cloudflare secrets and public build variables; never commit them. `npm run security:secrets` scans the current tracked and unignored worktree files for common credential formats.
 
 D1 has no browser database key or database-enforced row-level policies. Keep the D1 binding on the Pages server runtime and scope private reads and writes in server handlers. The public D1 database ID in `wrangler.toml` is an identifier, not an access key.
 
