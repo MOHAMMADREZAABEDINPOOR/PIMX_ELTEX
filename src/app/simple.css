@@ -157,8 +157,13 @@
   .simple-page-header { margin-bottom: 35px; }
   .simple-episode { grid-template-columns: 1fr; gap: 17px; }
   .simple-episode-image { width: 100%; }
+  .site-footer.simple-footer { width: calc(100% - 24px); padding: 32px 0 calc(94px + env(safe-area-inset-bottom)); }
   .simple-footer-main,.simple-footer-bottom { flex-direction: column; }
-  .simple-footer-main nav { gap: 13px 20px; }
+  .simple-footer-main { gap: 26px; padding-bottom: 28px; }
+  .simple-footer-main nav { width: 100%; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+  .simple-footer-main nav a { min-height: 42px; padding: 10px 12px; display: flex; align-items: center; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-soft); }
+  .simple-footer-bottom { gap: 18px; padding-top: 20px; }
+  .simple-footer-bottom > div { width: 100%; justify-content: space-between; }
   .article-byline,.comments-heading,.episode-section-title,.episode-download > div { flex-wrap: wrap; }
   .episode-section-title { flex-direction: column; gap: 12px; }
   .auth-page { padding-block: 55px 75px; min-height: 0; }

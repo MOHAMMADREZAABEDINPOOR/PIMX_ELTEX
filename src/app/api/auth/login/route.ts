@@ -21,7 +21,7 @@ export async function POST(request: Request) {
   const accountGuard = await enforceIdentityRateLimit("auth.login.account", parsed.data.email, 20, 3600);
   if (!accountGuard.allowed) return rateLimitResponse(accountGuard.retryAfter);
   const environment = await getEnvironment();
-  if (guard.count > 2 && !(await verifyTurnstile(parsed.data.turnstileToken, environment.turnstileSecret))) return captchaRequiredResponse();
+  if (process.env.NODE_ENV === "production" && !(await verifyTurnstile(parsed.data.turnstileToken, environment.turnstileSecret))) return captchaRequiredResponse();
   const db = await getDatabase();
   if (!db) return Response.json({ message: "Database is not available." }, { status: 503 });
   const [user] = await db.select().from(users).where(eq(users.email, parsed.data.email)).limit(1);

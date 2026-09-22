@@ -63,6 +63,9 @@ export default {
     const upstreamUrl = new URL(url.pathname + url.search, UPSTREAM);
     const headers = new Headers(request.headers);
     headers.delete("host");
+    headers.set("origin", UPSTREAM);
+    const referer = headers.get("referer");
+    if (referer) headers.set("referer", referer.replace(url.origin, UPSTREAM));
     const response = await fetch(new Request(upstreamUrl, { method: request.method, headers, body: request.body, redirect: "manual" }));
     const responseHeaders = new Headers(response.headers);
     const location = responseHeaders.get("location");

@@ -13,7 +13,7 @@ declare global {
 
 export function TurnstileWidget({ onToken }: { onToken: (token: string) => void }) {
   const container = useRef<HTMLDivElement>(null);
-  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "0x4AAAAAAE_pjTL1uyMKXGnS";
   const render = useCallback(() => {
     if (!container.current || !window.turnstile || container.current.childElementCount) return;
     window.turnstile.render(container.current, { sitekey: siteKey!, theme: "auto", callback: onToken, "expired-callback": () => onToken(""), "error-callback": () => onToken("") });
@@ -21,7 +21,5 @@ export function TurnstileWidget({ onToken }: { onToken: (token: string) => void 
 
   useEffect(() => { render(); }, [render]);
 
-  if (!siteKey) return <div className="form-message form-error">Cloudflare Turnstile is not configured.</div>;
-
-  return <div className="turnstile-shell"><Script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" strategy="afterInteractive" onReady={render} /><div ref={container} /></div>;
+  return <div className="turnstile-shell" aria-label="Cloudflare security check"><Script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" strategy="afterInteractive" onReady={render} /><div ref={container} /></div>;
 }
