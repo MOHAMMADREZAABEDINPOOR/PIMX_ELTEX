@@ -62,10 +62,10 @@ export async function POST(request: Request) {
       : error && typeof error === "object" && "name" in error && error.name === "EmailDeliveryError" && "status" in error && typeof error.status === "number" ? error.status
         : undefined;
     if (stage === "email" || emailStatus !== undefined) {
-      const message = emailStatus === 401 || emailStatus === 403
+      const message = emailStatus === 401
         ? "Email service credentials are invalid. Update the Resend API key and try again."
-        : emailStatus === 422
-          ? "The email sender domain is not verified in Resend. Verify the domain and try again."
+        : emailStatus === 403 || emailStatus === 422
+          ? "Resend rejected the sender or recipient. Verify the sender domain and account restrictions in Resend."
           : "The verification email could not be sent. Please check the Resend sender settings and try again.";
       return Response.json({ message }, { status: 502 });
     }
