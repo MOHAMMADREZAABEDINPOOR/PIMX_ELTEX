@@ -1,4 +1,5 @@
 import "server-only";
+import { scrypt } from "node:crypto";
 
 const encoder = new TextEncoder();
 
@@ -25,7 +26,10 @@ export async function sha256(value: string) {
   return base64Url(new Uint8Array(digest));
 }
 
-const passwordIterations = 600_000;
+const passwordScryptN = 65_536;
+const passwordScryptR = 8;
+const passwordScryptP = 1;
+const passwordKeyLength = 32;
 
 async function derivePassword(password: string, salt: string, iterations: number) {
   const key = await crypto.subtle.importKey("raw", encoder.encode(password), "PBKDF2", false, ["deriveBits"]);
@@ -34,18 +38,34 @@ async function derivePassword(password: string, salt: string, iterations: number
 }
 
 export function hashPassword(password: string, salt = randomToken(16)) {
-  return derivePassword(password, salt, passwordIterations);
+  return new Promise<string>((resolve, reject) => {
+    scrypt(password, salt, passwordKeyLength, { N: passwordScryptN, r: passwordScryptR, p: passwordScryptP, maxmem: 128 * 1024 * 1024 }, (error, derivedKey) => {
+      if (error) return reject(error);
+      resolve(`scrypt$${passwordScryptN}$${passwordScryptR}$${passwordScryptP}$${salt}$${base64Url(new Uint8Array(derivedKey))}`);
+    });
+  });
 }
 
 export async function verifyPassword(password: string, stored: string) {
-  const [algorithm, iterations, salt, expected] = stored.split("$");
-  if (algorithm !== "pbkdf2_sha256" || !["210000", "600000"].includes(iterations) || !salt || !expected) return false;
-  const candidate = await derivePassword(password, salt, Number(iterations));
-  return timingSafeEqual(candidate, stored);
+  const parts = stored.split("$");
+  if (parts[0] === "scrypt") {
+    const [algorithm, n, r, p, salt, expected] = parts;
+    if (n !== String(passwordScryptN) || r !== String(passwordScryptR) || p !== String(passwordScryptP) || !salt || !expected) return false;
+    const candidate = await hashPassword(password, salt);
+    return timingSafeEqual(candidate, `${algorithm}$${n}$${r}$${p}$${salt}$${expected}`);
+  }
+  const [algorithm, iterations, salt, expected] = parts;
+  if (algorithm !== "pbkdf2_sha256" || !["100000", "210000", "600000"].includes(iterations) || !salt || !expected) return false;
+  try {
+    const candidate = await derivePassword(password, salt, Number(iterations));
+    return timingSafeEqual(candidate, stored);
+  } catch {
+    return false;
+  }
 }
 
 export function passwordNeedsUpgrade(stored: string) {
-  return stored.startsWith("pbkdf2_sha256$210000$");
+  return !stored.startsWith(`scrypt$${passwordScryptN}$${passwordScryptR}$${passwordScryptP}$`);
 }
 
 export function timingSafeEqual(left: string, right: string) {
