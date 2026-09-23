@@ -74,6 +74,7 @@ for (let index = 0; index < slugs.length; index++) {
   await cp(source, destination, { recursive: true });
   const previewHtmlPath = join(destination, "index.html");
   let previewHtml = await readFile(previewHtmlPath, "utf8");
+  previewHtml = previewHtml.replace(/<link\s+rel=["'](?:shortcut )?icon["'][^>]*>/gi, "");
   previewHtml = previewHtml.replace("<head>", `<head>\n<link rel="icon" type="image/svg+xml" href="/icon.svg" />\n<meta name="robots" content="noindex, follow" />`);
   if (slug === "flappy-legends") {
     // The preview CSP gives demos an opaque origin. Storage access then throws;
