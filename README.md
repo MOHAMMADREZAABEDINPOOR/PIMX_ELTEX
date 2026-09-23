@@ -84,10 +84,10 @@ npm run deploy:worker-backend
 npm run deploy
 ```
 
-Promote the first verified production account with:
+Promote a verified, active production account with:
 
 ```bash
-npx wrangler d1 execute pimx-eltex-db --remote --command "UPDATE users SET role = 'admin' WHERE email = 'your-email@example.com'"
+npx wrangler d1 execute pimx-eltex-db --remote --command "UPDATE users SET role = 'admin' WHERE email = 'your-email@example.com' AND email_verified_at IS NOT NULL AND status = 'active'"
 ```
 
 ## Verification commands
@@ -142,9 +142,16 @@ Cloudflare Pages serves the `pages.dev` hostname over HTTPS. For a future custom
 
 ### Launch values that must be real
 
-The contact and privacy pages use `pimxeltex369@gmail.com`. This address receives mail sent by visitors but does not authorize sending verification codes from Gmail. To send production OTPs, verify a domain you own in Resend and configure the `pimx-eltex` Worker secrets `RESEND_API_KEY` and `RESEND_FROM`. The canonical URL and sitemap use the active `pages.dev` hostname until a custom domain is connected. Update `NEXT_PUBLIC_SITE_URL` in the Pages environment variables when changing domains.
+The contact and privacy pages use `pimxeltex369@gmail.com`. This is a recipient address; it does not authorize sending verification codes from Gmail. The site sends OTPs through Resend, not Gmail SMTP. To enable public signup:
 
-Production Turnstile is configured for `pimxeltex.pages.dev`. Local development can use Cloudflare's documented test keys. The project has no Cloudflare Web Analytics token or Resend API key yet. The first-party D1 visit tracker works after cookie consent, but the Cloudflare beacon and production email delivery need their real service values. Set these through Cloudflare secrets and public build variables; never commit them. `npm run security:secrets` scans the current tracked and unignored worktree files for common credential formats.
+1. Add a domain you own in [Resend Domains](https://resend.com/domains). Add the exact SPF/DKIM DNS records shown there and wait for the **Sending** status to be verified. A `pages.dev` subdomain or `gmail.com` address cannot be verified as your sending domain.
+2. Create a Resend API key with sending permission. Set it as the `RESEND_API_KEY` secret on the **pimx-eltex Worker**, not just on the Pages project.
+3. Set the Worker secret `RESEND_FROM` to a sender at that verified domain, for example `PIMX_ELTEX <verify@your-owned-domain.example>`. The mailbox does not need to be a Gmail account; the domain must match the verified sending domain.
+4. Retry signup and check [Resend Logs](https://resend.com/logs) if delivery is rejected. Resend's testing sender can be restricted to the account owner's email and is not suitable for public registration.
+
+Use the `wrangler secret put` commands above to update Worker secrets. After a failed signup email send, the site removes the unverified account and its code, so the same details can be retried. The canonical URL and sitemap use the active `pages.dev` hostname until a custom domain is connected. Update `NEXT_PUBLIC_SITE_URL` in the Pages environment variables when changing domains.
+
+Production Turnstile is configured for `pimxeltex.pages.dev`. Local development can use Cloudflare's documented test keys. The Resend Worker secrets are present in production, but delivery still depends on a verified sending domain and any recipient limits on the Resend account. The first-party D1 visit tracker works after cookie consent; a Cloudflare Web Analytics beacon additionally needs its token. Set service values through Cloudflare secrets and public build variables; never commit them. `npm run security:secrets` scans the current tracked and unignored worktree files for common credential formats.
 
 D1 has no browser database key or database-enforced row-level policies. Keep the D1 binding on the Pages server runtime and scope private reads and writes in server handlers. The public D1 database ID in `wrangler.toml` is an identifier, not an access key.
 

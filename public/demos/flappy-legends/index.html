@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="icon" type="image/svg+xml" href="/icon.svg" />
+<meta name="robots" content="noindex, follow" />
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>Flappy Legends — Best Flappy Bird in the World</title>
@@ -234,6 +236,7 @@
 
 <script>
 (()=>{ "use strict";
+const localStorage=(()=>{try{return window.localStorage;}catch{const values=new Map();return{getItem:key=>values.get(key)??null,setItem:(key,value)=>values.set(key,String(value))};}})();
 const cvs=document.getElementById('game'), ctx=cvs.getContext('2d');
 const W=480,H=760, GROUND_H=96, BIRD_X=130;
 

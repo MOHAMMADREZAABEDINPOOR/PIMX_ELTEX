@@ -7,7 +7,7 @@ import { getYouTubeThumbnailUrl } from "@/lib/youtube";
 
 export const dynamic = "force-static";
 export const metadata: Metadata = {
-  title: "AI Videos, Prompts & Website Projects — PIMX_ELTEX",
+  title: "AI Videos, Prompts & Website Projects",
   description: "Watch practical AI and technology videos, explore every prompt and resource, and preview complete website projects with source files from PIMX_ELTEX.",
   alternates: { canonical: "/" },
 };
@@ -48,7 +48,7 @@ export default async function Home() {
       <div className="simple-grid">
         {posts.slice(0, 3).map((post) => <Link className="simple-card" href={`/episodes/${post.slug}`} key={post.slug}>
           <div className="simple-card-image">
-            {post.youtubeVideoId ? <Image src={getYouTubeThumbnailUrl(post.youtubeVideoId)} alt={`${post.title} video thumbnail`} fill sizes="(max-width: 700px) 100vw, 33vw" unoptimized /> : <span className="simple-image-fallback">PIMX_ELTEX</span>}
+            {post.youtubeVideoId ? <Image src={getYouTubeThumbnailUrl(post.youtubeVideoId)} alt={`Thumbnail for ${post.title}, a PIMX_ELTEX technology episode`} fill sizes="(max-width: 700px) 100vw, 33vw" unoptimized /> : <span className="simple-image-fallback">PIMX_ELTEX</span>}
             <span className="simple-play"><Play size={16} fill="currentColor" /></span>
           </div>
           <div className="simple-card-body"><span className="simple-meta">{post.category} · {post.date}</span><h3>{post.title}</h3><p>{post.excerpt}</p><span className="simple-card-link">View episode <ArrowRight size={15} /></span></div>
@@ -61,7 +61,7 @@ export default async function Home() {
       <div className="simple-section-head"><div><span className="simple-kicker">EXPLORE</span><h2 id="home-projects">Website projects</h2><p>Live previews and complete source files.</p></div><Link href="/code">All projects <ArrowRight size={16} /></Link></div>
       <div className="simple-grid">
         {projects.slice(0, 3).map((project) => <article className="simple-card" key={project.slug}>
-          <a className="simple-card-image" href={project.previewUrl} target="_blank" rel="noopener noreferrer" aria-label={`Open ${project.title} preview`}><Image src={project.coverUrl} alt={`${project.title} website preview`} fill sizes="(max-width: 700px) 100vw, 33vw" unoptimized /></a>
+          <a className="simple-card-image" href={project.previewUrl} target="_blank" rel="noopener noreferrer" aria-label={`Open ${project.title} preview`}><Image src={project.coverUrl} alt={`Screenshot of ${project.title}`} fill sizes="(max-width: 700px) 100vw, 33vw" unoptimized /></a>
           <div className="simple-card-body"><span className="simple-meta">{project.fileCount} source files</span><h3>{project.title}</h3><p>{project.description}</p><a className="simple-card-link" href={project.previewUrl} target="_blank" rel="noopener noreferrer">Open preview <ArrowUpRight size={15} /></a></div>
         </article>)}
         {!projects.length ? <p className="simple-empty">No projects published yet.</p> : null}

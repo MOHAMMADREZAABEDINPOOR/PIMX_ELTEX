@@ -72,6 +72,15 @@ for (let index = 0; index < slugs.length; index++) {
   const destination = join(publicRoot, "demos", slug);
   await mkdir(destination, { recursive: true });
   await cp(source, destination, { recursive: true });
+  const previewHtmlPath = join(destination, "index.html");
+  let previewHtml = await readFile(previewHtmlPath, "utf8");
+  previewHtml = previewHtml.replace("<head>", `<head>\n<link rel="icon" type="image/svg+xml" href="/icon.svg" />\n<meta name="robots" content="noindex, follow" />`);
+  if (slug === "flappy-legends") {
+    // The preview CSP gives demos an opaque origin. Storage access then throws;
+    // keep the game playable while retaining that isolation from account cookies.
+    previewHtml = previewHtml.replace("const cvs=document.getElementById('game'), ctx=cvs.getContext('2d');", `const localStorage=(()=>{try{return window.localStorage;}catch{const values=new Map();return{getItem:key=>values.get(key)??null,setItem:(key,value)=>values.set(key,String(value))};}})();\nconst cvs=document.getElementById('game'), ctx=cvs.getContext('2d');`);
+  }
+  await writeFile(previewHtmlPath, previewHtml);
   const paths = await sourceFiles(source);
   const files = Object.fromEntries(await Promise.all(paths.map(async (path) => [
     relative(source, path).replaceAll("\\", "/"),

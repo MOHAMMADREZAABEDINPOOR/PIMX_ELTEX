@@ -6,6 +6,8 @@ import { CommentsThread } from "@/components/comments-thread";
 import { EpisodeResources } from "@/components/episode-resources";
 import { PageTransition } from "@/components/page-transition";
 import { getPublicEpisode, getPublicPost } from "@/lib/public-content";
+import { siteConfig } from "@/lib/site-config";
+import { getYouTubeThumbnailUrl, getYouTubeWatchUrl } from "@/lib/youtube";
 
 type EpisodePageProps = { params: Promise<{ slug: string }> };
 export const dynamic = "force-static";
@@ -17,7 +19,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: EpisodePageProps): Promise<Metadata> {
   const post = await getPublicPost((await params).slug);
-  return post ? { title: post.title, description: post.excerpt, alternates: { canonical: `/episodes/${post.slug}` }, openGraph: { title: post.title, description: post.excerpt, type: "article", url: `/episodes/${post.slug}` } } : {};
+  return post ? { title: post.title, description: post.excerpt, alternates: { canonical: `/episodes/${post.slug}` }, openGraph: { title: post.title, description: post.excerpt, type: "article", url: `/episodes/${post.slug}`, images: post.youtubeVideoId ? [{ url: getYouTubeThumbnailUrl(post.youtubeVideoId), alt: `Thumbnail for ${post.title}` }] : undefined }, twitter: { card: "summary_large_image", title: post.title, description: post.excerpt, images: post.youtubeVideoId ? [getYouTubeThumbnailUrl(post.youtubeVideoId)] : undefined } } : {};
 }
 
 export default async function EpisodePage({ params }: EpisodePageProps) {
@@ -25,9 +27,21 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
   const post = await getPublicPost(slug);
   if (!post) notFound();
   const episode = await getPublicEpisode(post);
+  const videoData = post.youtubeVideoId && post.publishedAt ? {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    name: post.title,
+    description: post.excerpt,
+    thumbnailUrl: getYouTubeThumbnailUrl(post.youtubeVideoId),
+    uploadDate: post.publishedAt,
+    embedUrl: `https://www.youtube-nocookie.com/embed/${post.youtubeVideoId}`,
+    url: getYouTubeWatchUrl(post.youtubeVideoId),
+    publisher: { "@type": "Organization", name: siteConfig.name, url: siteConfig.url },
+  } : null;
 
   return (
     <PageTransition>
+      {videoData ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(videoData).replace(/</g, "\\u003c") }} /> : null}
       <article className="article-shell">
         <Link href="/episodes" transitionTypes={["nav-back"]} className="article-back"><ArrowLeft size={14} /> Episode archive</Link>
         <header className="article-header">

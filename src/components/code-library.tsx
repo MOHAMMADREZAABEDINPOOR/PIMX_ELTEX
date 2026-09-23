@@ -8,7 +8,7 @@ export function CodeLibrary({ projects }: { projects: PublicProject[] }) {
       {projects.map((project, index) => (
         <article className="project-card" id={project.slug} key={project.slug} data-tilt>
           <a className="project-cover" href={project.previewUrl} target="_blank" rel="noopener noreferrer" aria-label={`Open ${project.title} live preview in a new tab`}>
-            <Image src={project.coverUrl} alt={`${project.title} project preview`} fill sizes="(max-width: 640px) 100vw, (max-width: 900px) 50vw, 600px" preload={index === 0} unoptimized />
+            <Image src={project.coverUrl} alt={`Screenshot of ${project.title}`} fill sizes="(max-width: 640px) 100vw, (max-width: 900px) 50vw, 600px" preload={index === 0} unoptimized />
             <span className="preview-curtain"><MonitorPlay size={20} aria-hidden="true" /> Open live preview</span>
           </a>
           <div className="project-card-body">

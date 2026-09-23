@@ -1,18 +1,19 @@
 import type { MetadataRoute } from "next";
-import { getPublishedPosts } from "@/lib/public-content";
+import { getPublishedPosts, getPublishedProjects } from "@/lib/public-content";
 import { siteConfig } from "@/lib/site-config";
+import { getYouTubeThumbnailUrl } from "@/lib/youtube";
 
 export const dynamic = "force-static";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const posts = await getPublishedPosts();
+  const [posts, projects] = await Promise.all([getPublishedPosts(), getPublishedProjects()]);
   return [
-    { url: siteConfig.url },
-    { url: `${siteConfig.url}/episodes` },
-    { url: `${siteConfig.url}/code` },
+    { url: siteConfig.url, changeFrequency: "weekly", priority: 1 },
+    { url: `${siteConfig.url}/episodes`, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${siteConfig.url}/code`, changeFrequency: "weekly", priority: 0.9, images: projects.map((project) => new URL(project.coverUrl, siteConfig.url).href) },
     { url: `${siteConfig.url}/privacy` },
     { url: `${siteConfig.url}/terms` },
     { url: `${siteConfig.url}/contact` },
-    ...posts.map((post) => ({ url: `${siteConfig.url}/episodes/${post.slug}`, lastModified: post.publishedAt ? new Date(post.publishedAt) : undefined })),
+    ...posts.map((post) => ({ url: `${siteConfig.url}/episodes/${post.slug}`, lastModified: post.publishedAt ? new Date(post.publishedAt) : undefined, changeFrequency: "monthly" as const, priority: 0.8, images: post.youtubeVideoId ? [getYouTubeThumbnailUrl(post.youtubeVideoId)] : [] })),
   ];
 }
