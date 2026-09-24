@@ -71,7 +71,10 @@ export default {
     if (staticAsset || url.pathname.startsWith("/_next/") || url.pathname.startsWith("/demos/") || url.pathname.startsWith("/downloads/") || url.pathname.startsWith("/project-previews/")) {
       const assetUrl = new URL(staticAsset || url.pathname, url);
       assetUrl.search = "";
-      const response = await env.ASSETS.fetch(new Request(assetUrl, request));
+      let response = await env.ASSETS.fetch(new Request(assetUrl, request));
+      if (response.status === 404 && url.pathname.startsWith("/_next/")) {
+        response = await fetch(new URL(url.pathname + url.search, UPSTREAM));
+      }
       return secureStaticResponse(response, url.pathname);
     }
 
