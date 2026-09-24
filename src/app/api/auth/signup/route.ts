@@ -33,7 +33,7 @@ export async function POST(request: Request) {
   }
   const environment = await getEnvironment();
   if (process.env.NODE_ENV === "production" && !(await verifyTurnstile(parsed.data.turnstileToken, environment.turnstileSecret))) return captchaRequiredResponse();
-  if (process.env.NODE_ENV === "production" && (!environment.resendApiKey || !environment.resendFrom)) {
+  if (process.env.NODE_ENV === "production" && (!environment.smtpUser || !environment.smtpAppPassword)) {
     return Response.json({ message: "Email verification is temporarily unavailable. Please try again later." }, { status: 503 });
   }
   const db = await getDatabase();
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
     stage = "otp";
     await db.insert(otps).values({ id: crypto.randomUUID(), userId, email: parsed.data.email, purpose: "verify_email", codeHash: await hashOtp(parsed.data.email, code, environment.authSecret), expiresAt: new Date(Date.now() + 10 * 60_000) });
     stage = "email";
-    const delivery = await sendOtpEmail({ to: parsed.data.email, code, purpose: "verify your email", apiKey: environment.resendApiKey, from: environment.resendFrom });
+    const delivery = await sendOtpEmail({ to: parsed.data.email, code, purpose: "verify your email", user: environment.smtpUser, appPassword: environment.smtpAppPassword });
     return Response.json({ message: "Check your inbox for the verification code.", ...(!delivery.sent && process.env.NODE_ENV !== "production" ? { devCode: code } : {}) }, { status: 201 });
   } catch (error) {
     console.error("Signup failed", error instanceof Error ? error.message : "Unknown signup error");
@@ -70,11 +70,11 @@ export async function POST(request: Request) {
       : error && typeof error === "object" && "name" in error && error.name === "EmailDeliveryError" && "status" in error && typeof error.status === "number" ? error.status
         : undefined;
     if (stage === "email" || emailStatus !== undefined) {
-      const message = emailStatus === 401
-        ? "Email service credentials are invalid. Update the Resend API key and try again."
-        : emailStatus === 403 || emailStatus === 422
-          ? "Resend rejected the sender or recipient. Verify the sender domain and account restrictions in Resend."
-          : "The verification email could not be sent. Please check the Resend sender settings and try again.";
+      const message = emailStatus === 535 || emailStatus === 534
+        ? "Email sending is not configured correctly. Check the Gmail App Password."
+        : emailStatus === 550 || emailStatus === 553
+          ? "Gmail rejected the recipient address. Check the email address and try again."
+          : "The verification email could not be sent. Please try again later.";
       return Response.json({ message }, { status: 502 });
     }
     const message = stage === "password" ? "Password processing failed. Please try again."

@@ -20,7 +20,7 @@ There is no standalone prompt library or toolbox.
 - Cloudflare Pages through OpenNext advanced mode
 - Cloudflare D1 with Drizzle ORM
 - Cloudflare R2 for uploaded preview and source files
-- Resend email, Cloudflare Turnstile, Web Crypto password hashing
+- Gmail SMTP over TLS, Cloudflare Turnstile, Web Crypto password hashing
 
 ## Test locally
 
@@ -59,7 +59,7 @@ NEXT_PUBLIC_CONTACT_EMAIL=your-real-contact-address@example.com
 
 The production site is `https://pimxeltex.pages.dev`. The Cloudflare Pages project is connected directly to this GitHub repository, so every push to `main` builds and deploys automatically. GitHub Actions and a `CLOUDFLARE_API_TOKEN` repository secret are not required.
 
-Cloudflare R2 is not enabled on the account, so the R2 binding is currently omitted from `wrangler.toml`. Public pages work; uploading or serving episode bundles requires enabling R2, creating `pimx-eltex-media`, and restoring the binding. Production email verification also requires a verified Resend sender and `RESEND_API_KEY` secret. Do not advertise account creation as ready until these are configured.
+Cloudflare R2 is not enabled on the account, so the R2 binding is currently omitted from `wrangler.toml`. Public pages work; uploading or serving episode bundles requires enabling R2, creating `pimx-eltex-media`, and restoring the binding. Production email verification requires a Gmail App Password in the Worker secrets. Do not advertise account creation as ready until this is configured and a real email is received.
 
 ```bash
 npx wrangler login
@@ -71,8 +71,8 @@ Copy the returned D1 `database_id` into `wrangler.worker.toml`, then add backend
 
 ```bash
 npx wrangler secret put AUTH_SECRET --config wrangler.worker.toml
-npx wrangler secret put RESEND_API_KEY --config wrangler.worker.toml
-npx wrangler secret put RESEND_FROM --config wrangler.worker.toml
+npx wrangler secret put SMTP_USER --config wrangler.worker.toml
+npx wrangler secret put SMTP_APP_PASSWORD --config wrangler.worker.toml
 npx wrangler secret put TURNSTILE_SECRET_KEY --config wrangler.worker.toml
 ```
 
@@ -135,23 +135,23 @@ The dependency scan currently reports no production dependency vulnerabilities. 
 - Consent-controlled Cloudflare Web Analytics and a versioned cookie preference
 - Compressed WebP artwork and project covers, YouTube thumbnails, and a server-generated PNG social image
 
-Before a public launch, verify the Resend sender domain, configure Turnstile for the production hostname, rotate a random `AUTH_SECRET` of at least 32 bytes, and review legal/privacy copy for your jurisdiction.
+Before a public launch, configure Gmail SMTP and test a real signup email, configure Turnstile for the production hostname, rotate a random `AUTH_SECRET` of at least 32 bytes, and review legal/privacy copy for your jurisdiction.
 Enable **Always Use HTTPS** for the production zone in Cloudflare SSL/TLS settings; the application adds HSTS and upgrades insecure subresources after the first secure response.
 
 Cloudflare Pages serves the `pages.dev` hostname over HTTPS. For a future custom domain, enable **Always Use HTTPS** in that zone so redirects happen at the edge.
 
 ### Launch values that must be real
 
-The contact and privacy pages use `pimxeltex369@gmail.com`. This is a recipient address; it does not authorize sending verification codes from Gmail. The site sends OTPs through Resend, not Gmail SMTP. To enable public signup:
+The contact and privacy pages use `pimxeltex369@gmail.com`. The site now sends OTPs directly through Gmail SMTP (`smtp.gmail.com`, port 465, TLS). No custom domain or Resend account is needed. To enable public signup:
 
-1. Add a domain you own in [Resend Domains](https://resend.com/domains). Add the exact SPF/DKIM DNS records shown there and wait for the **Sending** status to be verified. A `pages.dev` subdomain or `gmail.com` address cannot be verified as your sending domain.
-2. Create a Resend API key with sending permission. Set it as the `RESEND_API_KEY` secret on the **pimx-eltex Worker**, not just on the Pages project.
-3. Set the Worker secret `RESEND_FROM` to a sender at that verified domain, for example `PIMX_ELTEX <verify@your-owned-domain.example>`. The mailbox does not need to be a Gmail account; the domain must match the verified sending domain.
-4. Retry signup and check [Resend Logs](https://resend.com/logs) if delivery is rejected. Resend's testing sender can be restricted to the account owner's email and is not suitable for public registration.
+1. Sign in to the Gmail account that will send codes (`pimxeltex369@gmail.com` by default). Turn on [2-Step Verification](https://myaccount.google.com/security).
+2. Open [Google App Passwords](https://myaccount.google.com/apppasswords), create one for `PIMX_ELTEX`, and copy its 16-character value. Do not use the normal Gmail password or paste the App Password into this repository or a chat.
+3. In Cloudflare, open **Workers & Pages → pimx-eltex Worker → Settings → Variables and Secrets**. Set `SMTP_USER` to that full Gmail address and `SMTP_APP_PASSWORD` to the new App Password. Both belong to the **Worker**, not the Pages project. The `wrangler secret put` commands above are an alternative.
+4. Retry signup with an email you can access. Check the inbox and spam folder, enter the six-digit code, and verify login. A failed send removes the unverified account and code, so the same details can be retried.
 
-Use the `wrangler secret put` commands above to update Worker secrets. After a failed signup email send, the site removes the unverified account and its code, so the same details can be retried. The canonical URL and sitemap use the active `pages.dev` hostname until a custom domain is connected. Update `NEXT_PUBLIC_SITE_URL` in the Pages environment variables when changing domains.
+The existing Resend secrets are unused by the new code. Gmail IMAP/POP and forwarding settings are not needed to send OTPs. The canonical URL and sitemap use the active `pages.dev` hostname until a custom domain is connected. Update `NEXT_PUBLIC_SITE_URL` in the Pages environment variables when changing domains.
 
-Production Turnstile is configured for `pimxeltex.pages.dev`. Local development can use Cloudflare's documented test keys. The Resend Worker secrets are present in production, but delivery still depends on a verified sending domain and any recipient limits on the Resend account. The first-party D1 visit tracker works after cookie consent; a Cloudflare Web Analytics beacon additionally needs its token. Set service values through Cloudflare secrets and public build variables; never commit them. `npm run security:secrets` scans the current tracked and unignored worktree files for common credential formats.
+Production Turnstile is configured for `pimxeltex.pages.dev`. Local development can use Cloudflare's documented test keys. Gmail delivery depends on the App Password being configured in the Worker and on Google's account sending limits. The first-party D1 visit tracker works after cookie consent; a Cloudflare Web Analytics beacon additionally needs its token. Set service values through Cloudflare secrets and public build variables; never commit them. `npm run security:secrets` scans the current tracked and unignored worktree files for common credential formats.
 
 D1 has no browser database key or database-enforced row-level policies. Keep the D1 binding on the Pages server runtime and scope private reads and writes in server handlers. The public D1 database ID in `wrangler.toml` is an identifier, not an access key.
 

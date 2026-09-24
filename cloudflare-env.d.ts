@@ -3,8 +3,8 @@ interface CloudflareEnv {
   MEDIA?: R2Bucket;
   ASSETS: Fetcher;
   APP_URL: string;
-  RESEND_FROM: string;
+  SMTP_USER: string;
   AUTH_SECRET: string;
-  RESEND_API_KEY: string;
+  SMTP_APP_PASSWORD: string;
   TURNSTILE_SECRET_KEY: string;
 }

@@ -23,6 +23,7 @@
     "content:publish:muse-1": "node scripts/publish-muse-spark-prompt-1.mjs",
     "content:sync:muse": "node scripts/sync-muse-spark-episode.mjs",
     "test:previews": "node scripts/verify-live-previews.mjs",
+    "test:smtp": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test scripts/smtp-client.test.mjs",
     "test:comment-reactions": "node scripts/verify-comment-reactions.mjs",
     "test:comment-deletion": "node scripts/verify-comment-deletion.mjs",
     "content:capture-previews": "node scripts/capture-project-previews.mjs"

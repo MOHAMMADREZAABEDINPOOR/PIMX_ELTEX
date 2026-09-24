@@ -10,8 +10,8 @@ export async function getEnvironment() {
   if (process.env.NODE_ENV === "production" && (!configuredAuthSecret || configuredAuthSecret.length < 32)) throw new Error("AUTH_SECRET must contain at least 32 characters in production.");
   return {
     authSecret: configuredAuthSecret || "local-development-secret-change-before-deploy",
-    resendApiKey: cloudflare.RESEND_API_KEY || process.env.RESEND_API_KEY,
-    resendFrom: cloudflare.RESEND_FROM || process.env.RESEND_FROM,
+    smtpUser: cloudflare.SMTP_USER || process.env.SMTP_USER,
+    smtpAppPassword: cloudflare.SMTP_APP_PASSWORD || process.env.SMTP_APP_PASSWORD,
     turnstileSecret: cloudflare.TURNSTILE_SECRET_KEY || process.env.TURNSTILE_SECRET_KEY,
   };
 }

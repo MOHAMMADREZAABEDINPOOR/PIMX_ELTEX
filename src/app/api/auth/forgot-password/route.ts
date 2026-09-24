@@ -18,7 +18,7 @@ export async function POST(request: Request) {
   if (!parsed.success) return Response.json({ message: "Enter a valid email address.", errors: { email: "Enter a valid email address." } }, { status: 400 });
   const environment = await getEnvironment();
   if (process.env.NODE_ENV === "production" && !(await verifyTurnstile(parsed.data.turnstileToken, environment.turnstileSecret))) return captchaRequiredResponse();
-  if (process.env.NODE_ENV === "production" && (!environment.resendApiKey || !environment.resendFrom)) {
+  if (process.env.NODE_ENV === "production" && (!environment.smtpUser || !environment.smtpAppPassword)) {
     return Response.json({ message: "Password recovery email is temporarily unavailable. Please try again later." }, { status: 503 });
   }
   const db = await getDatabase();
@@ -29,15 +29,15 @@ export async function POST(request: Request) {
     const otpId = crypto.randomUUID();
     try {
       await db.insert(otps).values({ id: otpId, userId: user.id, email: parsed.data.email, purpose: "reset_password", codeHash: await hashOtp(parsed.data.email, code, environment.authSecret), expiresAt: new Date(Date.now() + 10 * 60_000) });
-      const delivery = await sendOtpEmail({ to: parsed.data.email, code, purpose: "reset your password", apiKey: environment.resendApiKey, from: environment.resendFrom });
+      const delivery = await sendOtpEmail({ to: parsed.data.email, code, purpose: "reset your password", user: environment.smtpUser, appPassword: environment.smtpAppPassword });
       return Response.json({ message: "If an account exists, a recovery code is on its way.", ...(!delivery.sent && process.env.NODE_ENV !== "production" ? { devCode: code } : {}) });
     } catch (error) {
       await db.delete(otps).where(eq(otps.id, otpId)).catch(() => undefined);
       const status = error instanceof EmailDeliveryError ? error.status : 0;
-      const message = status === 401
-        ? "Email service credentials are invalid. Update the Resend API key and try again."
-        : status === 403 || status === 422
-          ? "Resend rejected the sender or recipient. Verify the sender domain and account restrictions in Resend."
+      const message = status === 535 || status === 534
+        ? "Email sending is not configured correctly. Check the Gmail App Password."
+        : status === 550 || status === 553
+          ? "Gmail rejected the recipient address. Check the email address and try again."
           : "The recovery email could not be sent. Please try again.";
       return Response.json({ message }, { status: 502 });
     }
