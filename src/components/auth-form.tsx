@@ -12,6 +12,7 @@ import { type FieldErrors, readFormResult, validateAuthFields } from "@/lib/form
 
 type Mode = "login" | "signup" | "forgot";
 type AuthResult = { message?: string; devCode?: string; user?: { role: string }; captchaRequired?: boolean; errors?: FieldErrors };
+const birthMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] as const;
 
 function valuesFromForm(form: HTMLFormElement) {
   return Object.fromEntries(Array.from(new FormData(form).entries(), ([key, value]) => [key, String(value)]));
@@ -28,6 +29,9 @@ export function AuthForm({ mode }: { mode: Mode }) {
   const [message, setMessage] = useState("");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [birthMonth, setBirthMonth] = useState("");
+  const [birthDay, setBirthDay] = useState("");
   const [turnstileToken, setTurnstileToken] = useState("");
   const [captchaVersion, setCaptchaVersion] = useState(0);
 
@@ -83,10 +87,15 @@ export function AuthForm({ mode }: { mode: Mode }) {
           <div className="field"><label htmlFor="name">Display name</label><input id="name" name="name" autoComplete="name" required minLength={2} maxLength={80} placeholder="Your display name" aria-invalid={invalid("name")} aria-describedby={describedBy("name")} onChange={() => clearField("name")} /><FieldError id="name-error" message={fieldErrors.name} /></div>
           <div className="field"><label htmlFor="age">Age</label><input id="age" name="age" type="number" inputMode="numeric" required min={13} max={120} placeholder="Your age" aria-invalid={invalid("age")} aria-describedby={describedBy("age")} onChange={() => clearField("age")} /><FieldError id="age-error" message={fieldErrors.age} /></div>
         </div>
+        <div className="birth-date-group"><span className="birth-date-label">Birthday <small>(optional)</small></span><div className="form-row">
+          <div className="field"><label htmlFor="birthMonth">Month</label><select id="birthMonth" name="birthMonth" value={birthMonth} aria-invalid={invalid("birthMonth")} aria-describedby={describedBy("birthMonth", "birthday-hint")} onChange={(event) => { const nextMonth = event.target.value; setBirthMonth(nextMonth); if (birthDay && Number(birthDay) > new Date(2000, Number(nextMonth), 0).getDate()) setBirthDay(""); clearField("birthMonth"); clearField("birthDay"); }}><option value="">Select month</option>{birthMonths.map((month, index) => <option key={month} value={index + 1}>{month}</option>)}</select><FieldError id="birthMonth-error" message={fieldErrors.birthMonth} /></div>
+          <div className="field"><label htmlFor="birthDay">Day</label><select id="birthDay" name="birthDay" value={birthDay} aria-invalid={invalid("birthDay")} aria-describedby={describedBy("birthDay", "birthday-hint")} onChange={(event) => { setBirthDay(event.target.value); clearField("birthDay"); clearField("birthMonth"); }}><option value="">Select day</option>{Array.from({ length: birthMonth ? new Date(2000, Number(birthMonth), 0).getDate() : 31 }, (_, index) => <option key={index + 1} value={index + 1}>{index + 1}</option>)}</select><FieldError id="birthDay-error" message={fieldErrors.birthDay} /></div>
+        </div><small className="field-hint" id="birthday-hint">Add both month and day if you want to share your birthday. Birth year is not needed.</small></div>
         <div className="field"><label htmlFor="username">Username</label><input id="username" name="username" autoComplete="username" required minLength={3} maxLength={24} pattern="[A-Za-z0-9_]+" placeholder="your_username" aria-invalid={invalid("username")} aria-describedby={describedBy("username", "username-hint")} onChange={() => clearField("username")} /><small className="field-hint" id="username-hint">Letters, numbers, and underscores only.</small><FieldError id="username-error" message={fieldErrors.username} /></div>
       </> : null}
       <div className="field"><label htmlFor="email">Email address</label><input id="email" name="email" type="email" autoComplete="email" required maxLength={254} placeholder="you@example.com" aria-invalid={invalid("email")} aria-describedby={describedBy("email")} onChange={() => clearField("email")} /><FieldError id="email-error" message={fieldErrors.email} /></div>
       {mode !== "forgot" ? <div className="field"><label htmlFor="password">Password</label><PasswordField id="password" name="password" autoComplete={mode === "login" ? "current-password" : "new-password"} minLength={mode === "signup" ? 12 : 8} maxLength={128} required value={password} placeholder={mode === "signup" ? "Create a strong password" : "Your password"} aria-invalid={invalid("password")} aria-describedby={describedBy("password", mode === "signup" ? "password-requirements" : undefined)} onChange={(event) => { setPassword(event.target.value); clearField("password"); }} />{mode === "signup" ? <div id="password-requirements"><PasswordChecklist password={password} /></div> : null}<FieldError id="password-error" message={fieldErrors.password} /></div> : null}
+      {mode === "signup" ? <div className="field"><label htmlFor="confirmPassword">Repeat password</label><PasswordField id="confirmPassword" name="confirmPassword" autoComplete="new-password" required maxLength={128} value={confirmPassword} placeholder="Enter your password again" aria-invalid={invalid("confirmPassword")} aria-describedby={describedBy("confirmPassword", confirmPassword ? "password-match-hint" : undefined)} onChange={(event) => { setConfirmPassword(event.target.value); clearField("confirmPassword"); }} />{confirmPassword ? <small className={`field-hint${confirmPassword === password ? " password-match" : ""}`} id="password-match-hint" aria-live="polite">{confirmPassword === password ? "✓ Passwords match" : "Passwords do not match yet."}</small> : null}<FieldError id="confirmPassword-error" message={fieldErrors.confirmPassword} /></div> : null}
       {mode === "login" ? <div style={{ textAlign: "right" }}><Link className="text-link" href="/forgot-password">Forgot password?</Link></div> : null}
       <TurnstileWidget resetKey={captchaVersion} onToken={setTurnstileToken} />
       {message ? <div className="form-message form-error" role="alert" aria-live="polite">{message}</div> : null}

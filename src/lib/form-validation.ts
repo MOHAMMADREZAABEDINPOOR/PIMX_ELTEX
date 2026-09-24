@@ -40,6 +40,19 @@ export function displayNameError(value: string) {
   return "";
 }
 
+export function birthDateErrors(monthValue = "", dayValue = ""): FieldErrors {
+  const errors: FieldErrors = {};
+  const month = monthValue.trim();
+  const day = dayValue.trim();
+  if (!month && !day) return errors;
+  if (!month) errors.birthMonth = "Select a birth month, or leave both birthday fields empty.";
+  else if (!/^(?:[1-9]|1[0-2])$/.test(month)) errors.birthMonth = "Select a valid birth month.";
+  if (!day) errors.birthDay = "Select a birth day, or leave both birthday fields empty.";
+  else if (!/^(?:[1-9]|[12][0-9]|3[01])$/.test(day)) errors.birthDay = "Select a valid birth day.";
+  else if (!errors.birthMonth && Number(day) > new Date(2000, Number(month), 0).getDate()) errors.birthDay = "That day does not exist in the selected month.";
+  return errors;
+}
+
 export function validateAuthFields(mode: "login" | "signup" | "forgot", values: Record<string, string>): FieldErrors {
   const errors: FieldErrors = {};
   if (mode === "signup") {
@@ -49,6 +62,7 @@ export function validateAuthFields(mode: "login" | "signup" | "forgot", values: 
     const nameError = displayNameError(name);
     if (nameError) errors.name = nameError;
     if (!Number.isInteger(age) || age < 13 || age > 120) errors.age = "Age must be between 13 and 120.";
+    Object.assign(errors, birthDateErrors(values.birthMonth, values.birthDay));
     if (!/^[A-Za-z0-9_]{3,24}$/.test(username)) errors.username = "Use 3–24 letters, numbers, or underscores.";
   }
   const email = values.email?.trim() || "";
@@ -58,6 +72,9 @@ export function validateAuthFields(mode: "login" | "signup" | "forgot", values: 
     if (mode === "signup") {
       const error = passwordError(password);
       if (error) errors.password = error;
+      else if (password.length > 128) errors.password = "Password must contain no more than 128 characters.";
+      if (!values.confirmPassword) errors.confirmPassword = "Repeat your password.";
+      else if (values.confirmPassword !== password) errors.confirmPassword = "Passwords do not match.";
     } else if (password.length < 8) errors.password = "Enter your password (at least 8 characters).";
   }
   return errors;

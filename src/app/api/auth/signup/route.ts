@@ -5,12 +5,28 @@ import { csrfError, hasValidMutationOrigin } from "@/lib/csrf";
 import { otps, users } from "@/db/schema";
 import { EmailDeliveryError, sendOtpEmail } from "@/lib/email";
 import { getEnvironment, verifyTurnstile } from "@/lib/environment";
+import { birthDateErrors } from "@/lib/form-validation";
 import { getRequestMetadata } from "@/lib/request-metadata";
 import { captchaRequiredResponse, enforceRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { hashOtp, hashPassword, randomOtp } from "@/lib/security";
 import { strongPasswordSchema } from "@/lib/validation";
 
-const inputSchema = z.object({ name: z.string().trim().min(2).max(80), age: z.coerce.number().int().min(13).max(120), username: z.string().trim().regex(/^[a-zA-Z0-9_]{3,24}$/), email: z.email().max(254).transform((value) => value.toLowerCase()), password: strongPasswordSchema, turnstileToken: z.string().optional() });
+const inputSchema = z.object({
+  name: z.string().trim().min(2).max(80),
+  age: z.coerce.number().int().min(13).max(120),
+  birthMonth: z.string().default(""),
+  birthDay: z.string().default(""),
+  username: z.string().trim().regex(/^[a-zA-Z0-9_]{3,24}$/),
+  email: z.email().max(254).transform((value) => value.toLowerCase()),
+  password: strongPasswordSchema,
+  confirmPassword: z.string().min(1, "Repeat your password."),
+  turnstileToken: z.string().optional(),
+}).superRefine((value, context) => {
+  if (value.password !== value.confirmPassword) context.addIssue({ code: "custom", path: ["confirmPassword"], message: "Passwords do not match." });
+  for (const [field, message] of Object.entries(birthDateErrors(value.birthMonth, value.birthDay))) {
+    context.addIssue({ code: "custom", path: [field], message });
+  }
+});
 
 export async function POST(request: Request) {
   if (!hasValidMutationOrigin(request)) return csrfError();
@@ -23,6 +39,7 @@ export async function POST(request: Request) {
       const field = String(issue.path[0] || "");
       if (!field || errors[field]) continue;
       errors[field] = field === "password" ? issue.message
+        : field === "confirmPassword" || field === "birthMonth" || field === "birthDay" ? issue.message
         : field === "username" ? "Username must contain 3 to 24 letters, numbers, or underscores."
           : field === "email" ? "Enter a valid email address."
             : field === "age" ? "Age must be between 13 and 120."
@@ -54,7 +71,7 @@ export async function POST(request: Request) {
     stage = "password";
     const passwordHash = await hashPassword(parsed.data.password);
     stage = "user";
-    await db.insert(users).values({ id: userId, name: parsed.data.name, age: parsed.data.age, username: parsed.data.username, email: parsed.data.email, passwordHash, countryCode: metadata.countryCode });
+    await db.insert(users).values({ id: userId, name: parsed.data.name, age: parsed.data.age, birthMonth: parsed.data.birthMonth ? Number(parsed.data.birthMonth) : null, birthDay: parsed.data.birthDay ? Number(parsed.data.birthDay) : null, username: parsed.data.username, email: parsed.data.email, passwordHash, countryCode: metadata.countryCode });
     stage = "otp";
     await db.insert(otps).values({ id: crypto.randomUUID(), userId, email: parsed.data.email, purpose: "verify_email", codeHash: await hashOtp(parsed.data.email, code, environment.authSecret), expiresAt: new Date(Date.now() + 10 * 60_000) });
     stage = "email";

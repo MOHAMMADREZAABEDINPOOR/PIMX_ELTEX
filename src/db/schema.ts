@@ -25,6 +25,8 @@ export const users = sqliteTable(
     name: text("name").notNull(),
     username: text("username").notNull(),
     age: integer("age"),
+    birthMonth: integer("birth_month"),
+    birthDay: integer("birth_day"),
     email: text("email").notNull(),
     passwordHash: text("password_hash").notNull(),
     avatarUrl: text("avatar_url"),

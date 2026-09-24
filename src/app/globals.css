@@ -408,8 +408,9 @@ a { color: inherit; text-decoration: none; }
 .comments-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
 .comments-heading h2 { margin: 0; font-size: 28px; letter-spacing: -.04em; }
 .comment-compose, .reply-compose { display: grid; gap: 10px; }
-.comment-compose textarea, .reply-compose textarea, .field input, .field textarea { width: 100%; resize: vertical; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--text); outline: 0; padding: 14px 15px; transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease; }
-.comment-compose textarea:focus, .reply-compose textarea:focus, .field input:focus, .field textarea:focus { border-color: var(--accent-2); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-2) 14%, transparent); }
+.comment-compose textarea, .reply-compose textarea, .field input, .field textarea, .field select { width: 100%; resize: vertical; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--text); outline: 0; padding: 14px 15px; transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease; }
+.field select { min-height: 47px; cursor: pointer; font: inherit; color-scheme: light dark; }
+.comment-compose textarea:focus, .reply-compose textarea:focus, .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--accent-2); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-2) 14%, transparent); }
 .compose-actions { display: flex; justify-content: flex-end; gap: 8px; }
 .comment-list { margin-top: 35px; }
 .comment { position: relative; padding: 0 0 28px; }
@@ -442,12 +443,17 @@ a { color: inherit; text-decoration: none; }
 .password-toggle:active { transform: scale(.94); }
 .password-toggle:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 1px; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+.birth-date-group { display: grid; gap: 10px; padding: 14px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface-soft); }
+.birth-date-label { font-size: 12px; font-weight: 650; }
+.birth-date-label small { color: var(--faint); font-size: 10px; font-weight: 450; }
+.birth-date-group .field-hint { margin-top: 0; }
+.password-match { color: #24945d; }
 .auth-form .button { width: 100%; min-height: 47px; }
 .form-note { margin-top: 22px !important; text-align: center; color: var(--muted); font-size: 12px !important; }
 .form-note a { color: var(--text); font-weight: 650; }
 .form-message { padding: 11px 13px; border-radius: 11px; background: color-mix(in srgb, var(--accent-2) 12%, transparent); color: var(--text); font-size: 12px; }
 .form-message.form-error { border: 1px solid color-mix(in srgb, #ef4444 40%, transparent); background: color-mix(in srgb, #ef4444 11%, transparent); }
-.field input[aria-invalid="true"], .field textarea[aria-invalid="true"] { border-color: #ef6464; box-shadow: 0 0 0 3px color-mix(in srgb, #ef4444 12%, transparent); }
+.field input[aria-invalid="true"], .field textarea[aria-invalid="true"], .field select[aria-invalid="true"] { border-color: #ef6464; box-shadow: 0 0 0 3px color-mix(in srgb, #ef4444 12%, transparent); }
 .single-otp { text-align: center; letter-spacing: .55em; font: 650 24px var(--font-geist-mono); }
 
 .account-menu { position: relative; }
