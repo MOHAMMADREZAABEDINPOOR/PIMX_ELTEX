@@ -36,10 +36,15 @@ export function SiteHeader() {
   }, [loadUser]);
 
   async function signOut() {
-    await fetch("/api/auth/logout", { method: "POST" });
-    setUser(null); setAccountOpen(false);
-    window.dispatchEvent(new Event("pimx-auth-change"));
-    router.push("/"); router.refresh();
+    try {
+      const response = await fetch("/api/auth/logout", { method: "POST" });
+      if (!response.ok) throw new Error("Sign out failed.");
+      setUser(null); setAccountOpen(false);
+      window.dispatchEvent(new Event("pimx-auth-change"));
+      router.push("/"); router.refresh();
+    } catch {
+      window.alert("Sign out could not be completed. Please try again.");
+    }
   }
 
   return <header className="site-header-shell" style={{ viewTransitionName: "persistent-nav" }}><div className="site-header">

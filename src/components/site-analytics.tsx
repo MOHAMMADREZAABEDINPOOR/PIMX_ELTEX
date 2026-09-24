@@ -37,8 +37,10 @@ export function SiteAnalytics() {
       void fetch("/api/analytics/visits", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ visitId, durationSeconds }), keepalive: true }).catch(() => undefined);
     }
 
-    const heartbeat = window.setInterval(sendDuration, 30_000);
-    return () => { stopped = true; window.clearInterval(heartbeat); sendDuration(); };
+    const heartbeat = window.setInterval(() => { if (!document.hidden) sendDuration(); }, 120_000);
+    const onVisibilityChange = () => { if (document.hidden) sendDuration(); };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => { stopped = true; window.clearInterval(heartbeat); document.removeEventListener("visibilitychange", onVisibilityChange); sendDuration(); };
   }, [accepted, pathname]);
 
   return null;

@@ -6,7 +6,14 @@ export function hasValidMutationOrigin(request: Request) {
   try {
     const requestUrl = new URL(request.url);
     const originUrl = new URL(origin);
-    return requestUrl.protocol === originUrl.protocol && requestUrl.host === originUrl.host;
+    if (requestUrl.protocol === originUrl.protocol && requestUrl.host === originUrl.host) return true;
+    const workerHost = "pimx-eltex.mohammadrezaabedinpoor6.workers.dev";
+    const isPagesHost = (host: string) => host === "pimxeltex.pages.dev" || host.endsWith(".pimxeltex.pages.dev");
+    // OpenNext currently exposes "https://undefined" as request.url for Pages Service binding calls.
+    return requestUrl.protocol === "https:"
+      && originUrl.protocol === "https:"
+      && isPagesHost(originUrl.hostname)
+      && (requestUrl.hostname === workerHost || requestUrl.hostname === "undefined");
   } catch {
     return false;
   }

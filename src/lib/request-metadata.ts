@@ -15,8 +15,7 @@ export async function getRequestMetadata(request: Request): Promise<RequestMetad
   const countryCode = cloudflare?.country || request.headers.get("cf-ipcountry") || null;
   const city = cloudflare?.city || request.headers.get("cf-ipcity") || null;
   const region = cloudflare?.region || request.headers.get("cf-region") || null;
-  const forwardedFor = request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
-  const ipAddress = forwardedFor || null;
+  const ipAddress = request.headers.get("cf-connecting-ip") || null;
   const deviceType = /tablet|ipad/i.test(userAgent) ? "Tablet" : /mobile|android|iphone/i.test(userAgent) ? "Mobile" : "Desktop";
   const operatingSystem = /windows/i.test(userAgent) ? "Windows" : /iphone|ipad|ios/i.test(userAgent) ? "iOS" : /android/i.test(userAgent) ? "Android" : /mac os|macintosh/i.test(userAgent) ? "macOS" : /linux/i.test(userAgent) ? "Linux" : "Unknown";
   const browser = /edg\//i.test(userAgent) ? "Edge" : /firefox\//i.test(userAgent) ? "Firefox" : /chrome\//i.test(userAgent) ? "Chrome" : /safari\//i.test(userAgent) ? "Safari" : "Unknown";

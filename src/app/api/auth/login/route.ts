@@ -9,6 +9,7 @@ import { getRequestMetadata } from "@/lib/request-metadata";
 import { encryptSensitiveValue } from "@/lib/encryption";
 import { captchaRequiredResponse, enforceIdentityRateLimit, enforceRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { hashPassword, passwordNeedsUpgrade, randomToken, sha256, verifyPassword } from "@/lib/security";
+import { SESSION_COOKIE_NAME, sessionCookieOptions, sessionPolicy } from "@/lib/session-policy";
 
 const inputSchema = z.object({ email: z.email().max(254).transform((value) => value.toLowerCase()), password: z.string().min(8).max(128), turnstileToken: z.string().optional() });
 
@@ -39,10 +40,10 @@ export async function POST(request: Request) {
   const token = randomToken();
   const now = new Date();
   const ipAddressCiphertext = metadata.ipAddress ? await encryptSensitiveValue(metadata.ipAddress, environment.authSecret) : null;
-  await db.insert(sessions).values({ id: crypto.randomUUID(), userId: user.id, tokenHash: await sha256(token), expiresAt: new Date(Date.now() + 30 * 86_400_000), countryCode: metadata.countryCode, city: metadata.city, region: metadata.region, ipAddressCiphertext, deviceType: metadata.deviceType, operatingSystem: metadata.operatingSystem, browser: metadata.browser });
+  await db.insert(sessions).values({ id: crypto.randomUUID(), userId: user.id, tokenHash: await sha256(token), expiresAt: new Date(now.getTime() + sessionPolicy(user.role).absoluteSeconds * 1_000), lastSeenAt: now, countryCode: metadata.countryCode, city: metadata.city, region: metadata.region, ipAddressCiphertext, deviceType: metadata.deviceType, operatingSystem: metadata.operatingSystem, browser: metadata.browser });
   await db.update(users).set({ lastLoginAt: now, updatedAt: now }).where(eq(users.id, user.id));
   await db.insert(userDevices).values({ id: crypto.randomUUID(), userId: user.id, fingerprintHash: metadata.fingerprint, countryCode: metadata.countryCode, city: metadata.city, region: metadata.region, ipAddressCiphertext, deviceType: metadata.deviceType, operatingSystem: metadata.operatingSystem, browser: metadata.browser }).onConflictDoUpdate({ target: [userDevices.userId, userDevices.fingerprintHash], set: { lastSeenAt: now, countryCode: metadata.countryCode, city: metadata.city, region: metadata.region, ipAddressCiphertext, deviceType: metadata.deviceType, operatingSystem: metadata.operatingSystem, browser: metadata.browser } });
   const response = NextResponse.json({ message: "Welcome back.", user: { name: user.name, role: user.role } });
-  response.cookies.set("pimx_session", token, { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 30 * 86_400, priority: "high" });
+  response.cookies.set(SESSION_COOKIE_NAME, token, sessionCookieOptions(user.role));
   return response;
 }

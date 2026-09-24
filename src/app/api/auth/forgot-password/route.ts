@@ -6,7 +6,7 @@ import { otps, users } from "@/db/schema";
 import { EmailDeliveryError, sendOtpEmail } from "@/lib/email";
 import { getEnvironment, verifyTurnstile } from "@/lib/environment";
 import { hashOtp, randomOtp } from "@/lib/security";
-import { captchaRequiredResponse, enforceRateLimit, rateLimitResponse } from "@/lib/rate-limit";
+import { captchaRequiredResponse, enforceIdentityRateLimit, enforceRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 
 const inputSchema = z.object({ email: z.email().transform((value) => value.toLowerCase()), turnstileToken: z.string().optional() });
 
@@ -18,6 +18,8 @@ export async function POST(request: Request) {
   if (!parsed.success) return Response.json({ message: "Enter a valid email address.", errors: { email: "Enter a valid email address." } }, { status: 400 });
   const environment = await getEnvironment();
   if (process.env.NODE_ENV === "production" && !(await verifyTurnstile(parsed.data.turnstileToken, environment.turnstileSecret))) return captchaRequiredResponse();
+  const accountGuard = await enforceIdentityRateLimit("auth.forgot.email", parsed.data.email, 3, 3600);
+  if (!accountGuard.allowed) return rateLimitResponse(accountGuard.retryAfter);
   if (process.env.NODE_ENV === "production" && (!environment.smtpUser || !environment.smtpAppPassword)) {
     return Response.json({ message: "Password recovery email is temporarily unavailable. Please try again later." }, { status: 503 });
   }

@@ -3,6 +3,10 @@ pages_build_output_dir = ".pages-output"
 compatibility_date = "2026-09-13"
 compatibility_flags = ["nodejs_compat"]
 
+[[services]]
+binding = "BACKEND"
+service = "pimx-eltex"
+
 [[d1_databases]]
 binding = "DB"
 database_name = "pimx-eltex-db"

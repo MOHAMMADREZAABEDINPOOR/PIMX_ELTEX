@@ -111,11 +111,11 @@ node scripts/verify-episode-upload.mjs
 
 - PBKDF2-SHA256 password hashes with per-password salts and 600,000 iterations; older 210,000-iteration hashes upgrade after a successful login
 - Twelve-character signup/reset policy with upper/lowercase, number, and symbol requirements
-- Hashed, expiring, single-use OTPs with attempt limits
-- Random sessions stored as hashes; `HttpOnly`, `SameSite=Lax`, production-secure cookies
+- Hashed, ten-minute, single-use OTPs with atomic five-attempt limits
+- Random sessions stored as hashes; `HttpOnly`, `SameSite=Lax`, production-secure cookies. Member sessions end after seven days or twelve hours of inactivity; admin sessions end after eight hours or thirty minutes of inactivity. Both limits are checked on the server, with activity writes throttled to once per fifteen or five minutes respectively. Changing a password revokes all sessions.
 - AES-GCM encryption for stored newsletter addresses, with a separate one-way hash for uniqueness
 - Adaptive Cloudflare Turnstile on signup, login, password recovery, and suspicious comment bursts; ordinary requests stay frictionless and challenged requests are verified server-side
-- D1-backed rate limiting for auth, comments, and likes without storing raw IP addresses
+- D1-backed rate limiting for auth, comments, and likes without storing raw IP addresses; expired rate-limit, OTP, and session rows are pruned opportunistically. Password recovery also has a per-email limit.
 - Origin checks on state-changing routes, production HSTS, restrictive security headers, and sandboxed previews
 - Server-side role enforcement for `/admin` and its APIs
 - Application-level row ownership checks; D1 is never exposed to browser code and has no public client key
@@ -124,6 +124,8 @@ node scripts/verify-episode-upload.mjs
 - Audit records for administrator mutations
 
 Cloudflare D1 does not provide Supabase-style database Row Level Security. This project implements the equivalent authorization boundary in server-only query handlers: every protected record mutation is scoped to the authenticated user or an administrator. Do not create a public D1 credential.
+
+Cloudflare Pages calls the backend Worker through a Service binding named `BACKEND`; the public Worker URL is a fallback when that binding is unavailable. The Pages Git integration redeploys Pages on push, while backend code changes still require `npm run deploy:worker-backend` with Cloudflare credentials. Analytics duration updates run at most every two minutes while a tab is visible, plus on tab hide/exit. D1 is a single-threaded database, so production capacity depends on query volume and plan limits; monitor D1 reads/writes, Worker errors, and request latency as traffic grows.
 
 The dependency scan currently reports no production dependency vulnerabilities. Drizzle Kit's development-only loader chain may report a moderate esbuild advisory; npm's suggested automatic fix downgrades Drizzle Kit incompatibly, so it is intentionally not forced. Keep the CLI bound to localhost and update Drizzle when its upstream dependency is replaced.
 

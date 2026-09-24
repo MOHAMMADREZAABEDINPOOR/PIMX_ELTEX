@@ -52,6 +52,10 @@ const UPSTREAM = "https://pimx-eltex.mohammadrezaabedinpoor6.workers.dev";
 const APP_CSP = "default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://static.cloudflareinsights.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ytimg.com; frame-src 'self' https://www.youtube-nocookie.com https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com https://api.resend.com https://cloudflareinsights.com; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests";
 const DEMO_CSP = "sandbox allow-scripts allow-forms; default-src * data: blob: 'unsafe-inline' 'unsafe-eval'; object-src 'none'";
 
+function fetchBackend(request, env) {
+  return env.BACKEND ? env.BACKEND.fetch(request) : fetch(request);
+}
+
 function secureStaticResponse(response, pathname) {
   const headers = new Headers(response.headers);
   headers.set("Content-Security-Policy", pathname.startsWith("/demos/") ? DEMO_CSP : APP_CSP);
@@ -73,7 +77,7 @@ export default {
       assetUrl.search = "";
       let response = await env.ASSETS.fetch(new Request(assetUrl, request));
       if (response.status === 404 && url.pathname.startsWith("/_next/")) {
-        response = await fetch(new URL(url.pathname + url.search, UPSTREAM));
+        response = await fetchBackend(new Request(new URL(url.pathname + url.search, UPSTREAM), request), env);
       }
       return secureStaticResponse(response, url.pathname);
     }
@@ -81,10 +85,7 @@ export default {
     const upstreamUrl = new URL(url.pathname + url.search, UPSTREAM);
     const headers = new Headers(request.headers);
     headers.delete("host");
-    headers.set("origin", UPSTREAM);
-    const referer = headers.get("referer");
-    if (referer) headers.set("referer", referer.replace(url.origin, UPSTREAM));
-    const response = await fetch(new Request(upstreamUrl, { method: request.method, headers, body: request.body, redirect: "manual" }));
+    const response = await fetchBackend(new Request(upstreamUrl, { method: request.method, headers, body: request.body, redirect: "manual" }), env);
     const responseHeaders = new Headers(response.headers);
     const location = responseHeaders.get("location");
     if (location) responseHeaders.set("location", location.replace(UPSTREAM, url.origin));
