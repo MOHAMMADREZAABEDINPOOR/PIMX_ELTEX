@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { CookieConsent } from "@/components/cookie-consent";
 import { SiteAnalytics } from "@/components/site-analytics";
 import { MobileCta } from "@/components/mobile-cta";
+import { ScrollReveal } from "@/components/scroll-reveal";
 import { siteConfig } from "@/lib/site-config";
 import "./globals.css";
 import "./simple.css";
@@ -54,6 +55,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           inLanguage: "en",
         }).replace(/</g, "\\u003c") }} />
         <ThemeProvider>
+          <ScrollReveal />
           <SiteHeader />
           <main>{children}</main>
           <SiteFooter />
