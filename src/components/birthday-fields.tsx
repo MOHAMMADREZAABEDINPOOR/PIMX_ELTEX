@@ -6,8 +6,8 @@ import { FieldError } from "./form-feedback";
 import type { FieldErrors } from "@/lib/form-validation";
 
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-const latestYear = new Date().getUTCFullYear() - 13;
-const yearOptions = Array.from({ length: 108 }, (_, index) => ({ value: String(latestYear - index), label: String(latestYear - index) }));
+const latestYear = new Date().getUTCFullYear();
+const yearOptions = Array.from({ length: 122 }, (_, index) => ({ value: String(latestYear - index), label: String(latestYear - index) }));
 const monthOptions = months.map((label, index) => ({ value: String(index + 1), label }));
 
 export function BirthdayFields({ errors, clearField }: { errors: FieldErrors; clearField: (field: string) => void }) {
