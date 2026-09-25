@@ -4,22 +4,22 @@ import { birthDateErrors, validateAuthFields } from "../src/lib/form-validation.
 
 const validSignup = {
   name: "Example Member",
-  age: "22",
+  birthYear: "2004",
   username: "example_member",
   email: "member@example.com",
   password: "A-valid-password-123!",
   confirmPassword: "A-valid-password-123!",
-  birthMonth: "",
-  birthDay: "",
+  birthMonth: "2",
+  birthDay: "28",
 };
 
-test("birthday is optional but must be a real month and day when supplied", () => {
-  assert.deepEqual(birthDateErrors(), {});
-  assert.deepEqual(birthDateErrors("2", "29"), {});
-  assert.ok(birthDateErrors("4", "31").birthDay);
-  assert.ok(birthDateErrors("13", "1").birthMonth);
-  assert.ok(birthDateErrors("4", "").birthDay);
-  assert.ok(birthDateErrors("", "12").birthMonth);
+test("birth date requires a real year, month, and day", () => {
+  assert.ok(birthDateErrors().birthYear);
+  assert.deepEqual(birthDateErrors("2004", "2", "29"), {});
+  assert.ok(birthDateErrors("2003", "2", "29").birthDay);
+  assert.ok(birthDateErrors("2004", "13", "1").birthMonth);
+  assert.ok(birthDateErrors("2004", "4", "").birthDay);
+  assert.ok(birthDateErrors("", "4", "12").birthYear);
 });
 
 test("signup errors identify only the incorrect password confirmation", () => {

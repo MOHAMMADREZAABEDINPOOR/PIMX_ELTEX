@@ -65,7 +65,7 @@ export async function DELETE(request: Request, { params }: Context) {
   const db = await getDatabase(); if (!db) return Response.json({ message: "Database is not available." }, { status: 503 });
   const [target] = await db.select({ role: users.role, adminPermissions: users.adminPermissions }).from(users).where(eq(users.id, id)).limit(1);
   if (target?.role === "admin" && (!hasAdminPermission(admin, "members.roles") || effectiveAdminPermissions(target).some((permission) => !effectiveAdminPermissions(admin).includes(permission)))) return Response.json({ message: "You cannot delete this administrator." }, { status: 403 });
-  const deleted = await db.update(users).set({ status: "deleted", role: "user", adminPermissions: null, name: "Deleted member", email: `deleted-${id}@invalid.local`, username: `deleted_${id}`, passwordHash: "disabled", avatarUrl: null, bio: null, age: null, birthYear: null, birthMonth: null, birthDay: null, birthDateCiphertext: null, updatedAt: new Date() }).where(eq(users.id, id)).returning({ id: users.id });
+  const deleted = await db.update(users).set({ status: "deleted", role: "user", adminPermissions: null, name: "Deleted member", email: `deleted-${id}@invalid.local`, username: `deleted_${id}`, passwordHash: "disabled", avatarUrl: null, bio: null, birthDateCiphertext: null, updatedAt: new Date() }).where(eq(users.id, id)).returning({ id: users.id });
   if (!deleted.length) return Response.json({ message: "Member not found." }, { status: 404 });
   await db.delete(sessions).where(eq(sessions.userId, id));
   await db.insert(auditLogs).values({ id: crypto.randomUUID(), actorId: admin.id, action: "user.delete", targetType: "user", targetId: id });
