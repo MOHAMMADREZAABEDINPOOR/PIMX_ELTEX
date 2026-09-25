@@ -4,6 +4,7 @@ import { getDatabase } from "@/db";
 import { csrfError, hasValidMutationOrigin } from "@/lib/csrf";
 import { comments } from "@/db/schema";
 import { getCurrentUser } from "@/lib/session";
+import { hasAdminPermission } from "@/lib/admin-permissions";
 
 const editSchema = z.object({ content: z.string().trim().min(2).max(1200) });
 
@@ -32,7 +33,7 @@ export async function DELETE(request: Request, { params }: CommentContext) {
   if (!z.uuid().safeParse(id).success) return Response.json({ message: "Comment not found." }, { status: 404 });
   const db = await getDatabase();
   if (!db) return Response.json({ message: "Comments are unavailable." }, { status: 503 });
-  const deleted = await db.delete(comments).where(user.role === "admin" ? eq(comments.id, id) : and(eq(comments.id, id), eq(comments.authorId, user.id))).returning({ id: comments.id });
+  const deleted = await db.delete(comments).where(hasAdminPermission(user, "comments.delete") ? eq(comments.id, id) : and(eq(comments.id, id), eq(comments.authorId, user.id))).returning({ id: comments.id });
   if (!deleted.length) return Response.json({ message: "Comment not found or not removable." }, { status: 404 });
   return Response.json({ id, deleted: true });
 }

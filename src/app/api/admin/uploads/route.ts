@@ -64,7 +64,7 @@ function publicFileUrl(key: string) {
 
 export async function POST(request: Request) {
   if (!hasValidMutationOrigin(request)) return csrfError();
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("uploads.create");
   if (!admin) return Response.json({ message: "Administrator access required." }, { status: 403 });
 
   const contentLength = Number(request.headers.get("content-length"));

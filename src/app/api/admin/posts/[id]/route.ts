@@ -15,7 +15,7 @@ const updateSchema = z.object({ slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)
 type Context = { params: Promise<{ id: string }> };
 
 export async function GET(_request: Request, { params }: Context) {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("episodes.edit");
   if (!admin) return Response.json({ message: "Administrator access required." }, { status: 403 });
   const { id } = await params;
   const db = await getDatabase();
@@ -31,7 +31,7 @@ export async function GET(_request: Request, { params }: Context) {
 
 export async function PATCH(request: Request, { params }: Context) {
   if (!hasValidMutationOrigin(request)) return csrfError();
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("episodes.edit");
   if (!admin) return Response.json({ message: "Administrator access required." }, { status: 403 });
   const parsed = updateSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return Response.json({ message: parsed.error.issues.find((issue) => issue.path[0] === "youtubeVideoId")?.message || "Check the article fields." }, { status: 400 });
@@ -54,7 +54,7 @@ export async function PATCH(request: Request, { params }: Context) {
 
 export async function DELETE(request: Request, { params }: Context) {
   if (!hasValidMutationOrigin(request)) return csrfError();
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("episodes.delete");
   if (!admin) return Response.json({ message: "Administrator access required." }, { status: 403 });
   const { id } = await params; const db = await getDatabase();
   if (!db) return Response.json({ message: "Database is not available." }, { status: 503 });

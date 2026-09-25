@@ -57,6 +57,20 @@
       "when": 1790279588910,
       "tag": "0007_certain_anita_blake",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1790310000000,
+      "tag": "0008_admin_permissions_birth_year",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1790310000001,
+      "tag": "0009_encrypted_birth_date",
+      "breakpoints": true
     }
   ]
 }

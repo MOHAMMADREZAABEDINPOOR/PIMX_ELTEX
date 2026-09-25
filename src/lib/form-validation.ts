@@ -40,16 +40,26 @@ export function displayNameError(value: string) {
   return "";
 }
 
-export function birthDateErrors(monthValue = "", dayValue = ""): FieldErrors {
+export function birthDateErrors(yearValue = "", monthValue = "", dayValue = "", today = new Date()): FieldErrors {
   const errors: FieldErrors = {};
+  const year = yearValue.trim();
   const month = monthValue.trim();
   const day = dayValue.trim();
-  if (!month && !day) return errors;
-  if (!month) errors.birthMonth = "Select a birth month, or leave both birthday fields empty.";
+  if (!year || !/^\d{4}$/.test(year)) errors.birthYear = "Select your birth year.";
+  if (!month) errors.birthMonth = "Select your birth month.";
   else if (!/^(?:[1-9]|1[0-2])$/.test(month)) errors.birthMonth = "Select a valid birth month.";
-  if (!day) errors.birthDay = "Select a birth day, or leave both birthday fields empty.";
+  if (!day) errors.birthDay = "Select your birth day.";
   else if (!/^(?:[1-9]|[12][0-9]|3[01])$/.test(day)) errors.birthDay = "Select a valid birth day.";
-  else if (!errors.birthMonth && Number(day) > new Date(2000, Number(month), 0).getDate()) errors.birthDay = "That day does not exist in the selected month.";
+  if (Object.keys(errors).length) return errors;
+  const birthDate = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+  if (birthDate.getUTCFullYear() !== Number(year) || birthDate.getUTCMonth() + 1 !== Number(month) || birthDate.getUTCDate() !== Number(day)) {
+    errors.birthDay = "That day does not exist in the selected month and year.";
+    return errors;
+  }
+  const currentYear = today.getUTCFullYear();
+  const age = currentYear - Number(year) - (today.getUTCMonth() + 1 < Number(month) || (today.getUTCMonth() + 1 === Number(month) && today.getUTCDate() < Number(day)) ? 1 : 0);
+  if (age < 13) errors.birthYear = "You must be at least 13 years old to sign up.";
+  else if (age > 120) errors.birthYear = "Enter a valid birth year.";
   return errors;
 }
 
@@ -57,12 +67,10 @@ export function validateAuthFields(mode: "login" | "signup" | "forgot", values: 
   const errors: FieldErrors = {};
   if (mode === "signup") {
     const name = values.name?.trim() || "";
-    const age = Number(values.age);
     const username = values.username?.trim() || "";
     const nameError = displayNameError(name);
     if (nameError) errors.name = nameError;
-    if (!Number.isInteger(age) || age < 13 || age > 120) errors.age = "Age must be between 13 and 120.";
-    Object.assign(errors, birthDateErrors(values.birthMonth, values.birthDay));
+    Object.assign(errors, birthDateErrors(values.birthYear, values.birthMonth, values.birthDay));
     if (!/^[A-Za-z0-9_]{3,24}$/.test(username)) errors.username = "Use 3–24 letters, numbers, or underscores.";
   }
   const email = values.email?.trim() || "";

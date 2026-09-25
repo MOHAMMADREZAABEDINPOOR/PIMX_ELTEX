@@ -8,7 +8,7 @@ import { adminProjectSchema } from "@/lib/admin-project-schema";
 type Context = { params: Promise<{ id: string }> };
 
 export async function GET(_request: Request, { params }: Context) {
-  const admin = await requireAdmin(); if (!admin) return Response.json({ message: "Administrator access required." }, { status: 403 });
+  const admin = await requireAdmin("projects.edit"); if (!admin) return Response.json({ message: "Project access required." }, { status: 403 });
   const { id } = await params; const db = await getDatabase(); if (!db) return Response.json({ message: "Database is not available." }, { status: 503 });
   const [project] = await db.select().from(projects).where(eq(projects.id, id)).limit(1);
   if (!project) return Response.json({ message: "Project not found." }, { status: 404 });
@@ -17,7 +17,7 @@ export async function GET(_request: Request, { params }: Context) {
 
 export async function PATCH(request: Request, { params }: Context) {
   if (!hasValidMutationOrigin(request)) return csrfError();
-  const admin = await requireAdmin(); if (!admin) return Response.json({ message: "Administrator access required." }, { status: 403 });
+  const admin = await requireAdmin("projects.edit"); if (!admin) return Response.json({ message: "Project editing access required." }, { status: 403 });
   const parsed = adminProjectSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return Response.json({ message: "Check the project fields." }, { status: 400 });
   const { id } = await params; const db = await getDatabase(); if (!db) return Response.json({ message: "Database is not available." }, { status: 503 });
@@ -31,7 +31,7 @@ export async function PATCH(request: Request, { params }: Context) {
 
 export async function DELETE(request: Request, { params }: Context) {
   if (!hasValidMutationOrigin(request)) return csrfError();
-  const admin = await requireAdmin(); if (!admin) return Response.json({ message: "Administrator access required." }, { status: 403 });
+  const admin = await requireAdmin("projects.delete"); if (!admin) return Response.json({ message: "Project deletion access required." }, { status: 403 });
   const { id } = await params; const db = await getDatabase(); if (!db) return Response.json({ message: "Database is not available." }, { status: 503 });
   const deleted = await db.delete(projects).where(eq(projects.id, id)).returning({ id: projects.id });
   if (!deleted.length) return Response.json({ message: "Project not found." }, { status: 404 });

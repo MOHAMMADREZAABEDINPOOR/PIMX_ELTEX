@@ -15,7 +15,7 @@ const youtubeVideoSchema = z.string().trim().min(1).max(500).refine((value) => B
 const postSchema = z.object({ slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/), title: z.string().trim().min(5).max(160), excerpt: z.string().trim().min(10).max(320), content: z.string().trim().min(20), youtubeVideoId: youtubeVideoSchema, category: z.string().trim().min(2).max(60), status: z.enum(["draft", "scheduled", "published"]).default("draft"), resources: z.array(resourceSchema).max(50).optional(), prompts: z.array(promptSchema).max(50).optional(), links: z.array(linkSchema).max(100).optional() });
 
 export async function GET() {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("episodes.edit");
   if (!admin) return Response.json({ message: "Administrator access required." }, { status: 403 });
   const db = await getDatabase();
   if (!db) return Response.json({ message: "Database is not available." }, { status: 503 });
@@ -24,7 +24,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   if (!hasValidMutationOrigin(request)) return csrfError();
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("episodes.create");
   if (!admin) return Response.json({ message: "Administrator access required." }, { status: 403 });
   const parsed = postSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return Response.json({ message: parsed.error.issues.find((issue) => issue.path[0] === "youtubeVideoId")?.message || "Check the article fields." }, { status: 400 });

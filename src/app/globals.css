@@ -443,10 +443,16 @@ a { color: inherit; text-decoration: none; }
 .password-toggle:active { transform: scale(.94); }
 .password-toggle:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 1px; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
-.birth-date-group { display: grid; gap: 10px; padding: 14px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface-soft); }
-.birth-date-label { font-size: 12px; font-weight: 650; }
-.birth-date-label small { color: var(--faint); font-size: 10px; font-weight: 450; }
-.birth-date-group .field-hint { margin-top: 0; }
+.birthday-fields { min-width: 0; margin: 0; padding: 0; border: 0; }
+.birthday-fields legend { margin-bottom: 10px; padding: 0; font-size: 11px; font-weight: 620; }
+.birthday-selects { display: grid; grid-template-columns: .82fr 1.22fr .72fr; gap: 9px; }
+.birthday-select-wrap { position: relative; }
+.birthday-select-wrap select { width: 100%; min-height: 47px; padding: 0 26px 0 12px; appearance: none; border: 1px solid var(--line-strong); border-radius: 13px; background: var(--surface-solid); color: var(--text); font: inherit; font-size: 13px; cursor: pointer; }
+.birthday-select-wrap select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.birthday-select-wrap svg { position: absolute; top: 50%; right: 9px; translate: 0 -50%; color: var(--muted); pointer-events: none; }
+.birthday-select-wrap select[aria-invalid="true"] { border-color: #ef6464; box-shadow: 0 0 0 3px color-mix(in srgb, #ef4444 12%, transparent); }
+.birthday-hint { margin: 10px 0 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
+@media (max-width: 340px) { .birthday-selects { gap: 5px; }.birthday-select-wrap select { padding-left: 7px; padding-right: 19px; font-size: 11px; }.birthday-select-wrap svg { right: 4px; width: 12px; } }
 .password-match { color: #24945d; }
 .auth-form .button { width: 100%; min-height: 47px; }
 .form-note { margin-top: 22px !important; text-align: center; color: var(--muted); font-size: 12px !important; }
@@ -532,6 +538,14 @@ td small { color: var(--faint); }
 .admin-dialog-backdrop { position: fixed; inset: 0; z-index: 120; padding: 20px; display: grid; place-items: center; overflow-y: auto; overscroll-behavior: contain; background: rgba(5,5,7,.78); backdrop-filter: blur(13px); }
 .admin-dialog { width: min(620px, 100%); max-height: calc(100vh - 40px); overflow: auto; padding: 28px; display: grid; gap: 15px; border: 1px solid var(--line-strong); border-radius: 23px; background: var(--surface-solid); box-shadow: 0 40px 120px #0008; }
 .admin-dialog > header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }.admin-dialog h2 { margin: 9px 0 0; font-size: 28px; letter-spacing: -.04em; }.admin-dialog > header button { width: 36px; height: 36px; display: grid; place-items: center; border: 0; border-radius: 9px; background: var(--surface-soft); color: var(--text); cursor: pointer; }
+.member-role-dialog { overflow: hidden; grid-template-rows: auto minmax(0,1fr) auto auto; }
+.member-role-scroll { overflow-y: auto; min-height: 0; padding: 2px 4px 2px 0; }
+.member-role-choice { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+.member-role-choice label { display: flex; align-items: flex-start; gap: 9px; padding: 13px; border: 1px solid var(--line); border-radius: 12px; cursor: pointer; }
+.member-role-choice label:has(input:checked) { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--surface-solid)); }
+.member-role-choice input, .permission-groups input { accent-color: var(--accent); }
+.member-role-choice strong, .member-role-choice small { display: block; }.member-role-choice strong { font-size: 12px; }.member-role-choice small { margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.4; }
+.permission-groups { display: grid; gap: 14px; margin-top: 20px; }.permission-groups fieldset { margin: 0; padding: 14px; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 11px; border: 1px solid var(--line); border-radius: 13px; }.permission-groups legend { padding: 0 6px; font-size: 12px; font-weight: 700; }.permission-groups label { display: flex; align-items: flex-start; gap: 8px; font-size: 11px; cursor: pointer; }.permission-groups label:has(input:disabled) { opacity: .45; cursor: not-allowed; }
 .user-details-dialog { width: min(940px, 100%); height: min(760px, calc(100dvh - 40px)); max-height: calc(100dvh - 40px); padding: 0; display: flex; flex-direction: column; overflow: hidden; }
 .user-details-dialog > header { flex: 0 0 auto; min-width: 0; margin: 0; padding: 24px 28px 20px; border-bottom: 1px solid var(--line); }
 .user-details-dialog > header > div { min-width: 0; }.user-details-dialog > header h2, .user-details-dialog > header p { overflow-wrap: anywhere; }
@@ -554,6 +568,7 @@ td small { color: var(--faint); }
 }
 @media (max-width: 420px) {
   .admin-dialog-backdrop { padding: 8px; }
+  .member-role-choice, .permission-groups fieldset { grid-template-columns: 1fr; }
   .user-details-dialog { height: calc(100dvh - 16px); max-height: calc(100dvh - 16px); border-radius: 16px; }
   .user-details-dialog > header { padding: 18px 16px; }
   .user-details-dialog > header h2 { font-size: 22px; }

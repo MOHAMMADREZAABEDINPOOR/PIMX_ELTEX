@@ -7,6 +7,13 @@ $digest = $sha256.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($token))
 $sha256.Dispose()
 $tokenHash = [Convert]::ToBase64String($digest).TrimEnd('=').Replace('+', '-').Replace('/', '_')
 $sessionId = [guid]::NewGuid().ToString('N')
+$delegateId = [guid]::NewGuid().ToString('N')
+$delegateToken = [guid]::NewGuid().ToString('N') + [guid]::NewGuid().ToString('N')
+$delegateSessionId = [guid]::NewGuid().ToString('N')
+$delegateSha256 = [System.Security.Cryptography.SHA256]::Create()
+$delegateDigest = $delegateSha256.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($delegateToken))
+$delegateSha256.Dispose()
+$delegateTokenHash = [Convert]::ToBase64String($delegateDigest).TrimEnd('=').Replace('+', '-').Replace('/', '_')
 $projectId = $null
 $mutationOrigin = 'http://localhost:8790'
 
@@ -58,18 +65,31 @@ try {
   $publicPage = & curl.exe -sS "$baseUrl/code"
   if (-not (($publicPage -join "`n").Contains($payload.title))) { throw 'The published project is missing from the public Projects page.' }
 
+  Run-LocalSql "INSERT INTO users (id, name, username, email, password_hash, role, status, email_verified_at) VALUES ('$delegateId', 'Integration delegate', 'test_$delegateId', 'test-$delegateId@example.invalid', 'disabled', 'user', 'active', unixepoch());" | Out-Null
+  $rolePayload = @{ role = 'admin'; permissions = @('projects.edit') } | ConvertTo-Json -Compress
+  $roleResult = Call-LocalApi 'PATCH' "/api/admin/users/$delegateId/permissions" $rolePayload
+  if ($roleResult.role -ne 'admin' -or @($roleResult.adminPermissions).Count -ne 1) { throw 'Delegated administrator permissions were not saved.' }
+  Run-LocalSql "INSERT INTO sessions (id, user_id, token_hash, expires_at, last_seen_at) VALUES ('$delegateSessionId', '$delegateId', '$delegateTokenHash', unixepoch() + 3600, unixepoch());" | Out-Null
+  $forbiddenDelete = & curl.exe -sS -o NUL -w '%{http_code}' -X DELETE -H "Cookie: pimx_session=$delegateToken" -H "Origin: $mutationOrigin" "$baseUrl/api/admin/projects/$projectId"
+  if ($forbiddenDelete -ne '403') { throw 'A restricted administrator was allowed to delete a project.' }
+  $forbiddenRoles = & curl.exe -sS -o NUL -w '%{http_code}' -X PATCH -H "Cookie: pimx_session=$delegateToken" -H "Origin: $mutationOrigin" -H 'Content-Type: application/json' --data-binary '{}' "$baseUrl/api/admin/users/$testId/permissions"
+  if ($forbiddenRoles -ne '403') { throw 'A restricted administrator was allowed to manage roles.' }
+  $delegateLoaded = & curl.exe -sS -o NUL -w '%{http_code}' -H "Cookie: pimx_session=$delegateToken" "$baseUrl/api/admin/projects/$projectId"
+  if ($delegateLoaded -ne '200') { throw 'The delegated project edit permission was not granted.' }
+
   $revoked = Call-LocalApi 'DELETE' "/api/admin/users/$testId/sessions"
   if ($revoked.revoked -ne 1) { throw 'The test login session was not revoked.' }
   $afterRevoke = & curl.exe -sS -o NUL -w '%{http_code}' -H "Cookie: pimx_session=$token" "$baseUrl/api/admin/projects"
   if ($afterRevoke -ne '403') { throw 'The revoked session still has administrator access.' }
 
-  Write-Output 'Admin project create, load, edit, public display, and session revocation checks passed.'
+  Write-Output 'Project editing, restricted administrator permissions, public display, and session revocation checks passed.'
 }
 finally {
   $cleanup = "DELETE FROM audit_logs WHERE actor_id = '$testId'"
+  $cleanup += " OR actor_id = '$delegateId' OR target_id = '$delegateId'"
   if ($projectId) { $cleanup += " OR target_id = '$projectId'" }
   $cleanup += ';'
   if ($projectId) { $cleanup += " DELETE FROM projects WHERE id = '$projectId';" }
-  $cleanup += " DELETE FROM users WHERE id = '$testId';"
+  $cleanup += " DELETE FROM users WHERE id IN ('$testId', '$delegateId');"
   Run-LocalSql $cleanup | Out-Null
 }

@@ -13,7 +13,7 @@ export async function getCurrentUser() {
   if (!db) return null;
   try {
     const [record] = await db.select({
-      id: users.id, name: users.name, username: users.username, email: users.email, avatarUrl: users.avatarUrl, role: users.role, status: users.status,
+      id: users.id, name: users.name, username: users.username, email: users.email, avatarUrl: users.avatarUrl, role: users.role, status: users.status, adminPermissions: users.adminPermissions,
       sessionId: sessions.id, createdAt: sessions.createdAt, lastSeenAt: sessions.lastSeenAt, expiresAt: sessions.expiresAt,
     }).from(sessions).innerJoin(users, eq(users.id, sessions.userId)).where(eq(sessions.tokenHash, await sha256(token))).limit(1);
     if (!record) return null;
@@ -25,8 +25,8 @@ export async function getCurrentUser() {
     if (shouldTouchSession(record.lastSeenAt, record.role, now)) {
       await db.update(sessions).set({ lastSeenAt: new Date(now) }).where(and(eq(sessions.id, record.sessionId), eq(sessions.lastSeenAt, record.lastSeenAt), gt(sessions.expiresAt, new Date(now)))).catch(() => undefined);
     }
-    const { id, name, username, email, avatarUrl, role, status } = record;
-    return { id, name, username, email, avatarUrl, role, status };
+    const { id, name, username, email, avatarUrl, role, status, adminPermissions } = record;
+    return { id, name, username, email, avatarUrl, role, status, adminPermissions };
   } catch (error) {
     console.error("Session lookup failed", error instanceof Error ? error.message : "Unknown error");
     return null;

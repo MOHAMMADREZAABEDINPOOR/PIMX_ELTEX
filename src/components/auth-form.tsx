@@ -8,11 +8,11 @@ import { Brand } from "./brand";
 import { FieldError, PasswordChecklist } from "./form-feedback";
 import { PasswordField } from "./password-field";
 import { TurnstileWidget } from "./turnstile-widget";
+import { BirthdayFields } from "./birthday-fields";
 import { type FieldErrors, readFormResult, validateAuthFields } from "@/lib/form-validation";
 
 type Mode = "login" | "signup" | "forgot";
 type AuthResult = { message?: string; devCode?: string; user?: { role: string }; captchaRequired?: boolean; errors?: FieldErrors };
-const birthMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] as const;
 
 function valuesFromForm(form: HTMLFormElement) {
   return Object.fromEntries(Array.from(new FormData(form).entries(), ([key, value]) => [key, String(value)]));
@@ -30,8 +30,6 @@ export function AuthForm({ mode }: { mode: Mode }) {
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [birthMonth, setBirthMonth] = useState("");
-  const [birthDay, setBirthDay] = useState("");
   const [turnstileToken, setTurnstileToken] = useState("");
   const [captchaVersion, setCaptchaVersion] = useState(0);
 
@@ -83,14 +81,8 @@ export function AuthForm({ mode }: { mode: Mode }) {
   return <div className="auth-page"><section className="auth-card"><Brand /><h1>{copy.title}</h1><p>{copy.description}</p>
     <form className="auth-form" onSubmit={submit} noValidate>
       {mode === "signup" ? <>
-        <div className="form-row">
-          <div className="field"><label htmlFor="name">Display name</label><input id="name" name="name" autoComplete="name" required minLength={2} maxLength={80} placeholder="Your display name" aria-invalid={invalid("name")} aria-describedby={describedBy("name")} onChange={() => clearField("name")} /><FieldError id="name-error" message={fieldErrors.name} /></div>
-          <div className="field"><label htmlFor="age">Age</label><input id="age" name="age" type="number" inputMode="numeric" required min={13} max={120} placeholder="Your age" aria-invalid={invalid("age")} aria-describedby={describedBy("age")} onChange={() => clearField("age")} /><FieldError id="age-error" message={fieldErrors.age} /></div>
-        </div>
-        <div className="birth-date-group"><span className="birth-date-label">Birthday <small>(optional)</small></span><div className="form-row">
-          <div className="field"><label htmlFor="birthMonth">Month</label><select id="birthMonth" name="birthMonth" value={birthMonth} aria-invalid={invalid("birthMonth")} aria-describedby={describedBy("birthMonth", "birthday-hint")} onChange={(event) => { const nextMonth = event.target.value; setBirthMonth(nextMonth); if (birthDay && Number(birthDay) > new Date(2000, Number(nextMonth), 0).getDate()) setBirthDay(""); clearField("birthMonth"); clearField("birthDay"); }}><option value="">Select month</option>{birthMonths.map((month, index) => <option key={month} value={index + 1}>{month}</option>)}</select><FieldError id="birthMonth-error" message={fieldErrors.birthMonth} /></div>
-          <div className="field"><label htmlFor="birthDay">Day</label><select id="birthDay" name="birthDay" value={birthDay} aria-invalid={invalid("birthDay")} aria-describedby={describedBy("birthDay", "birthday-hint")} onChange={(event) => { setBirthDay(event.target.value); clearField("birthDay"); clearField("birthMonth"); }}><option value="">Select day</option>{Array.from({ length: birthMonth ? new Date(2000, Number(birthMonth), 0).getDate() : 31 }, (_, index) => <option key={index + 1} value={index + 1}>{index + 1}</option>)}</select><FieldError id="birthDay-error" message={fieldErrors.birthDay} /></div>
-        </div><small className="field-hint" id="birthday-hint">Add both month and day if you want to share your birthday. Birth year is not needed.</small></div>
+        <div className="field"><label htmlFor="name">Display name</label><input id="name" name="name" autoComplete="name" required minLength={2} maxLength={80} placeholder="Your display name" aria-invalid={invalid("name")} aria-describedby={describedBy("name")} onChange={() => clearField("name")} /><FieldError id="name-error" message={fieldErrors.name} /></div>
+        <BirthdayFields errors={fieldErrors} clearField={clearField} />
         <div className="field"><label htmlFor="username">Username</label><input id="username" name="username" autoComplete="username" required minLength={3} maxLength={24} pattern="[A-Za-z0-9_]+" placeholder="your_username" aria-invalid={invalid("username")} aria-describedby={describedBy("username", "username-hint")} onChange={() => clearField("username")} /><small className="field-hint" id="username-hint">Letters, numbers, and underscores only.</small><FieldError id="username-error" message={fieldErrors.username} /></div>
       </> : null}
       <div className="field"><label htmlFor="email">Email address</label><input id="email" name="email" type="email" autoComplete="email" required maxLength={254} placeholder="you@example.com" aria-invalid={invalid("email")} aria-describedby={describedBy("email")} onChange={() => clearField("email")} /><FieldError id="email-error" message={fieldErrors.email} /></div>

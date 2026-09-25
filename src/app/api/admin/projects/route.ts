@@ -6,14 +6,14 @@ import { csrfError, hasValidMutationOrigin } from "@/lib/csrf";
 import { adminProjectSchema } from "@/lib/admin-project-schema";
 
 export async function GET() {
-  const admin = await requireAdmin(); if (!admin) return Response.json({ message: "Administrator access required." }, { status: 403 });
+  const admin = await requireAdmin("projects.edit"); if (!admin) return Response.json({ message: "Project access required." }, { status: 403 });
   const db = await getDatabase(); if (!db) return Response.json({ message: "Database is not available." }, { status: 503 });
   return Response.json({ projects: await db.select().from(projects).orderBy(desc(projects.createdAt)) });
 }
 
 export async function POST(request: Request) {
   if (!hasValidMutationOrigin(request)) return csrfError();
-  const admin = await requireAdmin(); if (!admin) return Response.json({ message: "Administrator access required." }, { status: 403 });
+  const admin = await requireAdmin("projects.create"); if (!admin) return Response.json({ message: "Project creation access required." }, { status: 403 });
   const parsed = adminProjectSchema.safeParse(await request.json().catch(() => null)); if (!parsed.success) return Response.json({ message: "Check the project fields." }, { status: 400 });
   const db = await getDatabase(); const id = crypto.randomUUID(); if (!db) return Response.json({ message: "Database is not available." }, { status: 503 });
   const [existing] = await db.select({ id: projects.id }).from(projects).where(eq(projects.slug, parsed.data.slug)).limit(1);

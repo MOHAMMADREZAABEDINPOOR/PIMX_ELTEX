@@ -6,7 +6,7 @@ A secure community platform for the PIMX_ELTEX YouTube channel. The public inter
 
 - **Episodes**: every video has one complete page containing the video, written explanation, prompts, mentioned websites, source code, live preview, downloads, and a threaded discussion.
 - **Projects**: a focused library for visitors who only want finished website projects, live previews, and downloadable files.
-- **Admin Console**: create episodes and projects, moderate comments, and block or delete member accounts.
+- **Admin Console**: create and edit episodes and projects, moderate comments, manage member accounts, and assign granular administrator permissions.
 
 An episode supports up to 50 independent prompt sections. Every prompt can carry its own folder tree (up to 250 files / 45 MB), isolated live preview, file manifest, and automatically generated ZIP download. Use **Import episode folder** when a folder contains `prompt.txt` headings such as `PROMPT 1 — Title` plus matching `prompt 1`, `prompt 2`, ... directories; the editor maps the text and source files automatically.
 
@@ -123,7 +123,9 @@ node scripts/verify-episode-upload.mjs
 - Country and normalized device metadata instead of raw IP persistence
 - Audit records for administrator mutations
 
-The admin console includes searchable member/content lists, status filters, recent audit activity, editable project details, and member session revocation. Member details and editors open in viewport dialogs with independent scrolling. Published content pages read current D1 records so edits appear without rebuilding the frontend.
+The admin console includes searchable member/content lists, status filters, recent audit activity, editable project details, member session revocation, and **Members → Access** for promotion or demotion and individual action permissions. Existing administrators with `admin_permissions = NULL` retain full access; newly promoted administrators receive only selected permissions. Role changes revoke the affected member's sessions. API handlers enforce permissions even when a UI action is hidden. Member details and editors open in viewport dialogs with independent scrolling. Published content pages read current D1 records so edits appear without rebuilding the frontend.
+
+Sign-up requests a complete birth date in three compact controls instead of a separate age field. The server validates real calendar dates and the minimum age of 13. New birth dates are encrypted at rest; the member list does not display them.
 
 Cloudflare D1 does not provide Supabase-style database Row Level Security. This project implements the equivalent authorization boundary in server-only query handlers: every protected record mutation is scoped to the authenticated user or an administrator. Do not create a public D1 credential.
 
