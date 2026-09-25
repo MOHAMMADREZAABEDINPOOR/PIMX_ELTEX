@@ -5,7 +5,7 @@ import { ArrowRight, ArrowUpRight, AudioLines, Bot, Braces, Cpu, Play, Sparkles 
 import { getPublishedPosts, getPublishedProjects } from "@/lib/public-content";
 import { getYouTubeThumbnailUrl } from "@/lib/youtube";
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "AI Videos, Prompts & Website Projects",
   description: "Watch practical AI and technology videos, explore every prompt and resource, and preview complete website projects with source files from PIMX_ELTEX.",

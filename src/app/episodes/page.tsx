@@ -6,7 +6,7 @@ import { getPublishedPosts } from "@/lib/public-content";
 import { getYouTubeThumbnailUrl } from "@/lib/youtube";
 
 export const metadata: Metadata = { title: "Episodes", description: "Watch PIMX_ELTEX episodes and find their prompts, code, links, and downloads.", alternates: { canonical: "/episodes" } };
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 
 export default async function EpisodesPage() {
   const posts = await getPublishedPosts();

@@ -123,6 +123,8 @@ node scripts/verify-episode-upload.mjs
 - Country and normalized device metadata instead of raw IP persistence
 - Audit records for administrator mutations
 
+The admin console includes searchable member/content lists, status filters, recent audit activity, editable project details, and member session revocation. Member details and editors open in viewport dialogs with independent scrolling. Published content pages read current D1 records so edits appear without rebuilding the frontend.
+
 Cloudflare D1 does not provide Supabase-style database Row Level Security. This project implements the equivalent authorization boundary in server-only query handlers: every protected record mutation is scoped to the authenticated user or an administrator. Do not create a public D1 credential.
 
 Cloudflare Pages calls the backend Worker through a Service binding named `BACKEND`; the public Worker URL is a fallback when that binding is unavailable. The Pages Git integration redeploys Pages on push, while backend code changes still require `npm run deploy:worker-backend` with Cloudflare credentials. Analytics duration updates run at most every two minutes while a tab is visible, plus on tab hide/exit. D1 is a single-threaded database, so production capacity depends on query volume and plan limits; monitor D1 reads/writes, Worker errors, and request latency as traffic grows.

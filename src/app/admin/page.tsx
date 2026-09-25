@@ -3,7 +3,7 @@ import { count, countDistinct, desc, eq, sql } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { AdminConsole } from "@/components/admin-console";
 import { getDatabase } from "@/db";
-import { comments, posts, projects, siteVisits, users } from "@/db/schema";
+import { auditLogs, comments, posts, projects, siteVisits, users } from "@/db/schema";
 import { getCurrentUser } from "@/lib/session";
 
 export const metadata: Metadata = { title: "Admin Console", description: "Protected PIMX_ELTEX content and community administration.", robots: { index: false, follow: false } };
@@ -14,7 +14,7 @@ export default async function AdminPage() {
   const db = await getDatabase();
   if (!db) return <AdminConsole stats={[{ label: "Members", value: "0", detail: "Database offline" }, { label: "Episodes", value: "0", detail: "Database offline" }, { label: "Projects", value: "0", detail: "Database offline" }, { label: "Comments", value: "0", detail: "Database offline" }, { label: "Countries", value: "0", detail: "Database offline" }]} analytics={{ totalViews: 0, uniqueVisitors: 0, totalDurationSeconds: 0, countries: [], devices: [], browsers: [], paths: [] }} initialUsers={[]} initialPosts={[]} initialProjects={[]} initialComments={[]} />;
 
-  const [memberCount, postCount, projectCount, commentCount, countryCount, viewCount, visitorCount, durationTotal, countryViews, deviceViews, browserViews, pathViews, memberRows, postRows, projectRows, commentRows] = await Promise.all([
+  const [memberCount, postCount, projectCount, commentCount, countryCount, viewCount, visitorCount, durationTotal, countryViews, deviceViews, browserViews, pathViews, memberRows, postRows, projectRows, commentRows, activityRows] = await Promise.all([
     db.select({ value: count() }).from(users),
     db.select({ value: count() }).from(posts),
     db.select({ value: count() }).from(projects),
@@ -31,9 +31,11 @@ export default async function AdminPage() {
     db.select({ id: posts.id, title: posts.title, slug: posts.slug, status: posts.status }).from(posts).orderBy(desc(posts.createdAt)).limit(100),
     db.select({ id: projects.id, title: projects.title, slug: projects.slug, status: projects.status, previewUrl: projects.previewUrl, downloadUrl: projects.downloadUrl }).from(projects).orderBy(desc(projects.createdAt)).limit(100),
     db.select({ id: comments.id, content: comments.content, author: users.name, post: posts.title }).from(comments).innerJoin(users, eq(users.id, comments.authorId)).innerJoin(posts, eq(posts.id, comments.postId)).where(eq(comments.status, "visible")).orderBy(desc(comments.createdAt)).limit(100),
+    db.select({ id: auditLogs.id, action: auditLogs.action, targetType: auditLogs.targetType, targetId: auditLogs.targetId, createdAt: auditLogs.createdAt }).from(auditLogs).orderBy(desc(auditLogs.createdAt)).limit(12),
   ]);
 
   return <AdminConsole
+    adminId={currentUser.id}
     stats={[
       { label: "Members", value: String(memberCount[0]?.value || 0), detail: "Registered accounts" },
       { label: "Episodes", value: String(postCount[0]?.value || 0), detail: "Draft and published" },
@@ -47,5 +49,6 @@ export default async function AdminPage() {
     initialPosts={postRows}
     initialProjects={projectRows}
     initialComments={commentRows}
+    initialActivity={activityRows.map((entry) => ({ ...entry, createdAt: entry.createdAt.toISOString() }))}
   />;
 }

@@ -3,7 +3,7 @@ import { getPublishedPosts, getPublishedProjects } from "@/lib/public-content";
 import { siteConfig } from "@/lib/site-config";
 import { getYouTubeThumbnailUrl } from "@/lib/youtube";
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [posts, projects] = await Promise.all([getPublishedPosts(), getPublishedProjects()]);

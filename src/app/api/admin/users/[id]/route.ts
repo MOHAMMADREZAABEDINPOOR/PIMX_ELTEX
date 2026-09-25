@@ -6,6 +6,7 @@ import { auditLogs, sessions, siteVisits, userDevices, users } from "@/db/schema
 import { requireAdmin } from "@/lib/admin";
 import { decryptSensitiveValue } from "@/lib/encryption";
 import { getEnvironment } from "@/lib/environment";
+import { sessionIsActive } from "@/lib/session-policy";
 
 const updateSchema = z.object({ status: z.enum(["active", "blocked"]) });
 type Context = { params: Promise<{ id: string }> };
@@ -30,7 +31,8 @@ export async function GET(_request: Request, { params }: Context) {
     getEnvironment(),
   ]);
   if (!member) return Response.json({ message: "Member not found." }, { status: 404 });
-  return Response.json({ member, totals: { visits: Number(totals?.visits || 0), durationSeconds: Number(totals?.durationSeconds || 0) }, devices: await Promise.all(devices.map(async ({ ipAddressCiphertext, ...device }) => ({ ...device, ipAddress: await revealIp(ipAddressCiphertext, environment.authSecret) }))), sessions: await Promise.all(loginSessions.map(async ({ ipAddressCiphertext, ...session }) => ({ ...session, ipAddress: await revealIp(ipAddressCiphertext, environment.authSecret) }))), recentVisits }, { headers: { "cache-control": "no-store" } });
+  const activeSessions = loginSessions.filter((session) => sessionIsActive(session, member.role));
+  return Response.json({ member, totals: { visits: Number(totals?.visits || 0), durationSeconds: Number(totals?.durationSeconds || 0) }, devices: await Promise.all(devices.map(async ({ ipAddressCiphertext, ...device }) => ({ ...device, ipAddress: await revealIp(ipAddressCiphertext, environment.authSecret) }))), sessions: await Promise.all(activeSessions.map(async ({ ipAddressCiphertext, ...session }) => ({ ...session, ipAddress: await revealIp(ipAddressCiphertext, environment.authSecret) }))), recentVisits }, { headers: { "cache-control": "no-store" } });
 }
 
 export async function PATCH(request: Request, { params }: Context) {

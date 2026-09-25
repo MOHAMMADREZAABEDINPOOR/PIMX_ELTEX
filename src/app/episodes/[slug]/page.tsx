@@ -10,7 +10,7 @@ import { siteConfig } from "@/lib/site-config";
 import { getYouTubeThumbnailUrl, getYouTubeWatchUrl } from "@/lib/youtube";
 
 type EpisodePageProps = { params: Promise<{ slug: string }> };
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 export const dynamicParams = false;
 
 export function generateStaticParams() {
