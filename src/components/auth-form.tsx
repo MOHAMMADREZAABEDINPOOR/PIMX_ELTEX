@@ -9,7 +9,9 @@ import { FieldError, PasswordChecklist } from "./form-feedback";
 import { PasswordField } from "./password-field";
 import { TurnstileWidget } from "./turnstile-widget";
 import { BirthdayFields } from "./birthday-fields";
+import { BirthdaySelect } from "./birthday-select";
 import { type FieldErrors, readFormResult, validateAuthFields } from "@/lib/form-validation";
+import { countryOptions } from "@/lib/location";
 
 type Mode = "login" | "signup" | "forgot";
 type AuthResult = { message?: string; devCode?: string; user?: { role: string }; captchaRequired?: boolean; errors?: FieldErrors };
@@ -30,6 +32,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [declaredCountryCode, setDeclaredCountryCode] = useState("");
   const [turnstileToken, setTurnstileToken] = useState("");
   const [captchaVersion, setCaptchaVersion] = useState(0);
 
@@ -83,6 +86,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
       {mode === "signup" ? <>
         <div className="field"><label htmlFor="name">Display name</label><input id="name" name="name" autoComplete="name" required minLength={2} maxLength={80} placeholder="Your display name" aria-invalid={invalid("name")} aria-describedby={describedBy("name")} onChange={() => clearField("name")} /><FieldError id="name-error" message={fieldErrors.name} /></div>
         <BirthdayFields errors={fieldErrors} clearField={clearField} />
+        <div className="field"><label htmlFor="declaredCountryCode">Country</label><BirthdaySelect id="declaredCountryCode" label="Select country" value={declaredCountryCode} options={countryOptions} error={fieldErrors.declaredCountryCode} onChange={(value) => { setDeclaredCountryCode(value); clearField("declaredCountryCode"); }} /><small className="field-hint">Choose the country you live in. Your connection may appear in a different country if you use a VPN.</small><FieldError id="declaredCountryCode-error" message={fieldErrors.declaredCountryCode} /></div>
         <div className="field"><label htmlFor="username">Username</label><input id="username" name="username" autoComplete="username" required minLength={3} maxLength={24} pattern="[A-Za-z0-9_]+" placeholder="your_username" aria-invalid={invalid("username")} aria-describedby={describedBy("username", "username-hint")} onChange={() => clearField("username")} /><small className="field-hint" id="username-hint">Letters, numbers, and underscores only.</small><FieldError id="username-error" message={fieldErrors.username} /></div>
       </> : null}
       <div className="field"><label htmlFor="email">Email address</label><input id="email" name="email" type="email" autoComplete="email" required maxLength={254} placeholder="you@example.com" aria-invalid={invalid("email")} aria-describedby={describedBy("email")} onChange={() => clearField("email")} /><FieldError id="email-error" message={fieldErrors.email} /></div>

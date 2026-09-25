@@ -85,6 +85,10 @@ export default {
     const upstreamUrl = new URL(url.pathname + url.search, UPSTREAM);
     const headers = new Headers(request.headers);
     headers.delete("host");
+    for (const key of ["country", "city", "region"]) {
+      headers.delete("x-pimx-visitor-" + key);
+      if (request.cf?.[key]) headers.set("x-pimx-visitor-" + key, String(request.cf[key]));
+    }
     const response = await fetchBackend(new Request(upstreamUrl, { method: request.method, headers, body: request.body, redirect: "manual" }), env);
     const responseHeaders = new Headers(response.headers);
     const location = responseHeaders.get("location");

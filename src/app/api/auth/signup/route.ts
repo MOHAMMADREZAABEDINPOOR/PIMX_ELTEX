@@ -11,12 +11,14 @@ import { encryptSensitiveValue } from "@/lib/encryption";
 import { captchaRequiredResponse, enforceRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { hashOtp, hashPassword, randomOtp } from "@/lib/security";
 import { strongPasswordSchema } from "@/lib/validation";
+import { countryName } from "@/lib/location";
 
 const inputSchema = z.object({
   name: z.string().trim().min(2).max(80),
   birthYear: z.string(),
   birthMonth: z.string(),
   birthDay: z.string(),
+  declaredCountryCode: z.string().regex(/^[A-Z]{2}$/),
   username: z.string().trim().regex(/^[a-zA-Z0-9_]{3,24}$/),
   email: z.email().max(254).transform((value) => value.toLowerCase()),
   password: strongPasswordSchema,
@@ -27,6 +29,7 @@ const inputSchema = z.object({
   for (const [field, message] of Object.entries(birthDateErrors(value.birthYear, value.birthMonth, value.birthDay))) {
     context.addIssue({ code: "custom", path: [field], message });
   }
+  if (countryName(value.declaredCountryCode) === "Not available") context.addIssue({ code: "custom", path: ["declaredCountryCode"], message: "Select a valid country." });
 });
 
 export async function POST(request: Request) {
@@ -40,7 +43,7 @@ export async function POST(request: Request) {
       const field = String(issue.path[0] || "");
       if (!field || errors[field]) continue;
       errors[field] = field === "password" ? issue.message
-        : field === "confirmPassword" || field === "birthYear" || field === "birthMonth" || field === "birthDay" ? issue.message
+        : field === "confirmPassword" || field === "birthYear" || field === "birthMonth" || field === "birthDay" || field === "declaredCountryCode" ? issue.message
         : field === "username" ? "Username must contain 3 to 24 letters, numbers, or underscores."
           : field === "email" ? "Enter a valid email address."
             : field === "name" ? "Display name must contain 2 to 80 characters."
@@ -72,7 +75,7 @@ export async function POST(request: Request) {
     const passwordHash = await hashPassword(parsed.data.password);
     stage = "user";
     const birthDate = `${parsed.data.birthYear}-${parsed.data.birthMonth.padStart(2, "0")}-${parsed.data.birthDay.padStart(2, "0")}`;
-    await db.insert(users).values({ id: userId, name: parsed.data.name, birthDateCiphertext: await encryptSensitiveValue(birthDate, environment.authSecret), username: parsed.data.username, email: parsed.data.email, passwordHash, countryCode: metadata.countryCode });
+    await db.insert(users).values({ id: userId, name: parsed.data.name, birthDateCiphertext: await encryptSensitiveValue(birthDate, environment.authSecret), username: parsed.data.username, email: parsed.data.email, passwordHash, countryCode: metadata.countryCode, declaredCountryCode: parsed.data.declaredCountryCode });
     stage = "otp";
     await db.insert(otps).values({ id: crypto.randomUUID(), userId, email: parsed.data.email, purpose: "verify_email", codeHash: await hashOtp(parsed.data.email, code, environment.authSecret), expiresAt: new Date(Date.now() + 10 * 60_000) });
     stage = "email";

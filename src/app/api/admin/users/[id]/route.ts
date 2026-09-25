@@ -1,8 +1,8 @@
-import { desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { getDatabase } from "@/db";
 import { csrfError, hasValidMutationOrigin } from "@/lib/csrf";
-import { auditLogs, sessions, siteVisits, userDevices, users } from "@/db/schema";
+import { auditLogs, comments, posts, sessions, siteVisits, userDevices, users } from "@/db/schema";
 import { requireAdmin } from "@/lib/admin";
 import { decryptSensitiveValue } from "@/lib/encryption";
 import { getEnvironment } from "@/lib/environment";
@@ -23,19 +23,22 @@ export async function GET(_request: Request, { params }: Context) {
   const { id } = await params;
   const db = await getDatabase();
   if (!db) return Response.json({ message: "Database is not available." }, { status: 503 });
-  const [[member], devices, loginSessions, recentVisits, [totals], environment] = await Promise.all([
-    db.select({ id: users.id, name: users.name, username: users.username, birthDateCiphertext: users.birthDateCiphertext, email: users.email, countryCode: users.countryCode, role: users.role, adminPermissions: users.adminPermissions, status: users.status, emailVerifiedAt: users.emailVerifiedAt, lastLoginAt: users.lastLoginAt, createdAt: users.createdAt }).from(users).where(eq(users.id, id)).limit(1),
+  const [[member], devices, loginSessions, recentVisits, recentComments, [totals], [commentTotals], environment] = await Promise.all([
+    db.select({ id: users.id, name: users.name, username: users.username, bio: users.bio, birthDateCiphertext: users.birthDateCiphertext, email: users.email, countryCode: users.countryCode, declaredCountryCode: users.declaredCountryCode, role: users.role, adminPermissions: users.adminPermissions, status: users.status, emailVerifiedAt: users.emailVerifiedAt, lastLoginAt: users.lastLoginAt, createdAt: users.createdAt }).from(users).where(eq(users.id, id)).limit(1),
     db.select({ id: userDevices.id, countryCode: userDevices.countryCode, city: userDevices.city, region: userDevices.region, deviceType: userDevices.deviceType, operatingSystem: userDevices.operatingSystem, browser: userDevices.browser, ipAddressCiphertext: userDevices.ipAddressCiphertext, visitCount: userDevices.visitCount, totalDurationSeconds: userDevices.totalDurationSeconds, createdAt: userDevices.createdAt, lastSeenAt: userDevices.lastSeenAt }).from(userDevices).where(eq(userDevices.userId, id)).orderBy(desc(userDevices.lastSeenAt)).limit(50),
     db.select({ id: sessions.id, countryCode: sessions.countryCode, city: sessions.city, region: sessions.region, deviceType: sessions.deviceType, operatingSystem: sessions.operatingSystem, browser: sessions.browser, ipAddressCiphertext: sessions.ipAddressCiphertext, createdAt: sessions.createdAt, lastSeenAt: sessions.lastSeenAt, expiresAt: sessions.expiresAt }).from(sessions).where(eq(sessions.userId, id)).orderBy(desc(sessions.lastSeenAt)).limit(30),
-    db.select({ id: siteVisits.id, path: siteVisits.path, deviceType: siteVisits.deviceType, browser: siteVisits.browser, durationSeconds: siteVisits.durationSeconds, createdAt: siteVisits.createdAt }).from(siteVisits).where(eq(siteVisits.userId, id)).orderBy(desc(siteVisits.createdAt)).limit(50),
+    db.select({ id: siteVisits.id, path: siteVisits.path, countryCode: siteVisits.countryCode, city: siteVisits.city, deviceType: siteVisits.deviceType, browser: siteVisits.browser, durationSeconds: siteVisits.durationSeconds, createdAt: siteVisits.createdAt }).from(siteVisits).where(eq(siteVisits.userId, id)).orderBy(desc(siteVisits.createdAt)).limit(50),
+    db.select({ id: comments.id, content: comments.content, createdAt: comments.createdAt, postTitle: posts.title, postSlug: posts.slug }).from(comments).innerJoin(posts, eq(posts.id, comments.postId)).where(and(eq(comments.authorId, id), eq(comments.status, "visible"))).orderBy(desc(comments.createdAt)).limit(10),
     db.select({ visits: sql<number>`count(*)`, durationSeconds: sql<number>`coalesce(sum(${siteVisits.durationSeconds}), 0)` }).from(siteVisits).where(eq(siteVisits.userId, id)),
+    db.select({ count: sql<number>`count(*)` }).from(comments).where(and(eq(comments.authorId, id), eq(comments.status, "visible"))),
     getEnvironment(),
   ]);
   if (!member) return Response.json({ message: "Member not found." }, { status: 404 });
   const activeSessions = loginSessions.filter((session) => sessionIsActive(session, member.role));
   const { birthDateCiphertext, ...memberDetails } = member;
   const birthDate = birthDateCiphertext ? await decryptSensitiveValue(birthDateCiphertext, environment.authSecret).catch(() => null) : null;
-  return Response.json({ member: { ...memberDetails, birthDate }, totals: { visits: Number(totals?.visits || 0), durationSeconds: Number(totals?.durationSeconds || 0) }, devices: await Promise.all(devices.map(async ({ ipAddressCiphertext, ...device }) => ({ ...device, ipAddress: await revealIp(ipAddressCiphertext, environment.authSecret) }))), sessions: await Promise.all(activeSessions.map(async ({ ipAddressCiphertext, ...session }) => ({ ...session, ipAddress: await revealIp(ipAddressCiphertext, environment.authSecret) }))), recentVisits }, { headers: { "cache-control": "no-store" } });
+  const country = devices.find((device) => device.countryCode)?.countryCode || member.countryCode || "";
+  return Response.json({ member: { ...memberDetails, country, birthDate }, totals: { visits: Number(totals?.visits || 0), durationSeconds: Number(totals?.durationSeconds || 0), comments: Number(commentTotals?.count || 0) }, devices: await Promise.all(devices.map(async ({ ipAddressCiphertext, ...device }) => ({ ...device, ipAddress: await revealIp(ipAddressCiphertext, environment.authSecret) }))), sessions: await Promise.all(activeSessions.map(async ({ ipAddressCiphertext, ...session }) => ({ ...session, ipAddress: await revealIp(ipAddressCiphertext, environment.authSecret) }))), recentVisits, recentComments }, { headers: { "cache-control": "no-store" } });
 }
 
 export async function PATCH(request: Request, { params }: Context) {

@@ -64,7 +64,7 @@ main { perspective: 1600px; }
 
 .user-details-dialog { width: min(980px, 100%); }
 .user-details-dialog > header p { margin: 6px 0 0; color: var(--muted); font-size: 12px; }
-.user-detail-summary { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 9px; }
+.user-detail-summary { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 9px; }
 .user-detail-summary article { padding: 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface-soft); }
 .user-detail-summary span, .user-detail-summary strong { display: block; }
 .user-detail-summary span { color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: .08em; }
@@ -84,6 +84,14 @@ main { perspective: 1600px; }
 .session-list span, .session-list strong { font-size: 11px; }.session-list strong { font-family: var(--font-geist-mono); }.session-list small { grid-column: 1 / -1; color: var(--muted); }
 .visit-list > div { padding: 11px 12px; display: grid; grid-template-columns: minmax(0,1fr) auto auto auto; align-items: center; gap: 12px; background: var(--surface-solid); font-size: 10px; }
 .visit-list code { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }.visit-list span, .visit-list small { color: var(--muted); }.visit-list strong { font-variant-numeric: tabular-nums; }
+.detail-location { margin: 0; font-size: 14px; font-weight: 700; overflow-wrap: anywhere; }
+.detail-note { margin: 6px 0 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.user-detail-bio { margin: 0 0 16px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 13px; background: var(--surface-soft); font-size: 12px; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
+.member-comment-list { display: grid; gap: 8px; }
+.member-comment-list article { padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-soft); }
+.member-comment-list p { margin: 0 0 8px; font-size: 12px; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; }
+.member-comment-list article > div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 5px 12px; color: var(--muted); font-size: 10px; }
+.member-comment-list a { color: var(--accent); text-decoration: none; }.member-comment-list a:hover { text-decoration: underline; }
 
 @keyframes fade { from { filter: blur(3px); opacity: 0; } to { filter: blur(0); opacity: 1; } }
 @keyframes slide { from { translate: var(--slide-offset); } to { translate: 0; } }

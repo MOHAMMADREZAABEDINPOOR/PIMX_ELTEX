@@ -71,6 +71,7 @@ export function validateAuthFields(mode: "login" | "signup" | "forgot", values: 
     const nameError = displayNameError(name);
     if (nameError) errors.name = nameError;
     Object.assign(errors, birthDateErrors(values.birthYear, values.birthMonth, values.birthDay));
+    if (!values.declaredCountryCode || !/^[A-Z]{2}$/.test(values.declaredCountryCode)) errors.declaredCountryCode = "Select your country.";
     if (!/^[A-Za-z0-9_]{3,24}$/.test(username)) errors.username = "Use 3–24 letters, numbers, or underscores.";
   }
   const email = values.email?.trim() || "";

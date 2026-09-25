@@ -38,6 +38,7 @@ export const users = sqliteTable(
       .default("active"),
     emailVerifiedAt: integer("email_verified_at", { mode: "timestamp" }),
     countryCode: text("country_code", { length: 2 }),
+    declaredCountryCode: text("declared_country_code", { length: 2 }),
     lastLoginAt: integer("last_login_at", { mode: "timestamp" }),
     ...timestamps,
   },

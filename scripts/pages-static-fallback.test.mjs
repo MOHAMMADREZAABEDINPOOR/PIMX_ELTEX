@@ -50,3 +50,21 @@ test("Pages preserves an untrusted Origin so the backend can reject it", async (
   );
   assert.equal(forwardedOrigin, "https://example.com");
 });
+
+test("Pages forwards Cloudflare visitor location instead of client supplied location", async () => {
+  let forwarded;
+  const request = new Request("https://pimxeltex.pages.dev/api/auth/me", { headers: { "x-pimx-visitor-country": "ZZ" } });
+  Object.assign(request, { cf: { country: "DE", city: "Berlin", region: "Berlin" } });
+  await pagesWorker.fetch(request, { BACKEND: { fetch: async (upstream) => {
+    forwarded = upstream.headers;
+    return Response.json({ user: null });
+  } } });
+  assert.equal(forwarded.get("x-pimx-visitor-country"), "DE");
+  assert.equal(forwarded.get("x-pimx-visitor-city"), "Berlin");
+  assert.equal(forwarded.get("x-pimx-visitor-region"), "Berlin");
+  await pagesWorker.fetch(new Request("https://pimxeltex.pages.dev/api/auth/me", { headers: { "x-pimx-visitor-country": "ZZ" } }), { BACKEND: { fetch: async (upstream) => {
+    forwarded = upstream.headers;
+    return Response.json({ user: null });
+  } } });
+  assert.equal(forwarded.get("x-pimx-visitor-country"), null);
+});
