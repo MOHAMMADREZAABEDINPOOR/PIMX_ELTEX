@@ -20,7 +20,7 @@ function valuesFromForm(form: HTMLFormElement) {
 
 function focusFirstError(form: HTMLFormElement, errors: FieldErrors) {
   const first = Object.keys(errors)[0];
-  if (first) (form.elements.namedItem(first) as HTMLElement | null)?.focus();
+  if (first) (form.querySelector<HTMLElement>(`[data-field="${first}"]`) || form.elements.namedItem(first) as HTMLElement | null)?.focus();
 }
 
 export function AuthForm({ mode }: { mode: Mode }) {

@@ -1,9 +1,9 @@
 "use client";
 
-import { ChevronDown, LayoutDashboard, LogOut, Menu, UserRound, X } from "lucide-react";
+import { ChevronDown, ChevronRight, LayoutDashboard, LogOut, Menu, ShieldCheck, UserRound, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Brand } from "./brand";
 import { ThemeToggle } from "./theme-toggle";
 import { siteConfig } from "@/lib/site-config";
@@ -18,6 +18,16 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
   const [user, setUser] = useState<HeaderUser | null | undefined>(undefined);
+  const accountMenu = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!accountOpen) return;
+    const closeOutside = (event: PointerEvent) => { if (accountMenu.current && !accountMenu.current.contains(event.target as Node)) setAccountOpen(false); };
+    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === "Escape") setAccountOpen(false); };
+    document.addEventListener("pointerdown", closeOutside);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => { document.removeEventListener("pointerdown", closeOutside); document.removeEventListener("keydown", closeOnEscape); };
+  }, [accountOpen]);
 
   const loadUser = useCallback(() => {
     const controller = new AbortController();
@@ -51,9 +61,9 @@ export function SiteHeader() {
     <Brand />
     <nav className="desktop-nav" aria-label="Main navigation">{links.map(([href, label]) => <Link key={href} href={href} transitionTypes={[href === "/" ? "nav-back" : "nav-forward"]} className={href === "/" ? pathname === "/" ? "active" : "" : pathname.startsWith(href) ? "active" : ""} onClick={() => { setOpen(false); setAccountOpen(false); }}>{label}</Link>)}</nav>
     <div className="header-actions"><ThemeToggle />
-      <div className="account-menu">
-        {user ? <button type="button" className="account-avatar-button" aria-label="Open account menu" aria-expanded={accountOpen} onClick={() => setAccountOpen((value) => !value)}><span>{initials(user.name)}</span><ChevronDown size={13} /></button> : <Link href="/login" className="icon-button account-button" aria-label="Sign in"><UserRound size={17} /></Link>}
-        {user && accountOpen ? <div className="account-popover"><header><span className="account-avatar-large">{initials(user.name)}</span><div><strong>{user.name}</strong><small>@{user.username}</small></div></header><p>{user.email}</p><Link href="/account" onClick={() => setAccountOpen(false)}><LayoutDashboard size={15} /> Account activity</Link>{user.role === "admin" ? <Link href="/admin" onClick={() => setAccountOpen(false)}><LayoutDashboard size={15} /> پنل ادمین</Link> : null}<button type="button" onClick={() => void signOut()}><LogOut size={15} /> Sign out</button></div> : null}
+      <div className="account-menu" ref={accountMenu}>
+        {user ? <button type="button" className="account-avatar-button" aria-label="Open account menu" aria-expanded={accountOpen} aria-controls={accountOpen ? "account-popover" : undefined} onClick={() => setAccountOpen((value) => !value)}><span>{initials(user.name)}</span><ChevronDown size={13} /></button> : <Link href="/login" className="icon-button account-button" aria-label="Sign in"><UserRound size={17} /></Link>}
+        {user && accountOpen ? <div className="account-popover" id="account-popover"><header className="account-popover-profile"><span className="account-avatar-large">{initials(user.name)}</span><div><strong>{user.name}</strong><small>@{user.username}</small></div></header><p className="account-popover-email">{user.email}</p><nav aria-label="Account navigation"><Link href="/account" onClick={() => setAccountOpen(false)}><span className="account-popover-icon"><LayoutDashboard size={17} /></span><span className="account-popover-label"><strong>Account activity</strong><small>Profile, comments and sessions</small></span><ChevronRight size={15} /></Link>{user.role === "admin" ? <Link href="/admin" onClick={() => setAccountOpen(false)}><span className="account-popover-icon"><ShieldCheck size={17} /></span><span className="account-popover-label"><strong>Admin console</strong><small>Content and member controls</small></span><ChevronRight size={15} /></Link> : null}</nav><div className="account-popover-footer"><button type="button" onClick={() => void signOut()}><span className="account-popover-icon"><LogOut size={17} /></span><span>Sign out</span></button></div></div> : null}
       </div>
       <a href={siteConfig.youtubeUrl} target="_blank" rel="noreferrer" className="button button-primary header-cta">Subscribe</a>
       <button type="button" className="icon-button mobile-menu-button" onClick={() => setOpen((value) => !value)} aria-label="Toggle menu" aria-expanded={open}>{open ? <X size={18} /> : <Menu size={18} />}</button>
