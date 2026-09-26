@@ -107,6 +107,8 @@ $env:TEST_ADMIN_PASSWORD='your-local-admin-password'
 node scripts/verify-episode-upload.mjs
 ```
 
+With the local development server running on port 3001, run `npm run test:member-deletion` to verify permanent member deletion, related data removal, session invalidation, permissions, and preservation of authored episodes. It creates and removes disposable fixtures in local D1 only; `TEST_BASE_URL` can select another localhost port.
+
 ## Security
 
 - PBKDF2-SHA256 password hashes with per-password salts and 600,000 iterations; older 210,000-iteration hashes upgrade after a successful login
@@ -124,6 +126,8 @@ node scripts/verify-episode-upload.mjs
 - Audit records for administrator mutations
 
 The admin console includes searchable member/content lists, status filters, recent audit activity, editable project details, member session revocation, and **Members → Access** for promotion or demotion and individual action permissions. Existing administrators with `admin_permissions = NULL` retain full access; newly promoted administrators receive only selected permissions. Role changes revoke the affected member's sessions. API handlers enforce permissions even when a UI action is hidden. Member details and editors open in viewport dialogs with independent scrolling. Published content pages read current D1 records so edits appear without rebuilding the frontend.
+
+Deleting a member permanently removes their D1 account, sessions, OTPs, devices, personal visits, comments and associated comment threads/reactions. Authored episodes are reassigned to the deleting administrator and retained. These changes and the deletion audit entry commit together in a D1 batch; no placeholder member is retained. System accounts and the acting administrator cannot be deleted.
 
 Sign-up requests a complete birth date in three compact controls instead of a separate age field. The server validates real calendar dates and the minimum age of 13. New birth dates are encrypted at rest; the member list does not display them.
 

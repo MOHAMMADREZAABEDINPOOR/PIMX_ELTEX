@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { count, countDistinct, desc, eq, sql } from "drizzle-orm";
+import { and, count, countDistinct, desc, eq, ne, sql } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { AdminConsole } from "@/components/admin-console";
 import { getDatabase } from "@/db";
@@ -17,12 +17,13 @@ export default async function AdminPage() {
   const db = await getDatabase();
   if (!db) return <AdminConsole stats={[{ label: "Members", value: "0", detail: "Database offline" }, { label: "Episodes", value: "0", detail: "Database offline" }, { label: "Projects", value: "0", detail: "Database offline" }, { label: "Comments", value: "0", detail: "Database offline" }, { label: "Countries", value: "0", detail: "Database offline" }]} analytics={{ totalViews: 0, uniqueVisitors: 0, totalDurationSeconds: 0, countries: [], devices: [], browsers: [], paths: [] }} initialUsers={[]} initialPosts={[]} initialProjects={[]} initialComments={[]} />;
 
+  const listedMembers = and(ne(users.id, "system-pimx"), ne(users.status, "deleted"));
   const [memberCount, postCount, projectCount, commentCount, countryCount, viewCount, visitorCount, durationTotal, countryViews, deviceViews, browserViews, pathViews, memberRows, postRows, projectRows, commentRows, activityRows] = await Promise.all([
-    db.select({ value: count() }).from(users),
+    db.select({ value: count() }).from(users).where(listedMembers),
     db.select({ value: count() }).from(posts),
     db.select({ value: count() }).from(projects),
     db.select({ value: count() }).from(comments).where(eq(comments.status, "visible")),
-    db.select({ value: countDistinct(users.countryCode) }).from(users),
+    db.select({ value: countDistinct(users.countryCode) }).from(users).where(listedMembers),
     db.select({ value: count() }).from(siteVisits),
     db.select({ value: countDistinct(siteVisits.visitorHash) }).from(siteVisits),
     db.select({ value: sql<number>`coalesce(sum(${siteVisits.durationSeconds}), 0)` }).from(siteVisits),
@@ -30,7 +31,7 @@ export default async function AdminPage() {
     db.select({ label: siteVisits.deviceType, value: count() }).from(siteVisits).groupBy(siteVisits.deviceType).orderBy(desc(count())).limit(8),
     db.select({ label: siteVisits.browser, value: count() }).from(siteVisits).groupBy(siteVisits.browser).orderBy(desc(count())).limit(8),
     db.select({ label: siteVisits.path, value: count() }).from(siteVisits).groupBy(siteVisits.path).orderBy(desc(count())).limit(10),
-    db.select({ id: users.id, name: users.name, username: users.username, email: users.email, country: sql<string | null>`coalesce((select country_code from user_devices where user_id = ${users.id} and country_code is not null order by last_seen_at desc limit 1), ${users.countryCode})`, declaredCountryCode: users.declaredCountryCode, status: users.status, role: users.role, adminPermissions: users.adminPermissions, createdAt: users.createdAt, lastLoginAt: users.lastLoginAt, emailVerifiedAt: users.emailVerifiedAt }).from(users).orderBy(desc(users.createdAt)).limit(100),
+    db.select({ id: users.id, name: users.name, username: users.username, email: users.email, country: sql<string | null>`coalesce((select country_code from user_devices where user_id = ${users.id} and country_code is not null order by last_seen_at desc limit 1), ${users.countryCode})`, declaredCountryCode: users.declaredCountryCode, status: users.status, role: users.role, adminPermissions: users.adminPermissions, createdAt: users.createdAt, lastLoginAt: users.lastLoginAt, emailVerifiedAt: users.emailVerifiedAt }).from(users).where(listedMembers).orderBy(desc(users.createdAt)).limit(100),
     db.select({ id: posts.id, title: posts.title, slug: posts.slug, status: posts.status }).from(posts).orderBy(desc(posts.createdAt)).limit(100),
     db.select({ id: projects.id, title: projects.title, slug: projects.slug, status: projects.status, previewUrl: projects.previewUrl, downloadUrl: projects.downloadUrl }).from(projects).orderBy(desc(projects.createdAt)).limit(100),
     db.select({ id: comments.id, content: comments.content, author: users.name, post: posts.title }).from(comments).innerJoin(users, eq(users.id, comments.authorId)).innerJoin(posts, eq(posts.id, comments.postId)).where(eq(comments.status, "visible")).orderBy(desc(comments.createdAt)).limit(100),

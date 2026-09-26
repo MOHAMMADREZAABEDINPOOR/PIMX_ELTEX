@@ -26,6 +26,7 @@
     "test:smtp": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test scripts/smtp-client.test.mjs",
     "test:comment-reactions": "node scripts/verify-comment-reactions.mjs",
     "test:comment-deletion": "node scripts/verify-comment-deletion.mjs",
+    "test:member-deletion": "node scripts/verify-member-deletion.mjs",
     "content:capture-previews": "node scripts/capture-project-previews.mjs"
   },
   "dependencies": {

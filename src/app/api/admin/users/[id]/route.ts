@@ -65,12 +65,19 @@ export async function DELETE(request: Request, { params }: Context) {
   if (!admin) return Response.json({ message: "Administrator access required." }, { status: 403 });
   const { id } = await params;
   if (id === admin.id) return Response.json({ message: "You cannot delete your own account." }, { status: 400 });
+  if (id === "system-pimx") return Response.json({ message: "The system account cannot be deleted." }, { status: 403 });
   const db = await getDatabase(); if (!db) return Response.json({ message: "Database is not available." }, { status: 503 });
   const [target] = await db.select({ role: users.role, adminPermissions: users.adminPermissions }).from(users).where(eq(users.id, id)).limit(1);
+  if (!target) return Response.json({ message: "Member not found." }, { status: 404 });
   if (target?.role === "admin" && (!hasAdminPermission(admin, "members.roles") || effectiveAdminPermissions(target).some((permission) => !effectiveAdminPermissions(admin).includes(permission)))) return Response.json({ message: "You cannot delete this administrator." }, { status: 403 });
-  const deleted = await db.update(users).set({ status: "deleted", role: "user", adminPermissions: null, name: "Deleted member", email: `deleted-${id}@invalid.local`, username: `deleted_${id}`, passwordHash: "disabled", avatarUrl: null, bio: null, birthDateCiphertext: null, updatedAt: new Date() }).where(eq(users.id, id)).returning({ id: users.id });
+  // D1 executes this batch atomically. Preserve site content while removing the
+  // account, its personal analytics, and all records with cascading user FKs.
+  const [, , deleted] = await db.batch([
+    db.update(posts).set({ authorId: admin.id }).where(eq(posts.authorId, id)),
+    db.delete(siteVisits).where(eq(siteVisits.userId, id)),
+    db.delete(users).where(eq(users.id, id)).returning({ id: users.id }),
+    db.insert(auditLogs).values({ id: crypto.randomUUID(), actorId: admin.id, action: "user.delete", targetType: "user", targetId: id }),
+  ]);
   if (!deleted.length) return Response.json({ message: "Member not found." }, { status: 404 });
-  await db.delete(sessions).where(eq(sessions.userId, id));
-  await db.insert(auditLogs).values({ id: crypto.randomUUID(), actorId: admin.id, action: "user.delete", targetType: "user", targetId: id });
   return Response.json({ id });
 }
