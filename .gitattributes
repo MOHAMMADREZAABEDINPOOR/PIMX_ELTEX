@@ -1,0 +1,2 @@
+# Preserve the supplied episode's original bytes across Windows/Linux builds.
+"gemini 3.8 flash/**" -text

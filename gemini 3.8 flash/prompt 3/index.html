@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>METROPOLIS 3D // Realistic Procedural City Showcase</title>
+  <meta name="description" content="A highly detailed realistic 3D city environment with skyscrapers, traffic, pedestrians, reflections, day/night celestial lighting, weather, and cinematic camera shots.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- 3D Canvas Viewport -->
+  <div id="canvas-container">
+    <canvas id="city-canvas"></canvas>
+    <div id="lens-overlay"></div>
+  </div>
+
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loader-content">
+      <div class="loader-spinner"></div>
+      <h2 class="loader-title">METROPOLIS 3D</h2>
+      <p class="loader-subtitle">Generating architectural skyline, traffic systems & atmospheric lighting...</p>
+      <div class="loader-progress-track">
+        <div class="loader-progress-bar" style="width: 100%;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Cinematic Banner (Shown when switching camera angles) -->
+  <div id="cinematic-banner" class="glass-panel">
+    <span class="pulsing-dot"></span>
+    <span id="cinematic-name">Skyline Vista</span>
+  </div>
+
+  <!-- Walk Mode Key Instructions -->
+  <div id="walk-instructions" class="glass-panel">
+    <span>Move: <span class="key">W</span> <span class="key">A</span> <span class="key">S</span> <span class="key">D</span></span>
+    <span>Look: <span class="key">Click & Drag Mouse</span></span>
+    <span>Exit: <span class="key">Switch Mode</span></span>
+  </div>
+
+  <!-- HUD Interface Layer -->
+  <div id="ui-layer">
+    
+    <!-- Top Navigation & Telemetry Bar -->
+    <header class="top-header interactive">
+      <div class="brand">
+        <div class="brand-badge">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 21h18M5 21V7l8-4v18M13 11l6-3v13M9 9h1M9 13h1M9 17h1M17 12h1M17 16h1"/>
+          </svg>
+        </div>
+        <div class="brand-info">
+          <h1>METROPOLIS 3D</h1>
+          <p>Architectural Showcase</p>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <!-- Live Telemetry Display -->
+        <div class="telemetry-bar glass-panel">
+          <div class="metric">
+            <span>PERF:</span>
+            <span id="fps-metric" class="metric-val">60 FPS</span>
+          </div>
+          <div class="metric">
+            <span>DENSITY:</span>
+            <span id="vehicles-metric" class="metric-val">42 CARS</span>
+          </div>
+          <div class="metric">
+            <span>TIME:</span>
+            <span id="time-metric" class="metric-val">17:48</span>
+          </div>
+        </div>
+
+        <!-- Audio Synthesizer Button -->
+        <button id="audio-toggle" class="btn-icon" title="Toggle Procedural Urban Soundscape" aria-label="Audio Toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+          </svg>
+        </button>
+
+        <!-- Fullscreen Button -->
+        <button id="fullscreen-toggle" class="btn-icon" title="Toggle Fullscreen" aria-label="Fullscreen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+          </svg>
+        </button>
+
+        <!-- Hide UI Button -->
+        <button id="toggle-ui" class="btn-icon" title="Hide Controls (H key)" aria-label="Toggle UI">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Bottom Dashboard Controls Dock -->
+    <div class="bottom-dock interactive">
+      
+      <!-- Left: Atmosphere & Time Controls -->
+      <div class="dock-left">
+        <!-- Celestial Lighting Panel -->
+        <div class="control-card glass-panel">
+          <div class="card-title">
+            <span>Celestial Lighting</span>
+            <span id="time-slider-val" class="tag">17:48</span>
+          </div>
+          <div class="btn-group">
+            <button class="pill-btn" data-time="sunrise" title="Golden Dawn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6m0 12v2M4.93 4.93l4.24 4.24M14.83 14.83l4.24 4.24M2 12h6m12 0h2M4.93 19.07l4.24-4.24M14.83 9.17l4.24-4.24"/></svg>
+              Sunrise
+            </button>
+            <button class="pill-btn" data-time="day" title="Crisp Daylight">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+              Day
+            </button>
+            <button class="pill-btn active" data-time="sunset" title="Golden Hour">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 10v4M12 2v2M4.93 4.93l1.41 1.41M17.66 6.34l1.41-1.41M2 18h20M20 14h2M2 14h2M17 14a5 5 0 0 0-10 0"/></svg>
+              Sunset
+            </button>
+            <button class="pill-btn" data-time="night" title="Metropolis Nightlife">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+              Night
+            </button>
+          </div>
+          <div class="slider-container">
+            <input type="range" id="time-slider" min="0" max="24" step="0.1" value="17.8" aria-label="Time of Day Slider">
+            <div class="slider-labels">
+              <span>00:00</span>
+              <span>06:00 (Dawn)</span>
+              <span>12:00 (Noon)</span>
+              <span>18:00 (Dusk)</span>
+              <span>24:00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Weather Engine Panel -->
+        <div class="control-card glass-panel">
+          <div class="card-title">
+            <span>Atmospheric Weather</span>
+            <span class="tag">Reflections Active</span>
+          </div>
+          <div class="btn-group">
+            <button class="pill-btn active" data-weather="clear" title="Clear skies with crisp shadows">
+              Clear
+            </button>
+            <button class="pill-btn" data-weather="fog" title="Atmospheric volumetric fog">
+              Fog / Mist
+            </button>
+            <button class="pill-btn" data-weather="rain" title="Rainfall with wet puddle street reflections">
+              Rain
+            </button>
+            <button class="pill-btn" data-weather="storm" title="Thunderstorm with lightning strikes">
+              Storm
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center: Cinematic Camera Director Shots -->
+      <div class="dock-center">
+        <div class="cinematic-carousel glass-panel">
+          <button class="shot-btn active" title="Shot 1: Skyline Vista">
+            <span class="shot-num">SHOT 01</span>
+            <span>Skyline</span>
+          </button>
+          <button class="shot-btn" title="Shot 2: Skyscraper Canyon">
+            <span class="shot-num">SHOT 02</span>
+            <span>Canyon</span>
+          </button>
+          <button class="shot-btn" title="Shot 3: Intersection Pulse">
+            <span class="shot-num">SHOT 03</span>
+            <span>Crossroad</span>
+          </button>
+          <button class="shot-btn" title="Shot 4: Taxi Chase Cam">
+            <span class="shot-num">SHOT 04</span>
+            <span>Taxi Chase</span>
+          </button>
+          <button class="shot-btn" title="Shot 5: Central Park Promenade">
+            <span class="shot-num">SHOT 05</span>
+            <span>Park Walk</span>
+          </button>
+          <button class="shot-btn" title="Shot 6: Supertall Spire Overlook">
+            <span class="shot-num">SHOT 06</span>
+            <span>Supertall</span>
+          </button>
+          <button class="shot-btn" title="Shot 7: Golden Hour Glide">
+            <span class="shot-num">SHOT 07</span>
+            <span>Sunset Fly</span>
+          </button>
+          <button class="shot-btn" title="Shot 8: Cyber Neon Boulevard">
+            <span class="shot-num">SHOT 08</span>
+            <span>Neon Strip</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Right: Navigation Mode Selector -->
+      <div class="dock-right">
+        <div class="control-card glass-panel">
+          <div class="card-title">
+            <span>Camera Navigation</span>
+            <span class="tag">Active</span>
+          </div>
+          <div class="btn-group">
+            <button class="pill-btn active" data-cam="cinematic" title="Automated choreographed cinematic tour">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+              Cinematic
+            </button>
+            <button class="pill-btn" data-cam="orbit" title="Free 360 degree orbit inspection">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+              Free Orbit
+            </button>
+            <button class="pill-btn" data-cam="walk" title="Street-level pedestrian walker (WASD)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="3"/><path d="m9 20 3-6 3 6M6 11l6 2 6-2"/></svg>
+              Street Walk
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Quick keyboard hints in bottom corner -->
+    <div class="hud-hint">
+      Press [H] to Toggle UI &nbsp;|&nbsp; Press [C] Next Camera Shot
+    </div>
+
+  </div>
+
+  <!-- Three.js Core & OrbitControls (via fast, standard CDN) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+  <!-- Modular Application Scripts -->
+  <script src="js/audio.js"></script>
+  <script src="js/lighting.js"></script>
+  <script src="js/weather.js"></script>
+  <script src="js/city.js"></script>
+  <script src="js/traffic.js"></script>
+  <script src="js/pedestrians.js"></script>
+  <script src="js/camera.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>

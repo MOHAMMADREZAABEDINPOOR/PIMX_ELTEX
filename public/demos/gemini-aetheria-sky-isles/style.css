@@ -1,0 +1,548 @@
+/* ============================================================================
+   Aetheria: Sky Isles Adventure - Visual Stylesheet
+   Modern glassmorphic HUD, cartoon fantasy aesthetic, responsive UI & animations
+   ============================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #0d1117;
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #ffffff;
+}
+
+#canvas-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+#canvas-container canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* ============================================================================
+   HUD (Heads-Up Display)
+   ============================================================================ */
+
+#hud-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 18px 24px;
+}
+
+.hud-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.hud-group-left, .hud-group-right {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+/* Glassmorphism Cards */
+.hud-card {
+    background: rgba(18, 24, 38, 0.68);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 16px;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+    pointer-events: auto;
+    transition: transform 0.15s ease;
+}
+
+.hud-icon {
+    font-size: 1.35rem;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+}
+
+.hud-val {
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.hud-hearts-card {
+    padding: 8px 14px;
+}
+
+.hearts-container {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.heart {
+    font-size: 1.35rem;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: inline-block;
+    filter: drop-shadow(0 2px 5px rgba(255, 50, 80, 0.4));
+}
+
+.heart.full {
+    animation: heartBeat 2.4s infinite ease-in-out;
+}
+
+.heart.empty {
+    opacity: 0.3;
+    filter: grayscale(1);
+}
+
+@keyframes heartBeat {
+    0%, 100% { transform: scale(1); }
+    12% { transform: scale(1.18); }
+    24% { transform: scale(1); }
+    36% { transform: scale(1.12); }
+    48% { transform: scale(1); }
+}
+
+/* Stars Relics in HUD */
+.stars-container {
+    display: flex;
+    gap: 4px;
+}
+
+.star-icon {
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.star-icon.active {
+    filter: drop-shadow(0 0 8px #ffd700);
+    transform: scale(1.1);
+}
+
+.star-icon.dormant {
+    opacity: 0.25;
+    filter: grayscale(1);
+}
+
+/* Power-Up HUD Timer Badge */
+#hud-powerup {
+    position: absolute;
+    top: 76px;
+    left: 24px;
+    background: rgba(14, 20, 32, 0.8);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(0, 240, 255, 0.4);
+    border-radius: 12px;
+    padding: 8px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 170px;
+    box-shadow: 0 6px 20px rgba(0, 240, 255, 0.25);
+    pointer-events: auto;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#hud-powerup-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #00f0ff;
+    text-shadow: 0 0 6px rgba(0, 240, 255, 0.6);
+}
+
+.powerup-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+#hud-powerup-fill {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #00f0ff, #ff79c6);
+    border-radius: 3px;
+    transition: width 0.1s linear;
+}
+
+/* Audio & Pause Action Buttons */
+.hud-btn {
+    background: rgba(18, 24, 38, 0.68);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 14px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.15rem;
+    cursor: pointer;
+    color: #ffffff;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    pointer-events: auto;
+    transition: all 0.15s ease;
+}
+
+.hud-btn:hover {
+    transform: translateY(-2px);
+    background: rgba(30, 40, 60, 0.85);
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+.hud-btn:active {
+    transform: scale(0.92);
+}
+
+/* Notification Banner */
+#notification-banner {
+    position: absolute;
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: linear-gradient(135deg, rgba(20, 25, 45, 0.92), rgba(35, 20, 50, 0.92));
+    backdrop-filter: blur(16px);
+    border: 1.5px solid rgba(255, 215, 0, 0.6);
+    border-radius: 30px;
+    padding: 10px 24px;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #ffd700;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.3);
+    pointer-events: none;
+    opacity: 0;
+    transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 100;
+}
+
+#notification-banner.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+#notification-banner.fade-out {
+    transform: translateX(-50%) translateY(-15px);
+    opacity: 0;
+}
+
+/* ============================================================================
+   Touch / Mobile On-Screen Virtual Controls
+   ============================================================================ */
+
+#touch-controls {
+    position: absolute;
+    bottom: 24px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 32px;
+    pointer-events: none;
+    z-index: 50;
+}
+
+.touch-cluster-left {
+    display: flex;
+    gap: 16px;
+    pointer-events: auto;
+}
+
+.touch-cluster-right {
+    display: flex;
+    pointer-events: auto;
+}
+
+.touch-btn {
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    background: rgba(20, 26, 42, 0.65);
+    backdrop-filter: blur(12px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    font-size: 1.6rem;
+    font-weight: 800;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), inset 0 2px 2px rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: transform 0.08s ease, background 0.08s ease;
+}
+
+.touch-btn:active {
+    transform: scale(0.88);
+    background: rgba(0, 240, 255, 0.5);
+    border-color: #00f0ff;
+}
+
+.jump-btn {
+    width: 78px;
+    height: 78px;
+    background: linear-gradient(135deg, rgba(255, 121, 198, 0.65), rgba(189, 147, 249, 0.65));
+    border-color: rgba(255, 255, 255, 0.4);
+    font-size: 1.8rem;
+}
+
+.jump-btn:active {
+    background: linear-gradient(135deg, rgba(255, 121, 198, 0.9), rgba(189, 147, 249, 0.9));
+}
+
+/* ============================================================================
+   Modals & Overlay Menus (Start, Victory, Game Over, Pause)
+   ============================================================================ */
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 14, 24, 0.78);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+    opacity: 1;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal-backdrop.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.modal-card {
+    background: linear-gradient(145deg, rgba(26, 32, 54, 0.95), rgba(16, 20, 36, 0.95));
+    border: 1.5px solid rgba(255, 255, 255, 0.22);
+    border-radius: 28px;
+    padding: 36px 44px;
+    max-width: 520px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65), 0 0 40px rgba(139, 233, 253, 0.15);
+    transform: translateY(0);
+    animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes modalPop {
+    0% { transform: scale(0.85) translateY(20px); opacity: 0; }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.modal-title {
+    font-size: 2.3rem;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #00f0ff, #ffd700, #ff79c6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+}
+
+.modal-subtitle {
+    font-size: 1.05rem;
+    color: #a0aec0;
+    margin-bottom: 24px;
+}
+
+/* Instructions & Legend */
+.instruction-box {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 16px 20px;
+    margin-bottom: 28px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.instruction-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.95rem;
+}
+
+.instruction-keys {
+    display: flex;
+    gap: 6px;
+}
+
+.key-cap {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(135deg, #00f0ff, #0077ff);
+    color: #ffffff;
+    border: none;
+    border-radius: 18px;
+    padding: 16px 36px;
+    font-size: 1.25rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(0, 119, 255, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    width: 100%;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(0, 119, 255, 0.6);
+}
+
+.btn-primary:active {
+    transform: scale(0.96);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    border-radius: 16px;
+    padding: 14px 28px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+/* Victory Screen Specifics */
+.victory-stars {
+    font-size: 3.2rem;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.big-star {
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.big-star.earned {
+    color: #ffd700;
+    filter: drop-shadow(0 0 16px rgba(255, 215, 0, 0.8));
+    animation: starBounce 0.6s ease forwards;
+}
+
+.big-star.unearned {
+    color: rgba(255, 255, 255, 0.15);
+}
+
+@keyframes starBounce {
+    0% { transform: scale(0) rotate(-45deg); }
+    70% { transform: scale(1.25) rotate(10deg); }
+    100% { transform: scale(1) rotate(0); }
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 26px;
+}
+
+.stat-box {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.stat-label {
+    font-size: 0.82rem;
+    color: #a0aec0;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.stat-val {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #00f0ff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    #hud-overlay {
+        padding: 12px 14px;
+    }
+    .hud-card {
+        padding: 6px 10px;
+        gap: 6px;
+    }
+    .hud-val {
+        font-size: 0.95rem;
+    }
+    .modal-card {
+        padding: 24px 20px;
+    }
+    .modal-title {
+        font-size: 1.8rem;
+    }
+    .touch-btn {
+        width: 58px;
+        height: 58px;
+        font-size: 1.3rem;
+    }
+    .jump-btn {
+        width: 68px;
+        height: 68px;
+        font-size: 1.5rem;
+    }
+}

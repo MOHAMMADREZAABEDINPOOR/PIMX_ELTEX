@@ -2,6 +2,7 @@ import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 
 await import("./prepare-muse-content.mjs");
+await import("./prepare-gemini-content.mjs");
 
 const cli = join(process.cwd(), "node_modules", "@opennextjs", "cloudflare", "dist", "cli", "index.js");
 const result = spawnSync(process.execPath, [cli, "build"], {

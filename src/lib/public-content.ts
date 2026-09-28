@@ -3,7 +3,7 @@ import "server-only";
 import { asc, desc, eq } from "drizzle-orm";
 import { getDatabase } from "@/db";
 import { episodePrompts, episodeResources, posts as postsTable, projects as projectsTable } from "@/db/schema";
-import museContent from "@/content/muse-content.json";
+import { bundledEpisodes } from "@/content/bundled-episodes";
 
 export type PublicPost = {
   slug: string;
@@ -60,9 +60,9 @@ function formatDate(value: Date | null) {
 }
 
 export async function getPublishedPosts(): Promise<PublicPost[]> {
-  if (process.env.PIMX_STATIC_BUILD === "1") return [museContent.post];
+  if (process.env.PIMX_STATIC_BUILD === "1") return bundledEpisodes.map((episode) => episode.post);
   const db = await getDatabase();
-  if (!db) return [museContent.post];
+  if (!db) return bundledEpisodes.map((episode) => episode.post);
   const rows = await db.select().from(postsTable).where(eq(postsTable.status, "published")).orderBy(desc(postsTable.publishedAt));
   return rows.map((row) => {
     return {
@@ -86,27 +86,35 @@ export async function getPublicPost(slug: string): Promise<PublicPost | null> {
 }
 
 export async function getPublishedProjects(): Promise<PublicProject[]> {
-  if (process.env.PIMX_STATIC_BUILD === "1") return museContent.projects;
+  if (process.env.PIMX_STATIC_BUILD === "1") return bundledEpisodes.flatMap((episode) => episode.projects);
   const db = await getDatabase();
-  if (!db) return museContent.projects;
+  if (!db) return bundledEpisodes.flatMap((episode) => episode.projects);
   const [rows, promptBundles] = await Promise.all([
     db.select().from(projectsTable).where(eq(projectsTable.status, "published")).orderBy(desc(projectsTable.createdAt)),
-    db.select({ previewUrl: episodePrompts.previewUrl, fileCount: episodePrompts.fileCount }).from(episodePrompts),
+    db.select({ previewUrl: episodePrompts.previewUrl, fileCount: episodePrompts.fileCount, sortOrder: episodePrompts.sortOrder, postSlug: postsTable.slug, postTitle: postsTable.title, publishedAt: postsTable.publishedAt }).from(episodePrompts).innerJoin(postsTable, eq(postsTable.id, episodePrompts.postId)).where(eq(postsTable.status, "published")),
   ]);
-  const fileCountByPreview = new Map(promptBundles.filter((prompt) => prompt.previewUrl).map((prompt) => [prompt.previewUrl, prompt.fileCount]));
+  const bundleByPreview = new Map(promptBundles.filter((prompt) => prompt.previewUrl).map((prompt) => [prompt.previewUrl, prompt]));
+  const bundledProjectBySlug = new Map(bundledEpisodes.flatMap((episode) => episode.projects).map((project) => [project.slug, project]));
+  rows.sort((a, b) => {
+    const aBundle = bundleByPreview.get(a.previewUrl);
+    const bBundle = bundleByPreview.get(b.previewUrl);
+    const dateOrder = (bBundle?.publishedAt || b.createdAt).getTime() - (aBundle?.publishedAt || a.createdAt).getTime();
+    return dateOrder || (aBundle?.sortOrder ?? Number.MAX_SAFE_INTEGER) - (bBundle?.sortOrder ?? Number.MAX_SAFE_INTEGER) || a.slug.localeCompare(b.slug);
+  });
   return rows.map((project) => ({
     ...project,
     coverUrl: project.coverUrl || `/project-previews/${project.slug}.webp`,
     tech: project.tech,
-    fileCount: fileCountByPreview.get(project.previewUrl) || 0,
-    episode: "PIMX_ELTEX",
+    fileCount: bundleByPreview.get(project.previewUrl)?.fileCount || 0,
+    episode: bundledProjectBySlug.get(project.slug)?.episode || bundleByPreview.get(project.previewUrl)?.postTitle || "PIMX_ELTEX",
   }));
 }
 
 export async function getPublicEpisode(post: PublicPost): Promise<PublicEpisode> {
-  if (process.env.PIMX_STATIC_BUILD === "1" && post.slug === museContent.post.slug) return museContent.episode;
+  const bundled = bundledEpisodes.find((episode) => episode.post.slug === post.slug);
+  if (process.env.PIMX_STATIC_BUILD === "1" && bundled) return bundled.episode;
   const db = await getDatabase();
-  if (!db && post.slug === museContent.post.slug) return museContent.episode;
+  if (!db && bundled) return bundled.episode;
   if (!db) return { videoId: post.youtubeVideoId, number: "Episode", overview: post.excerpt, prompts: [], links: [] };
   const [record] = await db.select({ id: postsTable.id }).from(postsTable).where(eq(postsTable.slug, post.slug)).limit(1);
   if (!record) return { videoId: post.youtubeVideoId, number: "Episode", overview: post.excerpt, prompts: [], links: [] };
@@ -132,7 +140,7 @@ export async function getPublicEpisode(post: PublicPost): Promise<PublicEpisode>
   const download = resources.find((resource) => resource.type === "download" && resource.url);
   return {
     videoId: post.youtubeVideoId,
-    number: "Episode",
+    number: bundled?.episode.number || "Episode",
     overview: post.excerpt,
     prompts,
     links,

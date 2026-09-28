@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Aurelia Haute Cuisine & Wine Atelier — Three Michelin Star contemporary fine dining, curated seasonal tasting menus, and rare cellar reserves." />
+  <meta name="keywords" content="Aurelia, Michelin Star Restaurant, Fine Dining, Luxury Restaurant, Paris Haute Cuisine, Degustation, Wine Cellar" />
+  <meta name="author" content="Aurelia Atelier Gastronomique" />
+  <title>AURELIA | Haute Cuisine & Wine Atelier • Three Michelin Stars</title>
+
+  <!-- Google Fonts: Cinzel, Cormorant Garamond, Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- FontAwesome 6 CDN for Crisp Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Master Stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ==========================================================================
+       HEADER & NAVIGATION BAR
+       ========================================================================== -->
+  <header class="site-header" id="site-header">
+    <div class="container nav-container">
+      <!-- Brand Logo with Luxury SVG Crest -->
+      <a href="#hero" class="brand-logo" id="brand-logo-link" aria-label="Aurelia Home">
+        <svg class="brand-crest" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="46" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <polygon points="50,8 61,38 93,38 67,58 77,88 50,70 23,88 33,58 7,38 39,38" stroke="currentColor" stroke-width="1.5" fill="rgba(212,175,55,0.12)"/>
+          <circle cx="50" cy="50" r="16" stroke="currentColor" stroke-width="1.2"/>
+          <circle cx="50" cy="50" r="4" fill="currentColor"/>
+        </svg>
+        <div class="brand-text-wrap">
+          <span class="brand-name">AURELIA</span>
+          <span class="brand-tagline">HAUTE CUISINE • PARIS</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation Menu -->
+      <nav class="nav-menu" aria-label="Main Navigation">
+        <ul class="nav-links">
+          <li><a href="#hero" class="nav-link active">Home</a></li>
+          <li><a href="#philosophy" class="nav-link">Our Story</a></li>
+          <li><a href="#menu" class="nav-link">Food Menu</a></li>
+          <li><a href="#degustation" class="nav-link">Tasting</a></li>
+          <li><a href="#reservation" class="nav-link">Reservations</a></li>
+          <li><a href="#gallery" class="nav-link">Gallery</a></li>
+          <li><a href="#reviews" class="nav-link">Acclaim</a></li>
+          <li><a href="#location" class="nav-link">Hours & Contact</a></li>
+        </ul>
+      </nav>
+
+      <!-- Nav Action Tools -->
+      <div class="nav-actions">
+        <!-- Ambient sound synthesizer button -->
+        <button class="sound-toggle-btn" id="sound-toggle-btn" title="Toggle Ambient Dining Room Acoustics" aria-label="Toggle Sound">
+          <i class="fa-solid fa-volume-xmark"></i>
+        </button>
+
+        <a href="#reservation" class="btn btn-gold btn-sm btn-reserve-desktop" id="nav-reserve-btn">
+          Reserve Table
+        </a>
+
+        <!-- Mobile Drawer Toggle Hamburger -->
+        <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open Mobile Menu">
+          <i class="fa-solid fa-bars-staggered"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Menu -->
+  <div class="drawer-overlay" id="drawer-overlay"></div>
+  <aside class="mobile-nav-drawer" id="mobile-nav-drawer">
+    <div class="drawer-header">
+      <div class="brand-text-wrap">
+        <span class="brand-name">AURELIA</span>
+        <span class="brand-tagline">THREE MICHELIN STARS</span>
+      </div>
+      <button class="drawer-close-btn" id="drawer-close-btn" aria-label="Close Menu">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <ul class="mobile-nav-links">
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#philosophy">The Atelier & Chef</a></li>
+      <li><a href="#menu">Culinary Menu</a></li>
+      <li><a href="#degustation">Degustation Journey</a></li>
+      <li><a href="#reservation">Table Reservations</a></li>
+      <li><a href="#gallery">Visual Gallery</a></li>
+      <li><a href="#reviews">Guest Reviews</a></li>
+      <li><a href="#location">Hours & Location</a></li>
+    </ul>
+
+    <div style="margin-top: auto;">
+      <a href="#reservation" class="btn btn-gold" style="width: 100%;" onclick="closeMobileNav()">
+        Book An Experience
+      </a>
+      <p style="color: var(--text-dim); font-size: 0.72rem; text-align: center; margin-top: 14px;">
+        482 Avenue Montaigne, 75008 Paris
+      </p>
+    </div>
+  </aside>
+
+  <!-- ==========================================================================
+       HERO SECTION WITH HIGH-RES FOOD IMAGERY & GOLD PARTICLES
+       ========================================================================== -->
+  <section class="hero-section" id="hero">
+    <div class="hero-bg-wrapper">
+      <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1920&q=90" alt="Aurelia Gourmet Fine Dining Plating" class="hero-bg-image" />
+      <div class="hero-gradient-overlay"></div>
+    </div>
+
+    <!-- Floating Gold Ember / Bokeh Particle Canvas -->
+    <canvas id="hero-particle-canvas"></canvas>
+
+    <div class="container hero-content">
+      <!-- Michelin Star Accolade Badge -->
+      <div class="michelin-stars-badge">
+        <i class="fa-solid fa-star star-icon"></i>
+        <i class="fa-solid fa-star star-icon"></i>
+        <i class="fa-solid fa-star star-icon"></i>
+        <span>Three Michelin Stars 2025 • World's 50 Best #4</span>
+      </div>
+
+      <h1 class="hero-headline">
+        Culinary Artistry <br /><span class="gold-text">Redefined</span>
+      </h1>
+
+      <p class="hero-description">
+        Where French avant-garde gastronomy meets rare subterranean vintages. An intimate sensory theater curated by Master Chef Antoine Laurent.
+      </p>
+
+      <div class="hero-cta-group">
+        <a href="#reservation" class="btn btn-gold">
+          <i class="fa-regular fa-calendar-check"></i> Book An Experience
+        </a>
+        <a href="#menu" class="btn btn-outline">
+          <i class="fa-solid fa-utensils"></i> Explore Menu
+        </a>
+      </div>
+
+      <!-- Live Service Availability Ticker -->
+      <div class="hero-ticker-bar">
+        <span class="live-indicator"></span>
+        <span>Tonight's Seating: <strong>2 Grand Salon Tables</strong> remaining at 20:30 & 21:45</span>
+      </div>
+
+      <!-- Quick Metrics Grid -->
+      <div class="hero-stats-grid">
+        <div class="stat-item">
+          <div class="stat-number">3 Stars</div>
+          <div class="stat-label">Michelin Guide Distinction</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">850+</div>
+          <div class="stat-label">Rare Cellar Vintages</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">Biodynamic & Organic Terroir</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">24 Yrs</div>
+          <div class="stat-label">Culinary Mastery & Craft</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       PHILOSOPHY & CHEF STORY SECTION
+       ========================================================================== -->
+  <section class="philosophy-section" id="philosophy">
+    <div class="container">
+      <div class="philosophy-grid">
+        <!-- Visual Image Stack -->
+        <div class="philosophy-image-stack">
+          <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=1000&q=85" alt="Master Chef Antoine Laurent in Atelier" class="main-chef-img" />
+          <img src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=700&q=85" alt="Artisanal Plated Dessert Creation" class="floating-dish-img" />
+          
+          <div class="gold-experience-badge">
+            <div class="years">24</div>
+            <div class="desc">Years of Haute Cuisine</div>
+          </div>
+        </div>
+
+        <!-- Story & Philosophy Content -->
+        <div class="philosophy-content">
+          <span class="section-tag">THE ATELIER OF TASTE</span>
+          <h2 class="section-title">Harmonizing Nature's Rare Terroir</h2>
+          
+          <div class="quote-highlight">
+            "Food is not merely sustenance; it is an ephemeral sculpture created to stir memory and ignite emotion."
+          </div>
+
+          <p class="philosophy-text">
+            Founded in the historic heart of Paris on Avenue Montaigne, <strong>Aurelia</strong> was conceived as a sacred sanctuary where classical French craftsmanship bows to seasonal spontaneity. Every ingredient is foraged at dawn from micro-producers across Brittany, Périgord, and Hokkaido.
+          </p>
+
+          <div class="philosophy-features">
+            <div class="feature-pill">
+              <i class="fa-solid fa-seedling"></i>
+              <span>Daily Harvest Farm-to-Table</span>
+            </div>
+            <div class="feature-pill">
+              <i class="fa-solid fa-gem"></i>
+              <span>Imperial Caviar & Périgord Truffles</span>
+            </div>
+            <div class="feature-pill">
+              <i class="fa-solid fa-wine-bottle"></i>
+              <span>Grand Cru Sommelier Pairings</span>
+            </div>
+            <div class="feature-pill">
+              <i class="fa-solid fa-fire-burner"></i>
+              <span>Binchotan Oak Charcoal Grilling</span>
+            </div>
+          </div>
+
+          <div class="chef-signature-wrap">
+            <div class="chef-info">
+              <h4>Antoine Laurent</h4>
+              <p>Chef Patron & Culinary Director</p>
+            </div>
+            <!-- Elegant SVG Signature Emblem -->
+            <svg class="signature-svg" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 40 C 30 10, 50 10, 70 35 C 90 60, 110 20, 140 25 C 160 30, 180 15, 190 35 M45 20 C 55 50, 75 5, 95 45" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       INTERACTIVE FOOD MENU SECTION
+       ========================================================================== -->
+  <section class="menu-section" id="menu">
+    <div class="container">
+      <div class="menu-header-block">
+        <span class="section-tag">A LA CARTE & SIGNATURES</span>
+        <h2 class="section-title">The Seasonal Gastronomy</h2>
+        <p class="section-subtitle">
+          Each dish is an architectural composition of balance, texture, and rare aromatic notes.
+        </p>
+      </div>
+
+      <!-- Menu Category Filter Tabs -->
+      <div class="menu-tabs-wrapper" role="tablist">
+        <button class="menu-tab-btn active" data-category="all" role="tab">
+          <i class="fa-solid fa-border-all"></i> All Creations
+        </button>
+        <button class="menu-tab-btn" data-category="starters" role="tab">
+          <i class="fa-solid fa-leaf"></i> Hors d'Œuvres
+        </button>
+        <button class="menu-tab-btn" data-category="mains" role="tab">
+          <i class="fa-solid fa-drumstick-bite"></i> Prime Mains
+        </button>
+        <button class="menu-tab-btn" data-category="ocean" role="tab">
+          <i class="fa-solid fa-fish-fins"></i> Ocean Delicacies
+        </button>
+        <button class="menu-tab-btn" data-category="desserts" role="tab">
+          <i class="fa-solid fa-cookie-bite"></i> Decadent Desserts
+        </button>
+        <button class="menu-tab-btn" data-category="cellar" role="tab">
+          <i class="fa-solid fa-wine-glass"></i> Cellar & Mixology
+        </button>
+      </div>
+
+      <!-- Search & Dietary Controls -->
+      <div class="menu-controls-bar">
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="menu-search-input" placeholder="Search dishes, ingredients (e.g. Wagyu, Caviar, Truffle)..." />
+        </div>
+
+        <div class="dietary-filters">
+          <span style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); margin-right: 6px;">Dietary:</span>
+          <button class="dietary-tag-btn active" data-diet="all">All</button>
+          <button class="dietary-tag-btn" data-diet="vegetarian">Vegetarian</button>
+          <button class="dietary-tag-btn" data-diet="gluten-free">Gluten-Free</button>
+          <button class="dietary-tag-btn" data-diet="seafood">Seafood</button>
+        </div>
+      </div>
+
+      <!-- Dynamic Food Cards Grid (Populated by JavaScript) -->
+      <div class="menu-cards-grid" id="menu-cards-grid">
+        <!-- Rendered dynamically from MENU_ITEMS array in main.js -->
+      </div>
+
+      <!-- ==========================================================================
+           THE PRESTIGE 9-COURSE DEGUSTATION EXPERIENCE BANNER
+           ========================================================================== -->
+      <div class="degustation-banner" id="degustation">
+        <div class="degustation-inner">
+          <div>
+            <span class="section-tag" style="color: var(--gold-light);">THE ULTIMATE ODYSSEY</span>
+            <h3 style="font-family: var(--font-serif-display); font-size: 2.2rem; color: #fff; margin-bottom: 14px;">
+              The 9-Course Degustation Journey
+            </h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 24px;">
+              A curated chronological symposium of flavor, moving from mineral Atlantic sea air to alpine truffles and vintage grand cru chocolates. Crafted exclusively for the entire table.
+            </p>
+            <div style="display: flex; align-items: baseline; gap: 14px; margin-bottom: 28px;">
+              <span style="font-family: var(--font-serif-display); font-size: 2.2rem; color: var(--gold-light); font-weight: 700;">$295</span>
+              <span style="color: var(--text-dim); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em;">Per Guest • Wine Pairing +$165</span>
+            </div>
+            <a href="#reservation" class="btn btn-gold">
+              <i class="fa-solid fa-crown"></i> Reserve Degustation Seating
+            </a>
+          </div>
+
+          <div class="degustation-courses-preview">
+            <div class="course-line-item">
+              <div><span class="course-number">I.</span> <span class="course-name">Amuse-Bouche: Golden Oyster Tart</span></div>
+              <span class="course-wine">Dom Pérignon 2013</span>
+            </div>
+            <div class="course-line-item">
+              <div><span class="course-number">II.</span> <span class="course-name">Imperial Oscietra Caviar & Brioche</span></div>
+              <span class="course-wine">Chablis Grand Cru 2019</span>
+            </div>
+            <div class="course-line-item">
+              <div><span class="course-number">III.</span> <span class="course-name">Brittany Blue Lobster Sabayon</span></div>
+              <span class="course-wine">Meursault 1er Cru 2020</span>
+            </div>
+            <div class="course-line-item">
+              <div><span class="course-number">IV.</span> <span class="course-name">Black Périgord Truffle & Wild Morels</span></div>
+              <span class="course-wine">Vosne-Romanée 2017</span>
+            </div>
+            <div class="course-line-item">
+              <div><span class="course-number">V.</span> <span class="course-name">A5 Miyazaki Wagyu over Binchotan</span></div>
+              <span class="course-wine">Château Margaux 2010</span>
+            </div>
+            <div class="course-line-item">
+              <div><span class="course-number">VI.</span> <span class="course-name">Aged Comté & Spiced Honey Granita</span></div>
+              <span class="course-wine">Vin Jaune d'Arbois 2014</span>
+            </div>
+            <div class="course-line-item">
+              <div><span class="course-number">VII.</span> <span class="course-name">Valrhona Grand Cru Golden Sphere</span></div>
+              <span class="course-wine">Château d'Yquem 2011</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       INTERACTIVE TABLE RESERVATION SYSTEM
+       ========================================================================== -->
+  <section class="reservation-section" id="reservation">
+    <div class="container">
+      <div class="reservation-wrapper">
+        <div class="reservation-header">
+          <span class="section-tag">BESPOKE HOSPITALITY</span>
+          <h2 class="section-title">Reserve Your Table</h2>
+          <p class="section-subtitle">
+            Experience exceptional gastronomy. Kindly select your preferred date, party size, and dining ambiance.
+          </p>
+        </div>
+
+        <form class="reservation-form" id="reservation-form">
+          <!-- Step 1: Party Size, Date, Occasion -->
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label for="res-guests"><i class="fa-solid fa-users"></i> Party Size</label>
+              <select id="res-guests" class="form-control" required>
+                <option value="1">1 Guest (Solo Tasting)</option>
+                <option value="2" selected>2 Guests (Intimate Table)</option>
+                <option value="3">3 Guests</option>
+                <option value="4">4 Guests (Salon Booth)</option>
+                <option value="5">5 Guests</option>
+                <option value="6">6 Guests (Chef's Circle)</option>
+                <option value="8">8+ Guests (Private Vault Room)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="res-date"><i class="fa-regular fa-calendar"></i> Dining Date</label>
+              <input type="date" id="res-date" class="form-control" required />
+            </div>
+
+            <div class="form-group">
+              <label for="res-occasion"><i class="fa-solid fa-champagne-glasses"></i> Occasion</label>
+              <select id="res-occasion" class="form-control">
+                <option value="Intimate Dinner">Intimate Dinner</option>
+                <option value="Romantic Anniversary">Romantic Anniversary</option>
+                <option value="Birthday Celebration">Birthday Celebration</option>
+                <option value="Executive Business">Executive Business</option>
+                <option value="Degustation Epicurean">Epicurean Tasting Journey</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Step 2: Seating Zone Selection -->
+          <div class="form-group">
+            <label><i class="fa-solid fa-compass"></i> Select Preferred Dining Zone</label>
+            <div class="seating-zones-grid">
+              <label class="zone-option">
+                <input type="radio" name="seating_zone" value="The Grand Salon" checked />
+                <div class="zone-card">
+                  <i class="fa-solid fa-gem"></i>
+                  <span class="zone-name">The Grand Salon</span>
+                  <span class="zone-desc">Crystal chandeliers & acoustic jazz</span>
+                </div>
+              </label>
+              <label class="zone-option">
+                <input type="radio" name="seating_zone" value="Chef's Counter - Live Plating" />
+                <div class="zone-card">
+                  <i class="fa-solid fa-fire"></i>
+                  <span class="zone-name">Chef's Counter</span>
+                  <span class="zone-desc">Front-row view of culinary brigade</span>
+                </div>
+              </label>
+              <label class="zone-option">
+                <input type="radio" name="seating_zone" value="Glasshouse Garden Terrace" />
+                <div class="zone-card">
+                  <i class="fa-solid fa-leaf"></i>
+                  <span class="zone-name">Garden Terrace</span>
+                  <span class="zone-desc">Heated courtyard & night skyline</span>
+                </div>
+              </label>
+              <label class="zone-option">
+                <input type="radio" name="seating_zone" value="Private Limestone Cellar" />
+                <div class="zone-card">
+                  <i class="fa-solid fa-wine-bottle"></i>
+                  <span class="zone-name">The Wine Vault</span>
+                  <span class="zone-desc">Subterranean private sanctuary</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Step 3: Interactive Time Slots -->
+          <div class="form-group">
+            <label><i class="fa-regular fa-clock"></i> Available Service Time Slots</label>
+            <input type="hidden" id="res-time-selected" value="20:00" />
+            
+            <div class="time-slots-container">
+              <div class="slots-period-label">Dinner Service (Recommended)</div>
+              <div class="time-slots-row">
+                <button type="button" class="time-slot-btn" data-time="18:30">18:30</button>
+                <button type="button" class="time-slot-btn" data-time="19:15">19:15</button>
+                <button type="button" class="time-slot-btn selected" data-time="20:00">20:00 <span style="font-size:0.6rem; color: #f7e7a9;">★ Popular</span></button>
+                <button type="button" class="time-slot-btn" data-time="20:45">20:45</button>
+                <button type="button" class="time-slot-btn" data-time="21:30">21:30</button>
+              </div>
+
+              <div class="slots-period-label" style="margin-top: 10px;">Lunch Service</div>
+              <div class="time-slots-row">
+                <button type="button" class="time-slot-btn" data-time="12:00">12:00</button>
+                <button type="button" class="time-slot-btn" data-time="12:45">12:45</button>
+                <button type="button" class="time-slot-btn" data-time="13:30">13:30</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4: Guest Contact Information -->
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label for="res-name"><i class="fa-regular fa-user"></i> Full Name</label>
+              <input type="text" id="res-name" class="form-control" placeholder="Lord / Lady / Dr. Name" required />
+            </div>
+            <div class="form-group">
+              <label for="res-email"><i class="fa-regular fa-envelope"></i> Email Address</label>
+              <input type="email" id="res-email" class="form-control" placeholder="vip@client.com" required />
+            </div>
+            <div class="form-group">
+              <label for="res-phone"><i class="fa-solid fa-phone"></i> Mobile Phone</label>
+              <input type="tel" id="res-phone" class="form-control" placeholder="+33 1 42 68 00 00" required />
+            </div>
+          </div>
+
+          <!-- Step 5: Special Dietary Notes -->
+          <div class="form-group">
+            <label for="res-notes"><i class="fa-solid fa-bell-concierge"></i> Dietary Preferences & Concierge Requests</label>
+            <input type="text" id="res-notes" class="form-control" placeholder="Severe allergies, specific Champagne requests, surprise flowers, seating preferences..." />
+          </div>
+
+          <!-- Policy & Submit Button -->
+          <div class="reservation-policy-note">
+            <i class="fa-solid fa-circle-info" style="color: var(--gold-primary); font-size: 1rem;"></i>
+            <span>
+              Reservations are honored for 20 minutes past the scheduled seating time. Complimentary cancellation is accepted up to 24 hours prior to service.
+            </span>
+          </div>
+
+          <div style="text-align: center; margin-top: 10px;">
+            <button type="submit" class="btn btn-gold" style="min-width: 280px; padding: 18px 36px; font-size: 0.95rem;">
+              <i class="fa-regular fa-paper-plane"></i> Confirm Reservation
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       RESTAURANT VISUAL GALLERY SECTION
+       ========================================================================== -->
+  <section class="gallery-section" id="gallery">
+    <div class="container">
+      <div class="menu-header-block">
+        <span class="section-tag">VISUAL IMMERSION</span>
+        <h2 class="section-title">The Aurelia Ambiance</h2>
+        <p class="section-subtitle">
+          From twilight candlelight in the Grand Salon to surgical plating in our transparent kitchen theater.
+        </p>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="gallery-filter-tabs">
+        <button class="gallery-tab-btn active" data-filter="all">All Perspectives</button>
+        <button class="gallery-tab-btn" data-filter="ambiance">The Ambiance</button>
+        <button class="gallery-tab-btn" data-filter="plating">Plating Art</button>
+        <button class="gallery-tab-btn" data-filter="cellar">Wine Cellar</button>
+        <button class="gallery-tab-btn" data-filter="kitchen">Kitchen Brigade</button>
+      </div>
+
+      <!-- Masonry Gallery Grid (Populated dynamically) -->
+      <div class="gallery-grid" id="gallery-grid">
+        <!-- Rendered by initGallerySystem() in main.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       CUSTOMER REVIEWS & PRESS CRITIC ACCLAIM
+       ========================================================================== -->
+  <section class="reviews-section" id="reviews">
+    <div class="container">
+      <div class="menu-header-block">
+        <span class="section-tag">CRITICAL ACCLAIM & PRAISE</span>
+        <h2 class="section-title">Words From Our Diners</h2>
+        <p class="section-subtitle">
+          Honored by the world's most exacting critics and treasured by our regular private salon patrons.
+        </p>
+      </div>
+
+      <!-- Press Quotes Row -->
+      <div class="press-quotes-row">
+        <div class="press-card">
+          <div class="press-source">LE GUIDE MICHELIN</div>
+          <div class="press-quote">
+            "Exceptional cuisine, worth a special journey. Antoine Laurent orchestrates perfection in every course."
+          </div>
+          <div style="color: var(--gold-primary); margin-top: 12px; font-size: 0.8rem;">
+            ★★★ Three Stars Distinction
+          </div>
+        </div>
+
+        <div class="press-card">
+          <div class="press-source">THE NEW YORK TIMES</div>
+          <div class="press-quote">
+            "Aurelia delivers one of the most thrilling sensory experiences on the European continent."
+          </div>
+          <div style="color: var(--gold-primary); margin-top: 12px; font-size: 0.8rem;">
+            Critic's Choice • Dining Icon
+          </div>
+        </div>
+
+        <div class="press-card">
+          <div class="press-source">WORLD'S 50 BEST</div>
+          <div class="press-quote">
+            "A seamless marriage of sublime French classical technique with avant-garde Japanese mindfulness."
+          </div>
+          <div style="color: var(--gold-primary); margin-top: 12px; font-size: 0.8rem;">
+            Ranked #4 Worldwide 2025
+          </div>
+        </div>
+      </div>
+
+      <!-- Verified Diner Reviews Track -->
+      <div class="reviews-slider-container">
+        <div class="reviews-track" id="reviews-track">
+          <!-- Populated dynamically by main.js -->
+        </div>
+
+        <div class="add-review-bar">
+          <button class="btn btn-outline btn-sm" onclick="openModal('add-review-modal')">
+            <i class="fa-regular fa-pen-to-square"></i> Share Your Dining Experience
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       LOCATION, OPENING HOURS & CONTACT SECTION
+       ========================================================================== -->
+  <section class="contact-location-section" id="location">
+    <div class="container">
+      <div class="menu-header-block">
+        <span class="section-tag">VISIT & CONCIERGE</span>
+        <h2 class="section-title">Location & Service Hours</h2>
+        <p class="section-subtitle">
+          Nestled within the Golden Triangle of Paris. White-glove valet parking and private salon bookings.
+        </p>
+      </div>
+
+      <div class="location-grid">
+        <!-- Service Hours & Direct Inquiries -->
+        <div class="info-column">
+          <div class="info-card">
+            <h3 class="info-card-title">
+              <i class="fa-regular fa-clock"></i> Service Operating Hours
+            </h3>
+            <table class="hours-table">
+              <tbody>
+                <tr>
+                  <td class="day">Monday — Tuesday</td>
+                  <td class="time">Private Salon Events Only</td>
+                </tr>
+                <tr>
+                  <td class="day">Wednesday — Thursday</td>
+                  <td class="time">18:00 — 23:30</td>
+                </tr>
+                <tr>
+                  <td class="day">Friday — Saturday</td>
+                  <td class="time">12:00 — 15:30 &nbsp;|&nbsp; 18:00 — 01:00</td>
+                </tr>
+                <tr>
+                  <td class="day">Sunday</td>
+                  <td class="time">12:00 — 16:30 (Grand Brunch Tasting)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="info-card">
+            <h3 class="info-card-title">
+              <i class="fa-solid fa-location-dot"></i> Contact & Direct Concierge
+            </h3>
+            <div class="contact-quick-links">
+              <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="contact-link-item">
+                <i class="fa-solid fa-map-pin"></i>
+                <span>482 Avenue Montaigne, 8th Arrondissement, 75008 Paris, France</span>
+              </a>
+              <a href="tel:+33142680000" class="contact-link-item">
+                <i class="fa-solid fa-phone"></i>
+                <span>Direct Concierge: +33 (0)1 42 68 00 00</span>
+              </a>
+              <a href="mailto:concierge@aureliaparis.com" class="contact-link-item">
+                <i class="fa-solid fa-envelope"></i>
+                <span>VIP Bookings: concierge@aureliaparis.com</span>
+              </a>
+              <div class="contact-link-item">
+                <i class="fa-solid fa-vest"></i>
+                <span>Dress Code: Smart Elegant (Jackets recommended for gentlemen)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stylized Dark Luxury Map Preview with Pulse Pin -->
+        <div class="map-column">
+          <div class="map-visual-frame">
+            <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1200&q=80" alt="Paris Aerial Map Atmosphere" class="map-bg-img" />
+            
+            <div class="map-pulse-marker">
+              <div class="marker-pulse-ring"></div>
+              <div class="marker-pin">
+                <i class="fa-solid fa-champagne-glasses"></i>
+              </div>
+              <div class="marker-tooltip">
+                <h6>AURELIA HAUTE CUISINE</h6>
+                <p>482 Avenue Montaigne, Paris</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="map-footer-details">
+            <div class="valet-badge">
+              <i class="fa-solid fa-car-side"></i>
+              <span>Complimentary White-Glove Valet at Main Entrance</span>
+            </div>
+            <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i> Get Directions
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       VIP PRIVATE CIRCLE & NEWSLETTER
+       ========================================================================== -->
+  <section class="vip-circle-section">
+    <div class="container">
+      <div class="vip-circle-box">
+        <span class="section-tag">EXCLUSIVE ACCESS</span>
+        <h3 style="font-family: var(--font-serif-display); font-size: 1.8rem; margin-bottom: 12px; color: #fff;">
+          Join the Aurelia Private Circle
+        </h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; max-width: 520px; margin: 0 auto;">
+          Receive private invitations to seasonal tasting menu unveilings, rare cellar auctions, and intimate evenings with visiting guest chefs.
+        </p>
+
+        <form class="vip-form" onsubmit="event.preventDefault(); showToast('Welcome to the Aurelia Private Circle.'); this.reset();">
+          <input type="email" class="vip-input" placeholder="Enter your preferred email address..." required />
+          <button type="submit" class="btn btn-gold btn-sm">
+            Join Circle
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       SITE FOOTER
+       ========================================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top-grid">
+        <div class="footer-brand">
+          <div class="brand-text-wrap" style="margin-bottom: 12px;">
+            <span class="brand-name" style="font-size: 1.6rem;">AURELIA</span>
+            <span class="brand-tagline">ATELIER GASTRONOMIQUE</span>
+          </div>
+          <p>
+            An ode to classical French culinary precision and avant-garde discovery. Ranked among the world's most prestigious dining destinations.
+          </p>
+          <div class="footer-socials">
+            <a href="#" class="social-icon-btn" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" class="social-icon-btn" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#" class="social-icon-btn" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="#" class="social-icon-btn" aria-label="TripAdvisor"><i class="fa-solid fa-award"></i></a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#philosophy">The Atelier & Chef</a></li>
+            <li><a href="#menu">A La Carte Menu</a></li>
+            <li><a href="#degustation">Degustation Journey</a></li>
+            <li><a href="#reservation">Table Reservations</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Hospitality</h4>
+          <ul class="footer-links">
+            <li><a href="#reservation">Private Dining Vault</a></li>
+            <li><a href="#location">Hours & Valet</a></li>
+            <li><a href="#reviews">Michelin Guide Accolades</a></li>
+            <li><a href="#gallery">Visual Gallery</a></li>
+            <li><a href="javascript:void(0)" onclick="document.getElementById('concierge-widget-btn').click()">Live Concierge</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Accreditations</h4>
+          <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 12px;">
+            Three Michelin Stars (2023, 2024, 2025)<br />
+            Les Grandes Tables du Monde<br />
+            Relais & Châteaux Grand Chef
+          </p>
+          <span style="font-size: 0.72rem; color: var(--gold-light); letter-spacing: 0.1em; text-transform: uppercase;">
+            <i class="fa-solid fa-medal"></i> World's 50 Best #4
+          </span>
+        </div>
+      </div>
+
+      <div class="footer-bottom-row">
+        <div>
+          &copy; 2025 Aurelia Haute Cuisine & Wine Atelier. All Rights Reserved.
+        </div>
+        <div>
+          Conceived with distinction • Avenue Montaigne, 75008 Paris
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       MODALS
+       ========================================================================== -->
+
+  <!-- 1. Dish Detail / Pairing Modal -->
+  <div class="modal-backdrop" id="dish-modal" role="dialog" aria-hidden="true">
+    <div class="modal-card">
+      <button class="modal-close-btn" onclick="closeModal('dish-modal')" aria-label="Close Modal">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div id="dish-modal-content">
+        <!-- Content injected dynamically by openDishModal() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Reservation Confirmation Ticket Modal -->
+  <div class="modal-backdrop" id="confirmation-modal" role="dialog" aria-hidden="true">
+    <div class="modal-card">
+      <button class="modal-close-btn" onclick="closeModal('confirmation-modal')" aria-label="Close Modal">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div id="confirmation-ticket-content">
+        <!-- Ticket generated dynamically by main.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Fullscreen Image Lightbox Modal -->
+  <div class="modal-backdrop lightbox-modal" id="gallery-lightbox-modal" role="dialog" aria-hidden="true">
+    <button class="modal-close-btn" onclick="closeModal('gallery-lightbox-modal')" style="top: 30px; right: 30px;" aria-label="Close Lightbox">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <div class="lightbox-content-wrap">
+      <button class="lightbox-nav-btn lightbox-prev" onclick="navigateLightbox(-1)" aria-label="Previous Image">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      
+      <img id="lightbox-target-img" src="" alt="Aurelia Gallery Preview" class="lightbox-image" />
+      
+      <button class="lightbox-nav-btn lightbox-next" onclick="navigateLightbox(1)" aria-label="Next Image">
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+
+      <div style="margin-top: 18px; text-align: center;">
+        <h4 id="lightbox-target-title" style="font-family: var(--font-serif-display); font-size: 1.2rem; color: var(--gold-light);"></h4>
+        <p id="lightbox-target-caption" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; max-width: 600px;"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Add Review Modal -->
+  <div class="modal-backdrop" id="add-review-modal" role="dialog" aria-hidden="true">
+    <div class="modal-card">
+      <button class="modal-close-btn" onclick="closeModal('add-review-modal')" aria-label="Close Modal">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="section-tag" style="margin-bottom: 6px;">DINING FEEDBACK</div>
+      <h3 style="font-family: var(--font-serif-display); font-size: 1.5rem; color: #fff; margin-bottom: 20px;">Share Your Experience</h3>
+      
+      <form id="new-review-form" style="display: flex; flex-direction: column; gap: 18px;">
+        <div class="form-group">
+          <label for="reviewer-name">Your Name</label>
+          <input type="text" id="reviewer-name" class="form-control" placeholder="e.g. Charlotte & Marcus Sterling" required />
+        </div>
+        <div class="form-group">
+          <label for="reviewer-rating">Rating</label>
+          <select id="reviewer-rating" class="form-control">
+            <option value="5">★★★★★ Exceptional (5 Stars)</option>
+            <option value="4">★★★★ Very Good (4 Stars)</option>
+            <option value="3">★★★ Satisfactory (3 Stars)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="reviewer-text">Your Dining Review</label>
+          <textarea id="reviewer-text" rows="4" class="form-control" placeholder="Describe the ambiance, dish highlights, sommelier pairing..." required></textarea>
+        </div>
+        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 10px;">
+          <button type="button" class="btn btn-outline btn-sm" onclick="closeModal('add-review-modal')">Cancel</button>
+          <button type="submit" class="btn btn-gold btn-sm">Submit Review</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       INTERACTIVE CONCIERGE CHAT WIDGET
+       ========================================================================== -->
+  <button class="concierge-widget-btn" id="concierge-widget-btn" aria-label="Open Luxury Concierge">
+    <i class="fa-solid fa-bell-concierge"></i>
+    <span>Concierge</span>
+  </button>
+
+  <div class="concierge-chat-window" id="concierge-chat-window">
+    <div class="chat-header">
+      <div class="chat-header-user">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80" alt="Concierge Jean-Luc" class="concierge-avatar" />
+        <div>
+          <h5 style="font-size: 0.85rem; color: #fff; margin-bottom: 2px;">Jean-Luc • Maître d'</h5>
+          <span style="font-size: 0.65rem; color: var(--gold-light); display: flex; align-items: center; gap: 4px;">
+            <span class="live-indicator" style="width:6px; height:6px;"></span> Aurelia VIP Concierge
+          </span>
+        </div>
+      </div>
+      <button id="close-chat-btn" style="background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem;">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="chat-body-messages" id="chat-messages-container">
+      <div class="chat-bubble bot">
+        Good evening. Welcome to <strong>Aurelia</strong>. I am Jean-Luc, your dedicated concierge. How may I elevate your evening?
+      </div>
+    </div>
+
+    <!-- Quick prompt chips -->
+    <div class="quick-prompts-bar">
+      <button class="quick-prompt-chip">Dress code policy?</button>
+      <button class="quick-prompt-chip">Available tables tonight?</button>
+      <button class="quick-prompt-chip">Vegan tasting menu?</button>
+      <button class="quick-prompt-chip">Wine corkage fee?</button>
+      <button class="quick-prompt-chip">Valet parking details?</button>
+    </div>
+
+    <form class="chat-input-area" id="chat-input-form">
+      <input type="text" id="chat-text-input" placeholder="Inquire about seating, chef, cellars..." />
+      <button type="submit" class="chat-send-btn" aria-label="Send Message">
+        <i class="fa-solid fa-paper-plane" style="font-size: 0.8rem;"></i>
+      </button>
+    </form>
+  </div>
+
+  <!-- Master JavaScript Application Engine -->
+  <script src="js/main.js"></script>
+</body>
+</html>

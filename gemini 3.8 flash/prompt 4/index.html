@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>APEX GT — Hypercar 3D Studio & Simulation</title>
+    <meta name="description" content="Immersive 3D sports car experience in the browser with procedural geometry, realistic materials, paint customization, dynamic showroom cameras, realistic physics, drifting, and synthesized V8 audio.">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Three.js Local & CDN Fallback -->
+    <script src="js/libs/three.min.js"></script>
+    <script>if (typeof THREE === 'undefined') document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');</script>
+    <script src="js/libs/OrbitControls.js"></script>
+    <script>if (typeof THREE.OrbitControls === 'undefined') document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"><\/script>');</script>
+</head>
+<body>
+
+    <!-- 3D Canvas Container -->
+    <div id="canvas-container"></div>
+
+    <!-- UI Overlay Layer -->
+    <div id="ui-overlay">
+
+        <!-- Top Header Navigation -->
+        <header class="top-nav interactive">
+            <div class="brand-badge">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24">
+                        <polygon points="12 2 2 22 12 17 22 22 12 2"></polygon>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <h1>Apex GT</h1>
+                    <span>Hypercar Experience</span>
+                </div>
+            </div>
+
+            <!-- Mode Switcher (Showroom vs Drive) -->
+            <div class="mode-switcher">
+                <button id="btn-mode-showroom" class="mode-btn active" title="Showroom Studio Mode">
+                    <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                    <span>Showroom</span>
+                </button>
+                <button id="btn-mode-drive" class="mode-btn" title="Drive Track Mode">
+                    <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>
+                    <span>Drive Mode</span>
+                </button>
+            </div>
+
+            <!-- Top Right Utilities -->
+            <div class="top-utils">
+                <button id="btn-sound-toggle" class="util-btn" title="Toggle Synthesized Audio (M)">
+                    <span class="sound-icon">🔊</span>
+                    <span class="sound-text">Sound ON</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Sound Activation Banner -->
+        <div id="sound-prompt">
+            🔊 Click anywhere or press W to start synthesized V8 audio & turbo whistle
+        </div>
+
+        <!-- ========================================================== -->
+        <!-- SHOWROOM CUSTOMIZER PANEL (Visible in Showroom Mode)       -->
+        <!-- ========================================================== -->
+        <aside id="showroom-panel" class="interactive">
+            <div class="panel-header">
+                <h2>Studio Customizer</h2>
+                <div class="badge-spec">V8 Twin-Turbo • 840 HP</div>
+            </div>
+
+            <div class="panel-body">
+                <!-- 1. Paint Color Selection -->
+                <div class="custom-section">
+                    <div class="section-label">
+                        <span>Body Paint</span>
+                        <span class="value">Supercar Swatches</span>
+                    </div>
+                    <div class="color-grid">
+                        <div class="color-swatch active" data-color="dc143c" style="background: #dc143c;" title="Rosso Scuderia"></div>
+                        <div class="color-swatch" data-color="0055ff" style="background: #0055ff;" title="Monaco Cyan Blue"></div>
+                        <div class="color-swatch" data-color="050505" style="background: #0f1012;" title="Nero Nemesis"></div>
+                        <div class="color-swatch" data-color="10b981" style="background: #10b981;" title="Cyberpunk Lime"></div>
+                        <div class="color-swatch" data-color="ff6600" style="background: #ff6600;" title="Sunset Papaya Orange"></div>
+                        <div class="color-swatch" data-color="eab308" style="background: #eab308;" title="Solar Giallo Yellow"></div>
+                        <div class="color-swatch" data-color="8b5cf6" style="background: #8b5cf6;" title="Ultraviolet Purple"></div>
+                        <div class="color-swatch" data-color="f8fafc" style="background: #f8fafc;" title="Frozen Arctic White"></div>
+                        <div class="color-swatch" data-color="64748b" style="background: #64748b;" title="Silverstone Grigio"></div>
+                        <div class="color-swatch" data-color="ec4899" style="background: #ec4899;" title="Miami Magenta"></div>
+                        <div class="color-swatch" data-color="06b6d4" style="background: #06b6d4;" title="Electric Aqua"></div>
+                        <div class="color-swatch" data-color="78350f" style="background: #78350f;" title="Satin Copper Bronze"></div>
+                    </div>
+
+                    <!-- Custom Color Picker Input -->
+                    <div class="custom-color-row">
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="custom-color-picker" value="#dc143c">
+                        </div>
+                        <span class="custom-color-hint">Custom Spectrum Color</span>
+                    </div>
+                </div>
+
+                <!-- 2. Paint Finish (Metallic, Gloss, Matte, Chrome) -->
+                <div class="custom-section">
+                    <div class="section-label">
+                        <span>Paint Finish</span>
+                        <span class="value">Reflectivity</span>
+                    </div>
+                    <div class="btn-group-toggle">
+                        <button class="finish-btn active" data-finish="metallic">Metallic</button>
+                        <button class="finish-btn" data-finish="gloss">Gloss</button>
+                        <button class="finish-btn" data-finish="matte">Satin Matte</button>
+                        <button class="finish-btn" data-finish="chrome">Chrome</button>
+                    </div>
+                </div>
+
+                <!-- 3. Carbon-Ceramic Brake Calipers -->
+                <div class="custom-section">
+                    <div class="section-label">
+                        <span>Brembo Calipers</span>
+                        <span class="value">6-Piston</span>
+                    </div>
+                    <div class="color-grid">
+                        <div class="color-swatch caliper-swatch active" data-color="ffcc00" style="background: #ffcc00;" title="Racing Yellow"></div>
+                        <div class="color-swatch caliper-swatch" data-color="ff1744" style="background: #ff1744;" title="Guards Red"></div>
+                        <div class="color-swatch caliper-swatch" data-color="00ff88" style="background: #00ff88;" title="Acid Green"></div>
+                        <div class="color-swatch caliper-swatch" data-color="00f0ff" style="background: #00f0ff;" title="Electric Cyan"></div>
+                        <div class="color-swatch caliper-swatch" data-color="ff8800" style="background: #ff8800;" title="Solar Orange"></div>
+                        <div class="color-swatch caliper-swatch" data-color="f0f0f0" style="background: #f0f0f0;" title="Polished Silver"></div>
+                    </div>
+                </div>
+
+                <!-- 4. Forged Alloy Wheels Finish -->
+                <div class="custom-section">
+                    <div class="section-label">
+                        <span>Forged Wheels</span>
+                        <span class="value">10-Spoke Turbine</span>
+                    </div>
+                    <div class="btn-group-toggle">
+                        <button class="rim-btn active" data-color="1a1a1a" data-roughness="0.2" data-metalness="0.9">Gloss Black</button>
+                        <button class="rim-btn" data-color="e0e0e0" data-roughness="0.15" data-metalness="0.95">Silver</button>
+                        <button class="rim-btn" data-color="805520" data-roughness="0.3" data-metalness="0.85">Bronze</button>
+                        <button class="rim-btn" data-color="b76e79" data-roughness="0.25" data-metalness="0.9">Rose Gold</button>
+                    </div>
+                </div>
+
+                <!-- 5. Privacy Window Tint -->
+                <div class="custom-section">
+                    <div class="section-label">
+                        <span>Window Tint</span>
+                        <span class="value">UV Shield</span>
+                    </div>
+                    <div class="btn-group-toggle">
+                        <button class="tint-btn active" data-opacity="0.92">Limo 5%</button>
+                        <button class="tint-btn" data-opacity="0.75">Dark 20%</button>
+                        <button class="tint-btn" data-opacity="0.45">Medium</button>
+                        <button class="tint-btn" data-opacity="0.15">Clear</button>
+                    </div>
+                </div>
+
+                <!-- 6. Underglow Neon & Lighting -->
+                <div class="custom-section">
+                    <div class="section-label">
+                        <span>Chassis Underglow</span>
+                        <span class="value">LED Strip</span>
+                    </div>
+                    <div class="color-grid" style="grid-template-columns: repeat(5, 1fr);">
+                        <div class="color-swatch ug-swatch active" data-color="00f0ff" style="background: #00f0ff;" title="Electric Cyan"></div>
+                        <div class="color-swatch ug-swatch" data-color="b026ff" style="background: #b026ff;" title="Neon Purple"></div>
+                        <div class="color-swatch ug-swatch" data-color="ff1744" style="background: #ff1744;" title="Laser Red"></div>
+                        <div class="color-swatch ug-swatch" data-color="00ff88" style="background: #00ff88;" title="Acid Lime"></div>
+                        <div class="color-swatch ug-swatch" data-color="ffaa00" style="background: #ffaa00;" title="Amber Flare"></div>
+                    </div>
+                </div>
+
+                <!-- 7. Interactive Vehicle Elements -->
+                <div class="custom-section">
+                    <div class="section-label">
+                        <span>Interactive Elements</span>
+                        <span class="value">Aero & Bay</span>
+                    </div>
+                    <div class="action-grid">
+                        <button id="btn-doors" class="action-btn">
+                            <span>🦋</span>
+                            <span class="btn-label">Open Doors</span>
+                        </button>
+                        <button id="btn-hood" class="action-btn">
+                            <span>⚙️</span>
+                            <span class="btn-label">Open Engine Bay</span>
+                        </button>
+                        <button id="btn-lights" class="action-btn active">
+                            <span>💡</span>
+                            <span class="btn-label">Lights: ON</span>
+                        </button>
+                        <button id="btn-underglow" class="action-btn active">
+                            <span>✨</span>
+                            <span class="btn-label">Underglow: ON</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Showroom Camera Angle Presets (Right side floating) -->
+        <div id="showroom-cam-presets" class="interactive">
+            <div class="cam-preset-title">Camera Angles</div>
+            <button class="cam-preset-btn active" data-preset="turntable">🔄 360° Turntable</button>
+            <button class="cam-preset-btn" data-preset="front34">📐 Front 3/4 Dramatic</button>
+            <button class="cam-preset-btn" data-preset="side">🏎️ Side Silhouette</button>
+            <button class="cam-preset-btn" data-preset="rear">🏁 Low Rear Stance</button>
+            <button class="cam-preset-btn" data-preset="wheel">🛞 Wheel & Brake Macro</button>
+            <button class="cam-preset-btn" data-preset="cockpit">💺 Cockpit Interior</button>
+        </div>
+
+        <!-- ========================================================== -->
+        <!-- DRIVE MODE HUD TELEMETRY (Visible in Drive Mode)           -->
+        <!-- ========================================================== -->
+        <div id="drive-hud">
+            <div class="instrument-cluster">
+                <!-- Shift Light Array (Sequential 5 LEDs) -->
+                <div class="shift-light-array">
+                    <div class="shift-led" id="shift-led-1"></div>
+                    <div class="shift-led" id="shift-led-2"></div>
+                    <div class="shift-led" id="shift-led-3"></div>
+                    <div class="shift-led" id="shift-led-4"></div>
+                    <div class="shift-led" id="shift-led-5"></div>
+                </div>
+
+                <!-- Main Telemetry Gauge Row -->
+                <div class="cluster-main-row">
+                    <!-- Gear Box Indicator -->
+                    <div class="gear-display">
+                        <span class="gear-label">GEAR</span>
+                        <span id="hud-gear-value">1</span>
+                    </div>
+
+                    <!-- Digital Speedometer Centerpiece -->
+                    <div class="speed-display">
+                        <div class="speed-number" id="hud-speed-value">0</div>
+                        <div class="speed-unit-row">
+                            <span id="speed-unit-label">KM/H</span>
+                            <span id="unit-toggle" class="interactive">Switch to MPH</span>
+                        </div>
+                    </div>
+
+                    <!-- Tachometer & Engine Telemetry -->
+                    <div class="tacho-container">
+                        <div class="tacho-header">
+                            <span>ENGINE RPM</span>
+                            <span class="rpm-number-readout"><span id="hud-rpm-number">900</span> RPM</span>
+                        </div>
+                        <div class="rpm-bar-track">
+                            <div id="rpm-gauge-fill"></div>
+                        </div>
+
+                        <!-- Mini stats: Turbo Boost & Traction -->
+                        <div class="telemetry-mini-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">TURBO BOOST</span>
+                                <div class="stat-bar-track">
+                                    <div id="hud-boost-bar"></div>
+                                </div>
+                                <span id="hud-boost-value">0.00 BAR</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">TOP SPEED</span>
+                                <span style="font-family: var(--font-telemetry); font-size: 0.85rem; color: #fff;">340 KM/H</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Drift Telemetry Overlay Badge (Top Center during slides) -->
+        <div id="hud-drift-card">
+            <span class="drift-badge-label">DRIFT SCORE</span>
+            <span id="drift-score-value">0</span>
+            <span id="drift-multiplier">x1.0</span>
+        </div>
+
+        <!-- Drive Mode Quick Actions (Right side in Drive Mode) -->
+        <div id="drive-quick-actions" style="display: none;">
+            <button id="btn-cycle-cam" class="hud-pill-btn" title="Cycle Camera Angle (C)">
+                <span>🎥</span>
+                <span id="camera-view-badge">Chase View</span>
+            </button>
+            <button id="btn-horn" class="hud-pill-btn" title="Horn (H)">
+                <span>🎺</span>
+                <span>HORN</span>
+            </button>
+            <button id="btn-reset" class="hud-pill-btn" title="Reset Car to Track (R)">
+                <span>🔄</span>
+                <span>RESET</span>
+            </button>
+        </div>
+
+        <!-- Drive Controls Guide (Bottom Left in Drive Mode) -->
+        <div id="drive-controls-help">
+            <div class="help-title">Controls Guide</div>
+            <div class="help-row"><span class="key-badge">W / ↑</span> <span>Accelerate / Throttle</span></div>
+            <div class="help-row"><span class="key-badge">S / ↓</span> <span>Brake / Reverse</span></div>
+            <div class="help-row"><span class="key-badge">A / D / ← →</span> <span>Steer</span></div>
+            <div class="help-row"><span class="key-badge">SPACE</span> <span>Handbrake / Drift</span></div>
+            <div class="help-row"><span class="key-badge">C</span> <span>Cycle Camera Views</span></div>
+            <div class="help-row"><span class="key-badge">L</span> <span>Toggle Headlights</span></div>
+            <div class="help-row"><span class="key-badge">H</span> <span>Horn</span></div>
+            <div class="help-row"><span class="key-badge">R</span> <span>Reset Vehicle</span></div>
+        </div>
+
+        <!-- On-Screen Virtual Touchpad for Mobile / Tablet -->
+        <div id="virtual-touch-controls" class="interactive">
+            <div class="touch-cluster">
+                <div class="touch-row">
+                    <button class="touch-btn" id="touch-left">◀</button>
+                    <button class="touch-btn" id="touch-right">▶</button>
+                </div>
+            </div>
+            <div class="touch-cluster">
+                <div class="touch-row">
+                    <button class="touch-btn" id="touch-brake">BRAKE</button>
+                    <button class="touch-btn" id="touch-gas">GAS</button>
+                </div>
+                <button class="touch-btn btn-wide" id="touch-handbrake">DRIFT (HANDBRAKE)</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Application Scripts -->
+    <script src="js/audio.js"></script>
+    <script src="js/carModel.js"></script>
+    <script src="js/physics.js"></script>
+    <script src="js/environment.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

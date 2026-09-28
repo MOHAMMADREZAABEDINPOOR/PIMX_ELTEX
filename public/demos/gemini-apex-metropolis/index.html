@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" type="image/svg+xml" href="/icon.svg" />
+<meta name="robots" content="noindex, follow" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Apex Metropolis - 3D Open World City</title>
+  <meta name="description" content="3D open world driving and city simulation with traffic AI, dynamic weather, day-night cycle, police pursuit, missions, and car physics.">
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Three.js r128 (Local with CDN fallback for 100% offline & local file:// support) -->
+  <script src="lib/three.min.js"></script>
+  <script>
+    if (typeof THREE === 'undefined') {
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');
+    }
+  </script>
+</head>
+<body>
+  <div id="game-container">
+    <canvas id="game-canvas"></canvas>
+    <div id="lightning-flash"></div>
+
+    <!-- HUD OVERLAY -->
+    <div id="hud">
+      <!-- Top Row -->
+      <div class="hud-top-bar">
+        <!-- Status & Environment -->
+        <div class="hud-panel status-panel hud-interactive">
+          <div class="cash-display">
+            <span>$</span><span id="cash-val">2,500</span>
+          </div>
+          <div class="environment-info">
+            <span id="time-val">14:00</span>
+            <span id="weather-val">CLEAR</span>
+          </div>
+          <div class="weather-quick-select">
+            <button class="btn-weather active" id="btn-noon" title="Noon">NOON</button>
+            <button class="btn-weather" id="btn-sunset" title="Golden Sunset">SUNSET</button>
+            <button class="btn-weather" id="btn-night" title="Midnight Neon">NIGHT</button>
+            <button class="btn-weather" id="btn-storm" title="Thunderstorm">STORM</button>
+          </div>
+        </div>
+
+        <!-- Mission Banner -->
+        <div class="mission-banner-container">
+          <div id="mission-banner" class="mission-banner">
+            <div class="mission-title-row">
+              <span id="mission-name" class="mission-name">MIDNIGHT COURIER</span>
+              <span id="mission-reward" class="mission-reward">+$1,200</span>
+            </div>
+            <div id="mission-objective" class="mission-objective">Reach District 3 Drop-off Point</div>
+            <div class="mission-meta-row">
+              <span id="mission-distance" class="mission-distance">DIST: 240m</span>
+              <span id="mission-timer" class="mission-timer">TIME: 01:15</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wanted Stars & Siren Badge -->
+        <div class="top-right-group">
+          <div class="wanted-panel">
+            <span class="wanted-label">WANTED</span>
+            <div class="wanted-stars" id="wanted-stars">
+              <span class="star" data-index="1">★</span>
+              <span class="star" data-index="2">★</span>
+              <span class="star" data-index="3">★</span>
+              <span class="star" data-index="4">★</span>
+              <span class="star" data-index="5">★</span>
+            </div>
+            <div class="siren-badge" id="siren-badge">PURSUIT</div>
+          </div>
+          <div id="notification-banner" class="notification-banner">
+            Welcome to Apex Metropolis! Press C for Controls.
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls Toggle Button -->
+      <button class="btn-help-toggle" id="btn-help-toggle">[C] CONTROLS</button>
+
+      <!-- Center Action Prompt -->
+      <div class="center-prompt-container">
+        <div id="action-prompt" class="action-prompt">
+          <span class="key-badge" id="action-key">F</span>
+          <span id="action-text">ENTER VEHICLE</span>
+        </div>
+      </div>
+
+      <!-- Bottom Row: Minimap, Radio, Speedometer -->
+      <div class="hud-bottom-bar">
+        <!-- Circular Radar Minimap -->
+        <div class="minimap-wrapper">
+          <canvas id="minimap-canvas" width="180" height="180"></canvas>
+          <div class="minimap-compass-n">N</div>
+          <div class="minimap-decor-ring"></div>
+        </div>
+
+        <!-- Procedural Radio Station -->
+        <div class="radio-panel" id="radio-panel" title="Click or Press R to switch station">
+          <div class="radio-icon">📻</div>
+          <div class="radio-info">
+            <span class="radio-station" id="radio-station">SYNTHWAVE FM</span>
+            <span class="radio-track" id="radio-track">Neon Skyline Run</span>
+          </div>
+        </div>
+
+        <!-- Speedometer Cluster (Driving) -->
+        <div class="speedometer-container" id="speedometer-container">
+          <div class="speedometer-cluster">
+            <div class="speed-main-display">
+              <div class="speed-digital" id="speed-digital">0</div>
+              <div class="speed-unit">MPH</div>
+              <div class="gear-indicator" id="gear-indicator">D</div>
+            </div>
+
+            <!-- RPM Gauge Bar -->
+            <div class="rpm-bar-container">
+              <div class="rpm-bar" id="rpm-bar"></div>
+            </div>
+
+            <!-- Boost and Integrity -->
+            <div class="vehicle-stats-row">
+              <div class="stat-group">
+                <span class="stat-label">NITRO [SHIFT]</span>
+                <div class="stat-bar-track">
+                  <div class="nitro-fill" id="nitro-fill"></div>
+                </div>
+              </div>
+              <div class="stat-group">
+                <span class="stat-label">INTEGRITY</span>
+                <div class="stat-bar-track">
+                  <div class="damage-fill" id="damage-fill"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="vehicle-icons-row">
+              <span class="v-icon active" id="icon-lights" title="Headlights (L)">💡 LIGHTS</span>
+              <span class="v-icon" id="icon-horn" title="Horn (H)">📢 HORN</span>
+              <span class="v-icon" id="icon-drift" title="Drift (Space)">⚡ DRIFT</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTROLS MODAL -->
+    <div id="controls-modal">
+      <div class="modal-header">
+        <h2>CITY GUIDE & CONTROLS</h2>
+        <button class="btn-close-modal" id="btn-close-modal">&times;</button>
+      </div>
+      <div class="controls-grid">
+        <div class="control-item">
+          <span class="k-tag">W A S D</span>
+          <span>Walk / Drive & Steer</span>
+        </div>
+        <div class="control-item">
+          <span class="k-tag">F / E</span>
+          <span>Enter / Exit Nearest Car</span>
+        </div>
+        <div class="control-item">
+          <span class="k-tag">SPACE</span>
+          <span>Jump (foot) / Handbrake Drift (car)</span>
+        </div>
+        <div class="control-item">
+          <span class="k-tag">SHIFT</span>
+          <span>Sprint (foot) / Nitro Boost (car)</span>
+        </div>
+        <div class="control-item">
+          <span class="k-tag">V</span>
+          <span>Change Camera View (Close/Far/Hood)</span>
+        </div>
+        <div class="control-item">
+          <span class="k-tag">H</span>
+          <span>Honk Car Horn / Siren</span>
+        </div>
+        <div class="control-item">
+          <span class="k-tag">L</span>
+          <span>Toggle Headlights</span>
+        </div>
+        <div class="control-item">
+          <span class="k-tag">R</span>
+          <span>Change Radio Station</span>
+        </div>
+        <div class="control-item">
+          <span class="k-tag">M</span>
+          <span>Accept / Cancel Mission</span>
+        </div>
+        <div class="control-item">
+          <span class="k-tag">C</span>
+          <span>Toggle This Help Screen</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MISSION COMPLETE / REWARD MODAL -->
+    <div id="mission-dialog">
+      <h3 id="dialog-title">MISSION COMPLETE!</h3>
+      <p id="dialog-desc">You delivered the package ahead of the courier schedule!</p>
+      <div class="reward-highlight" id="dialog-reward">+$1,500</div>
+      <button class="btn-dialog-ok" id="btn-dialog-ok">CONTINUE</button>
+    </div>
+  </div>
+
+  <!-- GAME MODULES -->
+  <script src="js/audio.js"></script>
+  <script src="js/physics.js"></script>
+  <script src="js/city.js"></script>
+  <script src="js/vehicle.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/traffic.js"></script>
+  <script src="js/pedestrians.js"></script>
+  <script src="js/police.js"></script>
+  <script src="js/weather.js"></script>
+  <script src="js/missions.js"></script>
+  <script src="js/minimap.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>

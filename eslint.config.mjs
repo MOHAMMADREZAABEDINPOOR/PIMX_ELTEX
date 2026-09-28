@@ -9,7 +9,12 @@ const eslintConfig = defineConfig([
   globalIgnores([
     // Default ignores of eslint-config-next:
     ".next/**",
-    ".open-next/**",
+    ".open-next*/**",
+    ".cloudflare-build*/**",
+    ".pages-output/**",
+    // Imported vanilla demos and vendor libraries are checked in the browser.
+    "public/demos/**",
+    "gemini 3.8 flash/**",
     ".wrangler/**",
     "out/**",
     "build/**",

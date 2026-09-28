@@ -1,0 +1,451 @@
+{
+  "post": {
+    "slug": "gemini-3-8-flash-six-ai-builds",
+    "title": "Gemini 3.8 Flash — Six AI Builds",
+    "excerpt": "Six Gemini 3.8 Flash prompts, from 3D games and city scenes to an SVG studio and restaurant website. Preview every build and download its complete source.",
+    "content": "Episode 02 brings together all six builds from the Gemini 3.8 Flash video. The prompts and projects follow the original video order: a fantasy platformer, an open-world city game, a procedural city showcase, a hypercar studio, an SVG programmer room, and a premium restaurant website. Each prompt includes its matching live preview and source download.",
+    "category": "AI Development",
+    "date": "Sep 28, 2026",
+    "publishedAt": "2026-09-28T12:00:00.000Z",
+    "readTime": "1 min read",
+    "accent": "violet",
+    "youtubeVideoId": "hIZRbpWJZYQ"
+  },
+  "projects": [
+    {
+      "slug": "gemini-aetheria-sky-isles",
+      "title": "Aetheria — Sky Isles Adventure",
+      "description": "A colorful fantasy platformer with floating islands, collectibles, enemies, and checkpoints.",
+      "tech": [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "Three.js"
+      ],
+      "previewUrl": "/demos/gemini-aetheria-sky-isles/index.html",
+      "coverUrl": "/project-previews/gemini-aetheria-sky-isles.webp",
+      "downloadUrl": "/downloads/gemini-aetheria-sky-isles.zip",
+      "fileCount": 10,
+      "episode": "Episode 02 · Gemini 3.8 Flash · Prompt 01"
+    },
+    {
+      "slug": "gemini-apex-metropolis",
+      "title": "Apex Metropolis — Open World City",
+      "description": "Explore a living city with vehicles, traffic, missions, weather, and a wanted system.",
+      "tech": [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "Three.js"
+      ],
+      "previewUrl": "/demos/gemini-apex-metropolis/index.html",
+      "coverUrl": "/project-previews/gemini-apex-metropolis.webp",
+      "downloadUrl": "/downloads/gemini-apex-metropolis.zip",
+      "fileCount": 16,
+      "episode": "Episode 02 · Gemini 3.8 Flash · Prompt 02"
+    },
+    {
+      "slug": "gemini-metropolis-3d",
+      "title": "Metropolis 3D — Procedural City",
+      "description": "A detailed city showcase with cinematic cameras, moving traffic, lighting, and weather controls.",
+      "tech": [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "Three.js"
+      ],
+      "previewUrl": "/demos/gemini-metropolis-3d/index.html",
+      "coverUrl": "/project-previews/gemini-metropolis-3d.webp",
+      "downloadUrl": "/downloads/gemini-metropolis-3d.zip",
+      "fileCount": 10,
+      "episode": "Episode 02 · Gemini 3.8 Flash · Prompt 03"
+    },
+    {
+      "slug": "gemini-apex-gt",
+      "title": "APEX GT — Hypercar Studio",
+      "description": "A procedural sports car showcase with paint customization, showroom cameras, and driving simulation.",
+      "tech": [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "Three.js"
+      ],
+      "previewUrl": "/demos/gemini-apex-gt/index.html",
+      "coverUrl": "/project-previews/gemini-apex-gt.webp",
+      "downloadUrl": "/downloads/gemini-apex-gt.zip",
+      "fileCount": 9,
+      "episode": "Episode 02 · Gemini 3.8 Flash · Prompt 04"
+    },
+    {
+      "slug": "gemini-programmer-room",
+      "title": "Late Night Programmer — SVG Studio",
+      "description": "An editable vector illustration of a programmer's room with lighting controls and SVG export.",
+      "tech": [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "SVG"
+      ],
+      "previewUrl": "/demos/gemini-programmer-room/index.html",
+      "coverUrl": "/project-previews/gemini-programmer-room.webp",
+      "downloadUrl": "/downloads/gemini-programmer-room.zip",
+      "fileCount": 4,
+      "episode": "Episode 02 · Gemini 3.8 Flash · Prompt 05"
+    },
+    {
+      "slug": "gemini-aurelia-restaurant",
+      "title": "Aurelia — Restaurant Website",
+      "description": "A luxury restaurant website with a menu, gallery, reservations, and responsive navigation.",
+      "tech": [
+        "HTML",
+        "CSS",
+        "JavaScript"
+      ],
+      "previewUrl": "/demos/gemini-aurelia-restaurant/index.html",
+      "coverUrl": "/project-previews/gemini-aurelia-restaurant.webp",
+      "downloadUrl": "/downloads/gemini-aurelia-restaurant.zip",
+      "fileCount": 3,
+      "episode": "Episode 02 · Gemini 3.8 Flash · Prompt 06"
+    }
+  ],
+  "episode": {
+    "videoId": "hIZRbpWJZYQ",
+    "number": "Episode 02",
+    "overview": "Six Gemini 3.8 Flash prompts, from 3D games and city scenes to an SVG studio and restaurant website. Preview every build and download its complete source.",
+    "prompts": [
+      {
+        "title": "ORIGINAL 3D PLATFORMER GAME",
+        "description": "Gemini 3.8 Flash · Prompt 01 — A colorful fantasy platformer with floating islands, collectibles, enemies, and checkpoints.",
+        "content": "Create a complete 3D platformer browser game inspired by classic side-scrolling platform games.\r\n\r\nDo not copy Super Mario characters, assets, or levels. Create an original fantasy world.\r\n\r\nRequirements:\r\n\r\n- Create a colorful 3D cartoon environment.\r\n- Create a player character that can run, jump, and interact with the world.\r\n- Add platforms with different heights.\r\n- Add moving platforms.\r\n- Add collectible coins.\r\n- Add power-up items that temporarily improve the player.\r\n- Add enemies with simple AI.\r\n- Add obstacles and traps.\r\n- Add checkpoints.\r\n- Add a health/life system.\r\n- Add a final goal flag at the end of the level.\r\n- Add smooth animations.\r\n- Add camera following the player.\r\n- Add background music placeholders and sound effects.\r\n\r\nThe game should feel polished, fun, and immediately playable.\r\n\r\nIMPORTANT:\r\n- Do not ask me any questions.\r\n- Make all creative decisions yourself.\r\n- Start coding immediately.\r\n- Use only HTML, CSS, and vanilla JavaScript.\r\n- Do not use React, Next.js, Vue, Angular, TypeScript, or any framework.\r\n- The project must run by opening index.html directly.\r\n- Use CDN libraries only if needed.\r\n- Create complete working code, not just explanations.",
+        "coverUrl": "/project-previews/gemini-aetheria-sky-isles.webp",
+        "previewUrl": "/demos/gemini-aetheria-sky-isles/index.html",
+        "downloadUrl": "/downloads/gemini-aetheria-sky-isles.zip",
+        "fileCount": 10,
+        "totalBytes": 747493,
+        "files": [
+          {
+            "path": "README.md",
+            "size": 2043,
+            "type": "text/markdown"
+          },
+          {
+            "path": "index.html",
+            "size": 9193,
+            "type": "text/html"
+          },
+          {
+            "path": "js/audio.js",
+            "size": 15524,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/enemies.js",
+            "size": 11705,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/game.js",
+            "size": 23226,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/particles.js",
+            "size": 8715,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/player.js",
+            "size": 21620,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/world.js",
+            "size": 39663,
+            "type": "text/javascript"
+          },
+          {
+            "path": "style.css",
+            "size": 12359,
+            "type": "text/css"
+          },
+          {
+            "path": "three.min.js",
+            "size": 603445,
+            "type": "text/javascript"
+          }
+        ]
+      },
+      {
+        "title": "MINI GTA STYLE OPEN WORLD",
+        "description": "Gemini 3.8 Flash · Prompt 02 — Explore a living city with vehicles, traffic, missions, weather, and a wanted system.",
+        "content": "Create a small 3D open-world city game inspired by open-world driving games.\r\n\r\nDo not copy GTA characters, branding, or assets.\r\n\r\nRequirements:\r\n\r\n- Create a detailed 3D city environment.\r\n- Add roads, buildings, sidewalks, traffic lights, parks, and signs.\r\n- Add a player character who can walk around.\r\n- Add vehicles that the player can enter and drive.\r\n- Add basic car physics.\r\n- Add pedestrians walking around the city.\r\n- Add simple traffic AI.\r\n- Add a minimap.\r\n- Add day and night cycle.\r\n- Add weather changes.\r\n- Add police AI that follows the player after crimes.\r\n- Add wanted level system.\r\n- Add missions such as reaching locations or delivering objects.\r\n\r\nFocus on creating a living city that looks impressive in a video demonstration.\r\n\r\nIMPORTANT:\r\n- Do not ask me any questions.\r\n- Make all creative decisions yourself.\r\n- Start coding immediately.\r\n- Use only HTML, CSS, and vanilla JavaScript.\r\n- Do not use React, Next.js, Vue, Angular, TypeScript, or any framework.\r\n- The project must run by opening index.html directly.\r\n- Use CDN libraries only if needed.\r\n- Create complete working code, not just explanations.",
+        "coverUrl": "/project-previews/gemini-apex-metropolis.webp",
+        "previewUrl": "/demos/gemini-apex-metropolis/index.html",
+        "downloadUrl": "/downloads/gemini-apex-metropolis.zip",
+        "fileCount": 16,
+        "totalBytes": 780107,
+        "files": [
+          {
+            "path": "css/style.css",
+            "size": 15761,
+            "type": "text/css"
+          },
+          {
+            "path": "index.html",
+            "size": 8665,
+            "type": "text/html"
+          },
+          {
+            "path": "js/audio.js",
+            "size": 15908,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/city.js",
+            "size": 32040,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/game.js",
+            "size": 8915,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/minimap.js",
+            "size": 6782,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/missions.js",
+            "size": 6818,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/pedestrians.js",
+            "size": 8109,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/physics.js",
+            "size": 11565,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/player.js",
+            "size": 15363,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/police.js",
+            "size": 6417,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/traffic.js",
+            "size": 7385,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/ui.js",
+            "size": 8580,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/vehicle.js",
+            "size": 16960,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/weather.js",
+            "size": 7394,
+            "type": "text/javascript"
+          },
+          {
+            "path": "lib/three.min.js",
+            "size": 603445,
+            "type": "text/javascript"
+          }
+        ]
+      },
+      {
+        "title": "ULTRA DETAILED 3D CITY",
+        "description": "Gemini 3.8 Flash · Prompt 03 — A detailed city showcase with cinematic cameras, moving traffic, lighting, and weather controls.",
+        "content": "Create a highly detailed realistic 3D city environment in the browser.\r\n\r\nThis is a visual showcase, not a game.\r\n\r\nRequirements:\r\n\r\n- Create a large city scene.\r\n- Add skyscrapers with different designs.\r\n- Add streets, sidewalks, intersections, traffic lights, signs, and advertisements.\r\n- Add trees, parks, benches, street lamps, and small details.\r\n- Add moving cars.\r\n- Add walking pedestrians.\r\n- Add reflections on windows.\r\n- Add realistic lighting.\r\n- Add sunrise, sunset, and night modes.\r\n- Add realistic camera movement.\r\n- Add cinematic camera shots.\r\n- Add weather effects such as rain or fog.\r\n\r\nThe final result should look like a modern 3D city demo.\r\n\r\nIMPORTANT:\r\n- Do not ask me any questions.\r\n- Make all creative decisions yourself.\r\n- Start coding immediately.\r\n- Use only HTML, CSS, and vanilla JavaScript.\r\n- Do not use React, Next.js, Vue, Angular, TypeScript, or any framework.\r\n- The project must run by opening index.html directly.\r\n- Use CDN libraries only if needed.\r\n- Create complete working code, not just explanations.",
+        "coverUrl": "/project-previews/gemini-metropolis-3d.webp",
+        "previewUrl": "/demos/gemini-metropolis-3d/index.html",
+        "downloadUrl": "/downloads/gemini-metropolis-3d.zip",
+        "fileCount": 10,
+        "totalBytes": 138694,
+        "files": [
+          {
+            "path": "css/style.css",
+            "size": 12154,
+            "type": "text/css"
+          },
+          {
+            "path": "index.html",
+            "size": 10808,
+            "type": "text/html"
+          },
+          {
+            "path": "js/app.js",
+            "size": 8037,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/audio.js",
+            "size": 6956,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/camera.js",
+            "size": 10973,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/city.js",
+            "size": 51960,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/lighting.js",
+            "size": 11522,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/pedestrians.js",
+            "size": 7633,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/traffic.js",
+            "size": 11702,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/weather.js",
+            "size": 6949,
+            "type": "text/javascript"
+          }
+        ]
+      },
+      {
+        "title": "3D CAR MODEL AND SIMULATOR",
+        "description": "Gemini 3.8 Flash · Prompt 04 — A procedural sports car showcase with paint customization, showroom cameras, and driving simulation.",
+        "content": "Create a detailed 3D car experience in the browser.\r\n\r\nRequirements:\r\n\r\n- Create a realistic 3D sports car model using procedural geometry.\r\n- Add detailed body shape, wheels, windows, lights, mirrors, and interior elements.\r\n- Add realistic materials.\r\n- Add paint color customization.\r\n- Add a rotating showroom camera.\r\n- Add lighting effects.\r\n- Add a driving mode where the player can control the car.\r\n- Add acceleration, braking, steering, and simple physics.\r\n- Add speedometer UI.\r\n- Add different camera angles.\r\n\r\nMake the car visually impressive like a professional automotive showcase.\r\n\r\nIMPORTANT:\r\n- Do not ask me any questions.\r\n- Make all creative decisions yourself.\r\n- Start coding immediately.\r\n- Use only HTML, CSS, and vanilla JavaScript.\r\n- Do not use React, Next.js, Vue, Angular, TypeScript, or any framework.\r\n- The project must run by opening index.html directly.\r\n- Use CDN libraries only if needed.\r\n- Create complete working code, not just explanations.",
+        "coverUrl": "/project-previews/gemini-apex-gt.webp",
+        "previewUrl": "/demos/gemini-apex-gt/index.html",
+        "downloadUrl": "/downloads/gemini-apex-gt.zip",
+        "fileCount": 9,
+        "totalBytes": 800088,
+        "files": [
+          {
+            "path": "css/style.css",
+            "size": 21335,
+            "type": "text/css"
+          },
+          {
+            "path": "index.html",
+            "size": 19182,
+            "type": "text/html"
+          },
+          {
+            "path": "js/audio.js",
+            "size": 12229,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/carModel.js",
+            "size": 53633,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/environment.js",
+            "size": 18817,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/libs/OrbitControls.js",
+            "size": 26375,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/libs/three.min.js",
+            "size": 603445,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/main.js",
+            "size": 28827,
+            "type": "text/javascript"
+          },
+          {
+            "path": "js/physics.js",
+            "size": 16245,
+            "type": "text/javascript"
+          }
+        ]
+      },
+      {
+        "title": "DETAILED SVG PROGRAMMER ROOM",
+        "description": "Gemini 3.8 Flash · Prompt 05 — An editable vector illustration of a programmer's room with lighting controls and SVG export.",
+        "content": "Create a detailed SVG illustration of a programmer working inside a modern computer room.\r\n\r\nThe scene must show:\r\n\r\n* A person sitting naturally on an office chair.\r\n* The person is sitting directly in front of a computer desk.\r\n* A desktop computer monitor is placed on the desk.\r\n* The person is actively programming, with their hands positioned on a keyboard.\r\n* Show a visible coding interface on the monitor using colorful code-like text and UI elements.\r\n* Add a computer mouse, keyboard, desk accessories, and cables.\r\n* Add a desk lamp.\r\n* Add shelves or wall decorations in the background.\r\n* Add a window with a night-time city view.\r\n* Add subtle ambient lighting from the computer monitor.\r\n* Add a small plant and a few realistic room details.\r\n* Use a coherent perspective and professional composition.\r\n* Include detailed character proportions, clothing, hair, facial features, hands, chair, desk, monitor, and room objects.\r\n* Use gradients, shadows, highlights, layered shapes, and carefully constructed paths to make the SVG visually rich.\r\n* Use a modern professional illustration style rather than a very simple icon style.\r\n* Make the final SVG large, detailed, clean, and visually impressive.\r\n\r\nTechnical requirements:\r\n\r\n* The main artwork must be created as SVG.\r\n* Keep the SVG editable and vector-based.\r\n* Do not simply embed a raster image as the final artwork.\r\n* Organize the SVG into logical groups/layers such as background, room, desk, computer, person, lighting, and decorative objects.\r\n* Add subtle SVG animations where they improve the scene, such as monitor glow, blinking cursor, or small ambient lighting effects.\r\n* Display the final SVG prominently in the browser.\r\n* Add a button that allows the user to download/export the generated SVG.\r\n\r\nThe final result should look like a polished professional vector illustration of a programmer working late at night.\r\n\r\n\r\nIMPORTANT:\r\n- Do not ask me any questions.\r\n- Make all creative decisions yourself.\r\n- Start coding immediately.\r\n- Use only HTML, CSS, and vanilla JavaScript.\r\n- Do not use React, Next.js, Vue, Angular, TypeScript, or any framework.\r\n- The project must run by opening index.html directly.\r\n- Use CDN libraries only if needed.\r\n- Create complete working code, not just explanations.",
+        "coverUrl": "/project-previews/gemini-programmer-room.webp",
+        "previewUrl": "/demos/gemini-programmer-room/index.html",
+        "downloadUrl": "/downloads/gemini-programmer-room.zip",
+        "fileCount": 4,
+        "totalBytes": 211577,
+        "files": [
+          {
+            "path": "app.js",
+            "size": 22645,
+            "type": "text/javascript"
+          },
+          {
+            "path": "index.html",
+            "size": 90565,
+            "type": "text/html"
+          },
+          {
+            "path": "programmer-room.svg",
+            "size": 86045,
+            "type": "image/svg+xml"
+          },
+          {
+            "path": "style.css",
+            "size": 12322,
+            "type": "text/css"
+          }
+        ]
+      },
+      {
+        "title": "PREMIUM RESTAURANT WEBSITE",
+        "description": "Gemini 3.8 Flash · Prompt 06 — A luxury restaurant website with a menu, gallery, reservations, and responsive navigation.",
+        "content": "Create a complete premium restaurant website.\r\n\r\nThe website should look like a real modern restaurant website.\r\n\r\nRequirements:\r\n\r\n- Create a beautiful landing page.\r\n- Add a hero section with attractive food imagery placeholders.\r\n- Add restaurant logo.\r\n- Add navigation menu.\r\n- Add food menu section with categories.\r\n- Add food cards with prices and descriptions.\r\n- Add reservation section.\r\n- Add customer reviews.\r\n- Add restaurant gallery.\r\n- Add location and opening hours.\r\n- Add contact section.\r\n- Add smooth animations.\r\n- Add responsive mobile design.\r\n- Add dark luxury restaurant theme.\r\n\r\nThe final website should look production-ready and visually impressive.\r\n\r\nIMPORTANT:\r\n- Do not ask me any questions.\r\n- Make all creative decisions yourself.\r\n- Start coding immediately.\r\n- Use only HTML, CSS, and vanilla JavaScript.\r\n- Do not use React, Next.js, Vue, Angular, TypeScript, or any framework.\r\n- The project must run by opening index.html directly.\r\n- Use CDN libraries only if needed.\r\n- Create complete working code, not just explanations.",
+        "coverUrl": "/project-previews/gemini-aurelia-restaurant.webp",
+        "previewUrl": "/demos/gemini-aurelia-restaurant/index.html",
+        "downloadUrl": "/downloads/gemini-aurelia-restaurant.zip",
+        "fileCount": 3,
+        "totalBytes": 135916,
+        "files": [
+          {
+            "path": "css/style.css",
+            "size": 49045,
+            "type": "text/css"
+          },
+          {
+            "path": "index.html",
+            "size": 43950,
+            "type": "text/html"
+          },
+          {
+            "path": "js/main.js",
+            "size": 42921,
+            "type": "text/javascript"
+          }
+        ]
+      }
+    ],
+    "links": []
+  }
+}

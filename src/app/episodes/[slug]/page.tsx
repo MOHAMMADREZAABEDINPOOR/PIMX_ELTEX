@@ -8,13 +8,14 @@ import { PageTransition } from "@/components/page-transition";
 import { getPublicEpisode, getPublicPost } from "@/lib/public-content";
 import { siteConfig } from "@/lib/site-config";
 import { getYouTubeThumbnailUrl, getYouTubeWatchUrl } from "@/lib/youtube";
+import { bundledEpisodes } from "@/content/bundled-episodes";
 
 type EpisodePageProps = { params: Promise<{ slug: string }> };
 export const dynamic = "force-dynamic";
-export const dynamicParams = false;
+export const dynamicParams = true;
 
 export function generateStaticParams() {
-  return [{ slug: "muse-spark-1-3-original-3d-platformer" }];
+  return bundledEpisodes.map((episode) => ({ slug: episode.post.slug }));
 }
 
 export async function generateMetadata({ params }: EpisodePageProps): Promise<Metadata> {

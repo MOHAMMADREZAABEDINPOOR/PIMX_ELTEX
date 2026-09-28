@@ -50,7 +50,7 @@ for (const source of files) {
 const worker = `const STATIC_ROUTES = ${JSON.stringify(staticRoutes)};
 const UPSTREAM = "https://pimx-eltex.mohammadrezaabedinpoor6.workers.dev";
 const APP_CSP = "default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://static.cloudflareinsights.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ytimg.com; frame-src 'self' https://www.youtube-nocookie.com https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com https://api.resend.com https://cloudflareinsights.com; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests";
-const DEMO_CSP = "sandbox allow-scripts allow-forms; default-src * data: blob: 'unsafe-inline' 'unsafe-eval'; object-src 'none'";
+const DEMO_CSP = "sandbox allow-scripts allow-forms allow-downloads; default-src * data: blob: 'unsafe-inline' 'unsafe-eval'; object-src 'none'";
 
 function fetchBackend(request, env) {
   return env.BACKEND ? env.BACKEND.fetch(request) : fetch(request);

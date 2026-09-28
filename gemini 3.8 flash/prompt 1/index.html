@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Aetheria: Sky Isles Adventure - An original 3D fantasy platformer game with colorful environments, moving platforms, power-ups, stompable enemies, and checkpoints.">
+    <meta name="theme-color" content="#a0d8ef">
+    <title>Aetheria: Sky Isles Adventure | 3D Fantasy Platformer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 3D WebGL Canvas Container -->
+    <div id="canvas-container"></div>
+
+    <!-- Heads-Up Display (HUD) -->
+    <div id="hud-overlay">
+        <div class="hud-top">
+            <div class="hud-group-left">
+                <!-- Health Containers -->
+                <div class="hud-card hud-hearts-card" title="Player Health">
+                    <div id="hud-hearts" class="hearts-container">
+                        <span class="heart full">❤️</span>
+                        <span class="heart full">❤️</span>
+                        <span class="heart full">❤️</span>
+                    </div>
+                </div>
+
+                <!-- Lives Counter -->
+                <div class="hud-card" title="Remaining Lives">
+                    <span class="hud-icon">🧙</span>
+                    <span class="hud-val">× <span id="hud-lives-val">3</span></span>
+                </div>
+
+                <!-- Hidden Relics -->
+                <div class="hud-card" title="Secret Star Relics">
+                    <div id="hud-stars" class="stars-container">
+                        <span class="star-icon dormant">⭐</span>
+                        <span class="star-icon dormant">⭐</span>
+                        <span class="star-icon dormant">⭐</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hud-group-right">
+                <!-- Collectible Gems -->
+                <div class="hud-card" title="Star Gems Collected">
+                    <span class="hud-icon">💎</span>
+                    <span id="hud-gems-val" class="hud-val">0 / 0</span>
+                </div>
+
+                <!-- Total Score -->
+                <div class="hud-card" title="Score">
+                    <span class="hud-icon">🏆</span>
+                    <span id="hud-score-val" class="hud-val">000000</span>
+                </div>
+
+                <!-- Timer -->
+                <div class="hud-card" title="Elapsed Time">
+                    <span class="hud-icon">⏱️</span>
+                    <span id="hud-time-val" class="hud-val">00:00</span>
+                </div>
+
+                <!-- Sound & Menu Buttons -->
+                <button id="btn-toggle-sound" class="hud-btn" title="Toggle Sound Effects">🔊</button>
+                <button id="btn-toggle-music" class="hud-btn" title="Toggle Music">🎵</button>
+                <button id="btn-pause" class="hud-btn" title="Pause Game (ESC)">⏸️</button>
+            </div>
+        </div>
+
+        <!-- Active Power-Up Countdown -->
+        <div id="hud-powerup" class="hidden">
+            <span id="hud-powerup-label">🪶 Celestial Wings</span>
+            <div class="powerup-bar">
+                <div id="hud-powerup-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Banner (Checkpoints, Relics, Powerups) -->
+    <div id="notification-banner" class="hidden">✨ Welcome to Aetheria!</div>
+
+    <!-- Mobile & Touch Controls -->
+    <div id="touch-controls">
+        <div class="touch-cluster-left">
+            <button id="btn-left" class="touch-btn" aria-label="Move Left">◀</button>
+            <button id="btn-right" class="touch-btn" aria-label="Move Right">▶</button>
+        </div>
+        <div class="touch-cluster-right">
+            <button id="btn-jump" class="touch-btn jump-btn" aria-label="Jump">⤒</button>
+        </div>
+    </div>
+
+    <!-- Start / Title Screen Modal -->
+    <div id="start-modal" class="modal-backdrop">
+        <div class="modal-card">
+            <h1 class="modal-title">AETHERIA</h1>
+            <p class="modal-subtitle">Realm of the Sky Isles • 3D Adventure</p>
+
+            <div class="instruction-box">
+                <div class="instruction-row">
+                    <span>🏃 Run Left / Right</span>
+                    <div class="instruction-keys">
+                        <span class="key-cap">A</span>
+                        <span class="key-cap">D</span>
+                        <span>or</span>
+                        <span class="key-cap">◀</span>
+                        <span class="key-cap">▶</span>
+                    </div>
+                </div>
+                <div class="instruction-row">
+                    <span>🦘 Jump / Double Jump</span>
+                    <div class="instruction-keys">
+                        <span class="key-cap">Space</span>
+                        <span>or</span>
+                        <span class="key-cap">W</span>
+                        <span class="key-cap">▲</span>
+                    </div>
+                </div>
+                <div class="instruction-row">
+                    <span>🍄 Bounce & Stomp</span>
+                    <span style="font-size: 0.85rem; color: #68d391;">Jump onto enemies from above!</span>
+                </div>
+                <div class="instruction-row">
+                    <span>⏸️ Pause Menu</span>
+                    <div class="instruction-keys">
+                        <span class="key-cap">Esc</span>
+                    </div>
+                </div>
+            </div>
+
+            <button id="btn-start-adventure" class="btn-primary">START ADVENTURE</button>
+        </div>
+    </div>
+
+    <!-- Level Complete / Victory Modal -->
+    <div id="victory-modal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <h2 class="modal-title">CELESTIAL VICTORY!</h2>
+            <p class="modal-subtitle">You reached the Sky Citadel and hoisted the Star Banner!</p>
+
+            <div id="victory-rating-stars" class="victory-stars">
+                <span class="big-star earned">★</span>
+                <span class="big-star earned">★</span>
+                <span class="big-star earned">★</span>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <span class="stat-label">Clear Time</span>
+                    <span id="victory-time" class="stat-val">00:00</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Gems Collected</span>
+                    <span id="victory-gems" class="stat-val">0 / 0</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Secret Relics</span>
+                    <span id="victory-stars" class="stat-val">0 / 3</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Enemies Defeated</span>
+                    <span id="victory-enemies" class="stat-val">0</span>
+                </div>
+            </div>
+
+            <div class="stat-box" style="margin-bottom: 24px;">
+                <span class="stat-label">Final Score</span>
+                <span id="victory-score" class="stat-val" style="font-size: 1.8rem; color: #ffd700;">000000</span>
+            </div>
+
+            <button id="btn-play-again" class="btn-primary">PLAY AGAIN</button>
+        </div>
+    </div>
+
+    <!-- Game Over Modal -->
+    <div id="gameover-modal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <h2 class="modal-title" style="background: linear-gradient(135deg, #ff5555, #ff79c6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">FALLEN STAR</h2>
+            <p class="modal-subtitle">You ran out of lives, but your journey is not over!</p>
+
+            <button id="btn-retry-checkpoint" class="btn-primary">RETRY FROM CHECKPOINT</button>
+            <button id="btn-retry-level" class="btn-secondary">RESTART LEVEL</button>
+        </div>
+    </div>
+
+    <!-- Pause Menu Modal -->
+    <div id="pause-modal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <h2 class="modal-title">GAME PAUSED</h2>
+            <p class="modal-subtitle">Take a breath among the clouds.</p>
+
+            <button id="btn-resume" class="btn-primary">RESUME GAME</button>
+            <button id="btn-restart" class="btn-secondary">RESTART LEVEL</button>
+        </div>
+    </div>
+
+    <!-- Core Scripts (Three.js with CDN fallback, then game modules) -->
+    <script src="three.min.js"></script>
+    <script>
+        if (typeof THREE === 'undefined') {
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');
+        }
+    </script>
+    <script src="js/audio.js"></script>
+    <script src="js/particles.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/enemies.js"></script>
+    <script src="js/world.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>

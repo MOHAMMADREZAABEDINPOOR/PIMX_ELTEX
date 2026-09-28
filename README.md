@@ -14,6 +14,12 @@ Existing episodes can be reopened from **Admin Console → Episodes → Edit**. 
 
 There is no standalone prompt library or toolbox.
 
+### Episode 02: Gemini 3.8 Flash
+
+The `gemini 3.8 flash` folder provides six numbered prompts and projects for [the second video](https://youtu.be/hIZRbpWJZYQ). Its episode page is `/episodes/gemini-3-8-flash-six-ai-builds`. Prompts and projects retain their numbered order, with isolated previews, compressed screenshot covers, and downloads containing every original source file. The restaurant preview uses cached WebP images; the original download is unchanged.
+
+`npm run content:prepare:gemini` prepares previews, downloads, bundled fallback content, and the import SQL. `npm run content:publish:gemini` explicitly imports this episode into production D1 using the existing channel author. Normal builds prepare assets without overwriting D1 edits. With a local server on port 3001, `npm run test:gemini-episode` verifies ordering, assets, original ZIP contents, sitemap inclusion, and preservation of Episode 01. Set `TEST_BASE_URL` to verify a deployed site. `npm run content:capture:gemini` checks the previews in headless Chrome and captures the six covers.
+
 ## Stack
 
 - Next.js 16 App Router, React 19, TypeScript, and Tailwind CSS 4
