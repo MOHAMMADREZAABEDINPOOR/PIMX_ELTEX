@@ -1,27 +1,43 @@
 <div align="center">
 
-<img src="assets/readme/hero.gif" width="1200" alt="PIMX ELTEX — rotating 3D geometry" />
+<img src="assets/readme/hero.gif" width="1200" alt="PIMX ELTEX: a publishing studio with an episode reel and code slate" />
 
 **[English](README.md) · [فارسی](README.fa.md)**
 
-<img src="assets/readme/identity.svg" width="1200" alt="ai / English and Persian documentation" />
-
 </div>
 
-# PIMX ELTEX
+# 🎬 PIMX ELTEX
 
 A Next.js publishing platform for AI-building episodes, code resources and project previews, with member accounts, comments and an administrative console.
 
 [GitHub](https://github.com/MOHAMMADREZAABEDINPOOR/PIMX_ELTEX) · [PIMX / Profile](https://github.com/MOHAMMADREZAABEDINPOOR) · [Static artwork](assets/readme/hero.png)
 
-## Features
+| At a glance | Details |
+|:---|:---|
+| 🎬 Experience | Web application / browser experience |
+| 🧰 Built with | `React` · `Next.js` · `TypeScript` · `Framer Motion` |
+| 🌐 Documentation | [English](README.md) · [فارسی](README.fa.md) |
 
-- Episode pages, code library and bundled project content
-- Member authentication, profile and session controls
-- Comments, reactions and content administration
-- Drizzle/D1 migrations, email helpers and Cloudflare deployment
+[✨ Features](#features) · [🚀 Getting started](#getting-started) · [⚙️ Configuration](#configuration) · [🌍 Deployment](#deployment)
 
-## Stack
+📖 [Detailed project guide](docs/PROJECT_GUIDE.md)
+
+---
+
+<a id="features"></a>
+
+## ✨ Features
+
+| Area | Included capability |
+|:---|:---|
+| ⚡ Workflow | Episode pages, code library and bundled project content |
+| 👤 Accounts | Member authentication, profile and session controls |
+| 👤 Accounts | Comments, reactions and content administration |
+| 🔌 Integration | Drizzle/D1 migrations, email helpers and Cloudflare deployment |
+
+<a id="stack"></a>
+
+## 🧰 Stack
 
 | Tool | Version / source |
 |---|---|
@@ -31,7 +47,9 @@ A Next.js publishing platform for AI-building episodes, code resources and proje
 | Framer Motion | `^13.2.0` |
 | Tailwind CSS | `^4` |
 
-## Getting started
+<a id="getting-started"></a>
+
+## 🚀 Getting started
 
 Node.js 22.12+ and the package manager declared in package.json. Install dependencies from the checked-in lockfile where available.
 
@@ -43,7 +61,9 @@ npm ci
 npm run dev
 ```
 
-## Configuration
+<a id="configuration"></a>
+
+## ⚙️ Configuration
 
 These names are found in the example configuration or source; not all are required. Check their defaults/usage in those files and supply secrets only in your local or hosting environment.
 
@@ -64,11 +84,15 @@ These names are found in the example configuration or source; not all are requir
 
 Hosting bindings: `ASSETS`, `BACKEND`, `DB`.
 
-## Usage
+<a id="usage"></a>
+
+## 🎯 Usage
 
 Set public configuration from `.env.example` and Worker secrets from `.dev.vars.example`. Prepare the local D1 database using `npm run db:setup:local`; use the Cloudflare preview for bindings-backed workflows.
 
-## Project structure
+<a id="project-structure"></a>
+
+## 🗂️ Project structure
 
 | Path | Role |
 |---|---|
@@ -83,7 +107,19 @@ Set public configuration from `.env.example` and Worker secrets from `.dev.vars.
 | [`wrangler.toml`](wrangler.toml) | Project entry/configuration file |
 | [`wrangler.worker.toml`](wrangler.worker.toml) | Project entry/configuration file |
 
-## Commands and checks
+<a id="commands-and-checks"></a>
+
+## 🧪 Commands and checks
+
+| Command | Purpose |
+|:---|:---|
+| `npm run dev` | 🧑‍💻 Development server |
+| `npm run build` | 📦 Production build |
+| `npm run start` | ▶️ Application server |
+| `npm run lint` | 🧹 Lint source |
+| `npm run typecheck` | 🔧 typecheck |
+| `npm run preview` | 👀 Preview a build |
+| `npm run pages:build` | 🔧 pages:build |
 
 ```bash
 npm run dev
@@ -99,32 +135,46 @@ npm run db:setup:local
 
 These commands are declared in package.json; the list is not a test execution report. Test commands may need a browser, service or prepared database.
 
-## Deployment
+<a id="deployment"></a>
+
+## 🌍 Deployment
 
 Use build/start for Node hosting, or the Cloudflare-specific package.json scripts with your own bindings. Configure databases/secrets separately and consult the repository’s supporting guides.
 
-## Detailed project guide
+<a id="limitations"></a>
 
-[Extended project guide](docs/PROJECT_GUIDE.md)
-
-## Limitations
+## 📌 Limitations
 
 Next.js development mode does not reproduce all Cloudflare bindings. Email and authentication need environment-specific secrets. Content-publishing and remote-migration scripts write to external resources; configure them deliberately.
 
-## Troubleshooting
+<a id="troubleshooting"></a>
+
+## 🛠️ Troubleshooting
 
 - Missing packages: install dependencies using the project’s package manager.
 - API/network failure: check the configured origin, provider and hosting bindings.
 - Old assets: rebuild when a build script exists, then clear the browser cache.
 
-## Contributing
+<a id="contributing"></a>
+
+## 🤝 Contributing
 
 Create a focused branch, verify the affected behavior and explain the change clearly. Keep private data, build outputs and local databases out of commits.
 
-## License
+<a id="license"></a>
+
+## 📄 License
 
 No repository-level license file is included in this snapshot. Public visibility alone does not grant reuse rights; contact the repository owner for terms.
 
 ---
 
 Part of **PIMX** · Documentation in English and Persian.
+
+---
+
+<div align="center">
+
+🎬 **PIMX ELTEX** · [English](README.md) · [فارسی](README.fa.md)
+
+</div>
