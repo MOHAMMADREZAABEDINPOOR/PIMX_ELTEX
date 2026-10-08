@@ -10,6 +10,14 @@
 
 # 🎬 PIMX ELTEX
 
+<!-- pimx-live-site:start -->
+## وب‌سایت آنلاین
+
+**[مشاهدهٔ PIMX_ELTEX ↗](https://pimxeltex.pages.dev/)**
+
+[نسخهٔ Cloudflare Workers ↗](https://pimx-eltex.mohammadrezaabedinpoor6.workers.dev/)
+<!-- pimx-live-site:end -->
+
 پلتفرم Next.js برای انتشار قسمت‌های ساخت پروژه با هوش مصنوعی، منابع کد و پیش‌نمایش، همراه حساب اعضا، نظرات و پنل مدیریت.
 
 [GitHub](https://github.com/MOHAMMADREZAABEDINPOOR/PIMX_ELTEX) · [PIMX / Profile](https://github.com/MOHAMMADREZAABEDINPOOR) · [بنر ثابت](assets/readme/hero.png)
