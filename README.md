@@ -8,6 +8,14 @@
 
 # 🎬 PIMX ELTEX
 
+<!-- pimx-live-site:start -->
+## Live website
+
+**[Open PIMX_ELTEX ↗](https://pimxeltex.pages.dev/)**
+
+[Alternate Cloudflare Workers website ↗](https://pimx-eltex.mohammadrezaabedinpoor6.workers.dev/)
+<!-- pimx-live-site:end -->
+
 A Next.js publishing platform for AI-building episodes, code resources and project previews, with member accounts, comments and an administrative console.
 
 [GitHub](https://github.com/MOHAMMADREZAABEDINPOOR/PIMX_ELTEX) · [PIMX / Profile](https://github.com/MOHAMMADREZAABEDINPOOR) · [Static artwork](assets/readme/hero.png)
